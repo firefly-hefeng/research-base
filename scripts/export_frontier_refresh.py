@@ -57,11 +57,40 @@ def main():
             if case == "bio":
                 code = json.loads((local / case / "code-materials.json").read_text(encoding="utf-8"))
                 entry.update(author_code_works_available=len(code["works"]), author_code_materials_available=sum(len(w["materials"]) for w in code["works"]))
+            model_path = local / case / "deepseek-approved-v1/result.json"
+            if model_path.is_file():
+                model_run = json.loads(model_path.read_text(encoding="utf-8"))
+                if model_run.get("explicit_user_material_transfer_authorization") is not True:
+                    raise ValueError("The actual model run must carry the explicit transfer authorization record")
+                model = model_run["agent"]
+                usage = model.get("research_usage", {})
+                review_path = output / (case + "-deepseek-review.json")
+                review_state = "pending"
+                if review_path.is_file():
+                    review = json.loads(review_path.read_text(encoding="utf-8"))
+                    if (review.get("case_id") != discovery["case_id"]
+                            or review.get("model_read_calls", review.get("read_calls")) != model_run["new_original_read_calls"]
+                            or review.get("model_returned_characters", review.get("returned_characters")) != model_run["returned_characters"]):
+                        raise ValueError("Independent review does not match this actual model run")
+                    corrections = (review.get("corrections")
+                                   or review.get("assessment", {}).get("scientific_corrections_required"))
+                    review_state = "completed_with_corrections" if corrections else "completed"
+                entry["external_model_called_for_new_materials"] = True
+                entry["deepseek_validation"] = {"model": model["model"], "status": model["status"],
+                    "explicit_transfer_authorization": True,
+                    "read_calls": model_run["new_original_read_calls"],
+                    "returned_characters": model_run["returned_characters"],
+                    "expected_material_pages_returned": model_run["expected_material_pages_returned"],
+                    "usage_ready": usage.get("ready"), "current_frontier_ready": usage.get("current_frontier_ready"),
+                    "pending_continuations": len(usage.get("pending_continuations", [])),
+                    "scientific_review": review_state}
             summary["cases"].append(entry)
     summary["limitations"] = ["Freshness covers declared queries, collection snapshots and date windows only; index lag, unindexed sources and unscreened candidates remain.",
         "OpenAlex supplementary probes were rate limited; this source is not claimed completed in either declared plan.",
         "Two October single-cell manuscripts were read through pinned author code, not manuscript PDFs; unresolved full texts remain visible.",
-        "No external DeepSeek call for the new material scope has been made; its transfer approval is pending. Local research agents used the actual component interfaces.",
+        ("DeepSeek read only the selected necessary material ranges after explicit user authorization; passing access checks does not validate scientific interpretation."
+         if all(c.get("external_model_called_for_new_materials") for c in summary["cases"])
+         else "The external-model record is incomplete; retain per-case status and do not claim a pending transfer was performed."),
         "No benchmark performance, training, independent full reproduction, time-saving percentage or exhaustive field coverage is claimed."]
     for name, value in (("summary.json", summary), ("search-plans.json", plans), ("references.json", bibliography)):
         (output / name).write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")

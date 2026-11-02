@@ -4,6 +4,7 @@
 - [近期参考文献与原件状态](references.json)：选定工作、发表/修订日期、原始材料可用情况。
 - [RAG 研究方案](rag-plan.md)与[实际使用记录](rag-review.json)。
 - [单细胞研究方案](bio-plan.md)与[实际使用记录](bio-review.json)。
+- 获授权后的 DeepSeek 验证：[RAG 修订方案](rag-deepseek-plan.md)、[复核记录](rag-deepseek-review.json)；[单细胞修订方案](bio-deepseek-plan.md)、[复核记录](bio-deepseek-review.json)。这些稿件与先前 Codex 方案分开保留。
 
 上述方案来自实际工具读取，不是按论文题名生成。完整过程与限制见[本轮验证](../../docs/frontier-refresh-validation.md)。程序已核验声明范围的搜索新鲜度；候选未全部筛完，未声称全领域无遗漏，也未运行科研实验。
 

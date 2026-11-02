@@ -1,0 +1,78 @@
+{
+  "case_id": "rag-evaluation",
+  "artifact_kind": "independent_review_of_external_research_agent",
+  "model": "deepseek-flash",
+  "review_date": "2026-11-03",
+  "raw_model_output_preserved_separately": true,
+  "original_materials_exported": false,
+  "experiments_run": false,
+  "scientific_correctness_certified": false,
+  "read_calls": 6,
+  "returned_characters": 26665,
+  "reading_scope_claim_correct": true,
+  "page_completion_check": {
+    "expected_material_pages": 6,
+    "observed_complete_material_pages": 6,
+    "all_reads_start_at_offset_zero": true,
+    "all_reads_untruncated": true,
+    "missing_material_pages": [],
+    "unexpected_material_pages": [],
+    "pending_continuations": 0
+  },
+  "usage_check_passed": true,
+  "current_frontier_ready": true,
+  "search_scope_acknowledged_by_model": {
+    "sources": ["acl_anthology", "arxiv"],
+    "date_from": "2025-01-01",
+    "date_to": "2026-11-03",
+    "whole_field_coverage_claimed": false
+  },
+  "papers": [
+    {
+      "paper_id": "paper_bca044d62a284ca8a881",
+      "title": "FRESCO: Benchmarking and Optimizing Re-rankers for Evolving Semantic Conflict in Retrieval-Augmented Generation",
+      "doi": "10.18653/2026.findings-emnlp.54",
+      "model_physical_pages": [3, 4],
+      "model_returned_characters": 9675,
+      "additional_reviewer_physical_pages": [5],
+      "supported_change": "Test explicit and implicit recency-seeking queries with outdated evidence and temporally valid but insufficient evidence.",
+      "correction": "Obsolete Ratio is the proportion of factually outdated passages among negative passages ranked above the positive. It is not the fraction of top-ranked outputs that are outdated. The definition continues onto physical page 5, which the reviewer read and the model did not.",
+      "design_clarification": "Keep static-query controls and fact-validity checks. A recent timestamp alone does not make a passage sufficient or factually current."
+    },
+    {
+      "paper_id": "paper_4ce0597511d144938cfe",
+      "title": "The Bottleneck Is Retrieval, Not Reading: Diagnosing Evidence-Based Generation with RAG for Long Context Question Answering",
+      "arxiv": "2610.26951v1",
+      "model_physical_pages": [3, 4],
+      "model_returned_characters": 8504,
+      "additional_reviewer_physical_pages": [],
+      "supported_change": "Report answer, evidence and joint correctness separately and control evidence location and context length.",
+      "correction": "The illustrated output schema uses a lines array, not a singular line field. Preserve multiple required evidence references.",
+      "design_clarification": "Joint correctness is a conjunction, not an additive score. Distinguish retrieving any required evidence from retrieving all required evidence; synthetic context faithfulness does not certify real-world truth."
+    },
+    {
+      "paper_id": "paper_4564ea050ae3475cae93",
+      "title": "RARE: Redundancy-Aware Retrieval Evaluation Framework for High-Similarity Corpora",
+      "doi": "10.18653/v1/2026.acl-long.923",
+      "model_physical_pages": [6, 7],
+      "model_returned_characters": 8486,
+      "additional_reviewer_physical_pages": [],
+      "supported_change": "Accept verified equivalent supporting passages; distinguish partial coverage from all-required-information retrieval and stratify corpus overlap.",
+      "correction": "The filtering audit treats Fail as the positive class. High recall means detecting invalid items, not retaining valid items; moderate precision can discard valid material. Audit retained invalid items and excluded valid items separately.",
+      "design_clarification": "Coverage/PerfRecall are retrieval metrics and should not replace generation correctness, support or cost measures. Similarity-versus-redundancy observations across domains do not establish independent causal effects. The publication is ACL 2026, not EACL."
+    }
+  ],
+  "assessment": {
+    "interfaces_actually_used": true,
+    "specific_original_based_design_changes": 3,
+    "improvement_over_previous_run": "The model used the refreshed declared search scope, completed all six requested physical pages, attributed pages to the correct works, and proposed three concrete diagnostic extensions.",
+    "scientific_corrections_required": true,
+    "measured_research_efficiency_gain": false,
+    "automatic_scientific_reliability_established": false
+  },
+  "remaining_work": [
+    "Read code and full benchmark setup/limitations before claiming reproduction of the complete methods.",
+    "Construct and audit local temporal and redundancy-aware labels before running the proposed experiments.",
+    "Validate effects with matched budgets and uncertainty estimates; no new laboratory performance or universal ranking is claimed."
+  ]
+}

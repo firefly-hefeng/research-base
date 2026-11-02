@@ -1,0 +1,120 @@
+{
+  "case_id": "single-cell-perturbation",
+  "artifact_kind": "independent_review_of_deepseek_original_material_use",
+  "review_date": "2026-11-03",
+  "raw_agent_output_preserved_separately": true,
+  "model": "deepseek-flash",
+  "agent_status": "completed",
+  "model_read_calls": 5,
+  "model_unique_materials": 4,
+  "model_returned_characters": 13093,
+  "model_materials": [
+    {
+      "material_id": "mat_81b806d8f0924ec08486",
+      "paper_id": "paper_625a51d648c14fe08a83",
+      "title": "A split-control criterion for few-shot adaptation in single-cell perturbation prediction",
+      "role": "supplement",
+      "repository_path": "docs/USAGE.md",
+      "source_commit": "6789706cc63dfe0a60e7a717fb51c63590452422",
+      "text_pages_returned": [
+        1
+      ],
+      "read_calls": 1,
+      "returned_characters": 1692,
+      "final_range_complete": true
+    },
+    {
+      "material_id": "mat_a487b2002dec43898970",
+      "paper_id": "paper_625a51d648c14fe08a83",
+      "title": "A split-control criterion for few-shot adaptation in single-cell perturbation prediction",
+      "role": "code",
+      "repository_path": "src/safedelta/adapter.py",
+      "source_commit": "6789706cc63dfe0a60e7a717fb51c63590452422",
+      "text_pages_returned": [
+        1
+      ],
+      "read_calls": 2,
+      "returned_characters": 7084,
+      "final_range_complete": true
+    },
+    {
+      "material_id": "mat_00471caa8c3440b2b079",
+      "paper_id": "paper_0d5580a341c94a19b408",
+      "title": "PIE: Generalizing perturbation effects across unseen perturbations, contexts and datasets",
+      "role": "code",
+      "repository_path": "src/pie/configs/experiment/replogle_wdataset.yaml",
+      "source_commit": "038940057545ae686db946ae247aeb0ff0101897",
+      "text_pages_returned": [
+        1
+      ],
+      "read_calls": 1,
+      "returned_characters": 1750,
+      "final_range_complete": true
+    },
+    {
+      "material_id": "mat_b6faac3c56cd4aa58c1f",
+      "paper_id": "paper_0d5580a341c94a19b408",
+      "title": "PIE: Generalizing perturbation effects across unseen perturbations, contexts and datasets",
+      "role": "code",
+      "repository_path": "src/pie/configs/experiment/replogle_xdataset.yaml",
+      "source_commit": "038940057545ae686db946ae247aeb0ff0101897",
+      "text_pages_returned": [
+        1
+      ],
+      "read_calls": 1,
+      "returned_characters": 2567,
+      "final_range_complete": true
+    }
+  ],
+  "manuscript_fulltexts_read": false,
+  "code_executed": false,
+  "expected_material_pages_returned": true,
+  "selected_ranges_complete": true,
+  "usage_ready": true,
+  "current_frontier_ready": true,
+  "freshness": {
+    "plan_fingerprint": "sha256:bf035a2ae3a5dd2f1fdd6ddb7cde764512fa77d13b5f68022553ba03d834a352",
+    "last_complete_search_at": "2026-11-02T18:16:56.126445Z",
+    "coverage_through": "2026-11-03",
+    "search_scope": {
+      "query": "Single-cell perturbation predictive modeling, benchmarking and generalization",
+      "sources": [
+        "europe_pmc",
+        "pubmed"
+      ],
+      "source_queries": {
+        "europe_pmc": "(TITLE_ABS:\"single-cell\" OR TITLE_ABS:\"single cell\") AND (TITLE_ABS:perturbation OR TITLE_ABS:perturbations) AND (TITLE_ABS:predict* OR TITLE_ABS:benchmark* OR TITLE_ABS:generalization OR TITLE_ABS:generalisation)",
+        "pubmed": "(\"single-cell\"[Title/Abstract] OR \"single cell\"[Title/Abstract]) AND perturbation[Title/Abstract] AND (predict*[Title/Abstract] OR benchmark*[Title/Abstract] OR generalization[Title/Abstract] OR generalisation[Title/Abstract])"
+      },
+      "date_from": "2025-01-01",
+      "date_to": "2026-11-03"
+    },
+    "needs_refresh": false,
+    "notice": "Freshness describes the completed provider queries and date window, not exhaustive field coverage or scientific quality."
+  },
+  "supported_new_design_changes": [
+    "Introduce a calibration-only empirical release-versus-retain branch instead of only changing final delta scoring.",
+    "Audit evidence, release decisions and independent test gains under prespecified adaptation and control-reference conventions.",
+    "Separate within-dataset context/perturbation/joint holdouts from zero-shot cross-dataset transfer and from combinatorial prediction.",
+    "Pin original source commits and treat configuration declarations as inputs to a later actual-split audit."
+  ],
+  "scientific_corrections_required": true,
+  "corrections": [
+    "PCA-linear remains a feasible prediction baseline under appropriate training inputs; it must not be grouped with held-out-response duplicate controls as evaluation-only.",
+    "Library accepted-version labels do not independently establish journal acceptance or peer review; this review makes no such claim.",
+    "Two control-mean arrays or disjoint cell halves do not establish biological independence; experiment-level sampling and assignment must establish that condition.",
+    "predict(fold) returns the selected reference-fold prediction under a common release decision, falling back to the pooled source if rejected; it does not emit two independently chosen candidate models simultaneously.",
+    "Near-universal release alone does not prove lack of discrimination; inspect independent gains, risks and uncertainty instead.",
+    "SafeDelta release also requires finite evidence; nonfinite or nonpositive evidence is rejected.",
+    "The unread pcc/core.py implementation belongs to SafeDelta, not PIE; its earlier local-agent reading is not counted as this DeepSeek run.",
+    "This completed source-query checkpoint neither establishes that historical citation expansion never occurred nor that its historical graph is current."
+  ],
+  "reviewer_reading_boundary": "The independent reviewer previously read SafeDelta core.py in a separate local-agent session. None of those 7661 characters or reads are included in the current DeepSeek totals; current scientific claims are checked against the four observed source documents and clearly stated design judgment.",
+  "remaining_work": [
+    "Read manuscript PDFs and actual split JSON before final implementation.",
+    "Audit complete training, evidence-generation and metric code and dataset provenance.",
+    "Run independent scientific experiments before making performance, ranking or efficiency claims."
+  ],
+  "experiments_run": false,
+  "scientific_correctness_certified": false
+}

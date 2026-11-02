@@ -1,6 +1,6 @@
 {
   "validated_date": "2026-11-03",
-  "generated_at": "2026-11-02T18:32:44.746554Z",
+  "generated_at": "2026-11-02T18:56:55.823895Z",
   "original_materials_exported": false,
   "experiments_run": false,
   "cases": [
@@ -19,7 +19,19 @@
       "local_research_agent_returned_characters": 30370,
       "usage_ready": true,
       "current_frontier_ready": true,
-      "external_model_called_for_new_materials": false
+      "external_model_called_for_new_materials": true,
+      "deepseek_validation": {
+        "model": "deepseek-flash",
+        "status": "completed",
+        "explicit_transfer_authorization": true,
+        "read_calls": 6,
+        "returned_characters": 26665,
+        "expected_material_pages_returned": true,
+        "usage_ready": true,
+        "current_frontier_ready": true,
+        "pending_continuations": 0,
+        "scientific_review": "completed_with_corrections"
+      }
     },
     {
       "case_id": "single-cell-perturbation",
@@ -36,16 +48,28 @@
       "local_research_agent_returned_characters": 20754,
       "usage_ready": true,
       "current_frontier_ready": true,
-      "external_model_called_for_new_materials": false,
+      "external_model_called_for_new_materials": true,
       "author_code_works_available": 2,
-      "author_code_materials_available": 7
+      "author_code_materials_available": 7,
+      "deepseek_validation": {
+        "model": "deepseek-flash",
+        "status": "completed",
+        "explicit_transfer_authorization": true,
+        "read_calls": 5,
+        "returned_characters": 13093,
+        "expected_material_pages_returned": true,
+        "usage_ready": true,
+        "current_frontier_ready": true,
+        "pending_continuations": 0,
+        "scientific_review": "completed_with_corrections"
+      }
     }
   ],
   "limitations": [
     "Freshness covers declared queries, collection snapshots and date windows only; index lag, unindexed sources and unscreened candidates remain.",
     "OpenAlex supplementary probes were rate limited; this source is not claimed completed in either declared plan.",
     "Two October single-cell manuscripts were read through pinned author code, not manuscript PDFs; unresolved full texts remain visible.",
-    "No external DeepSeek call for the new material scope has been made; its transfer approval is pending. Local research agents used the actual component interfaces.",
+    "DeepSeek read only the selected necessary material ranges after explicit user authorization; passing access checks does not validate scientific interpretation.",
     "No benchmark performance, training, independent full reproduction, time-saving percentage or exhaustive field coverage is claimed."
   ]
 }
