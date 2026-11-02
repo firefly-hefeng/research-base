@@ -1,0 +1,14 @@
+{
+  "task_id": "task_demo_001",
+  "lease_token": "example-token-not-a-real-credential",
+  "submission_id": "submission_demo_001",
+  "result": {
+    "outcome": "downloaded",
+    "file": {
+      "kind": "local_path",
+      "path": "C:/ResearchLibrary/.staging/browser/task_demo_001/lease_demo_001/article.pdf"
+    },
+    "source_url": "https://publisher.example/articles/retrieval-evaluation",
+    "reported_version": "published"
+  }
+}

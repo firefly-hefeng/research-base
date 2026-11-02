@@ -1,0 +1,1366 @@
+{
+  "case_id": "single-cell-perturbation",
+  "papers": [
+    {
+      "paper_id": "paper_8c4faf4a13d44ed0a826",
+      "title": "A leakage-aware benchmark for evaluating chemical and cellular generalization in single-cell perturbation-response prediction",
+      "doi": "10.21203/rs.3.rs-10446347/v1",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.21203/rs.3.rs-10446347/v1",
+        "doi": "10.21203/rs.3.rs-10446347/v1",
+        "europe_pmc": "PPR:PPR1294995",
+        "openalex": "W7202081072"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_90ab362eb87d4e9d80af",
+      "title": "PertDiffBench: Benchmarking Diffusion Models for Single-Cell Perturbation Response Prediction",
+      "doi": "10.64898/2026.06.13.732013",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.06.13.732013",
+        "doi": "10.64898/2026.06.13.732013",
+        "europe_pmc": "PPR:PPR1251415",
+        "openalex": "W7164752874"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_b81f2d4d6f2243dbace2",
+      "title": "A mechanism-annotated benchmark reveals limited fidelity to drug-response signatures in single-cell perturbation models",
+      "doi": "10.64898/2026.08.19.745729",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.08.19.745729",
+        "doi": "10.64898/2026.08.19.745729",
+        "europe_pmc": "PPR:PPR1304015",
+        "openalex": "W7204112683"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_09c50f729aa5415f81f8",
+      "title": "Drug Response Prediction Provides a Biologically Relevant Benchmark for Perturbation Response Models",
+      "doi": "10.64898/2025.12.09.693213",
+      "year": 2025,
+      "identifiers": {
+        "crossref": "10.64898/2025.12.09.693213",
+        "doi": "10.64898/2025.12.09.693213",
+        "openalex": "W4417262516"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_b7ab84fca5f6485aa5a1",
+      "title": "Spurious correlation inflates performance in single-cell perturbation prediction",
+      "doi": "10.64898/2026.05.07.723486",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.05.07.723486",
+        "doi": "10.64898/2026.05.07.723486",
+        "openalex": "W7160933584",
+        "pmcid": "13192888",
+        "pmid": "42182243"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_98bd177324774f90ba1c",
+      "title": "Evaluating Single-Cell Perturbation Response Models Is Far from Straightforward",
+      "doi": "10.64898/2026.02.14.705879",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.02.14.705879",
+        "doi": "10.64898/2026.02.14.705879",
+        "openalex": "W7129499852"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_050b421949a84d7b9c8a",
+      "title": "Elucidating the Design Space of Generative Models for Single-Cell Perturbation Prediction",
+      "doi": "10.64898/2026.06.15.732063",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.06.15.732063",
+        "doi": "10.64898/2026.06.15.732063",
+        "europe_pmc": "PPR:PPR1255210",
+        "openalex": "W7165193441"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_e8f4a74130dd4e2f94b5",
+      "title": "A Systematic Comparison of Single-Cell Perturbation Response Prediction Models",
+      "doi": "10.1101/2024.12.23.630036",
+      "year": 2024,
+      "identifiers": {
+        "biorxiv_relation": "10.1101/2024.12.23.630036",
+        "crossref": "10.1101/2024.12.23.630036",
+        "doi": "10.1101/2024.12.23.630036",
+        "openalex": "W4405719251"
+      },
+      "related_paper_ids": [
+        "paper_7691f9d9842745e4ad64"
+      ],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_4ef79e7a2cd14ea9b357",
+      "title": "OCOO-T : A SIMPLE AND SCALABLE VIRTUAL CELL MODEL FOR TRANSCRIPTIONAL PERTURBATION RESPONSE PREDICTION",
+      "doi": "10.64898/2026.06.08.731000",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.06.08.731000",
+        "doi": "10.64898/2026.06.08.731000",
+        "openalex": "W7164353026"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_bc5dfcb929cf4f3eb84d",
+      "title": "SLIM: A small linear model with STRING embeddings for single-cell genetic perturbation prediction",
+      "doi": "10.64898/2026.08.07.743481",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.08.07.743481",
+        "doi": "10.64898/2026.08.07.743481",
+        "europe_pmc": "PPR:PPR1294148",
+        "openalex": "W7201861738"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_4ebe13bcf1524ef9a97b",
+      "title": "A biological-response compound representation allows chemical perturbation prediction across cell lines",
+      "doi": "10.64898/2026.09.28.755146",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.64898/2026.09.28.755146",
+        "doi": "10.64898/2026.09.28.755146",
+        "openalex": "W7214708477"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_e72b5a00007c49af8884",
+      "title": "CellTarNet: Robust Single-Cell Perturbation Prediction using Transformer Generative Model",
+      "doi": "10.1145/3807503.3819992",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.1145/3807503.3819992",
+        "doi": "10.1145/3807503.3819992",
+        "openalex": "W7171523608"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_7691f9d9842745e4ad64",
+      "title": "A systematic comparison of single-cell perturbation response prediction models",
+      "doi": "10.1126/sciadv.aed3414",
+      "year": 2026,
+      "identifiers": {
+        "crossref": "10.1126/sciadv.aed3414",
+        "doi": "10.1126/sciadv.aed3414",
+        "europe_pmc": "MED:42715312",
+        "openalex": "W7212020435",
+        "pmcid": "13557097",
+        "pmid": "42715312",
+        "pubmed": "42715312"
+      },
+      "related_paper_ids": [
+        "paper_e8f4a74130dd4e2f94b5"
+      ],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_df6d1a2f2d0940478cbc",
+      "title": "scPRAM accurately predicts single-cell gene expression perturbation response based on attention mechanism",
+      "doi": "10.1093/bioinformatics/btae265",
+      "year": 2024,
+      "identifiers": {
+        "crossref": "10.1093/bioinformatics/btae265",
+        "doi": "10.1093/bioinformatics/btae265",
+        "openalex": "W4394853345",
+        "pmcid": "11076148",
+        "pmid": "38625746"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_7b4fc133fc9c4d8dac29",
+      "title": "Fast and scalable Wasserstein-1 neural optimal transport solver for single-cell perturbation prediction",
+      "doi": "10.1093/bioinformatics/btaf253",
+      "year": 2025,
+      "identifiers": {
+        "arxiv": "2411.00614",
+        "arxiv_work": "2411.00614",
+        "crossref": "10.1093/bioinformatics/btaf253",
+        "doi": "10.1093/bioinformatics/btaf253",
+        "openalex": "W4412454251",
+        "pmcid": "12261427",
+        "pmid": "40662778"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_e48d455199c24435928c",
+      "title": "A transcription factor regulatory atlas for activity inference and perturbation prediction",
+      "doi": "10.1093/nar/gkag897",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1093/nar/gkag897",
+        "europe_pmc": "MED:42741841",
+        "openalex": "W7213263039",
+        "pmcid": "13575427",
+        "pmid": "42741841",
+        "pubmed": "42741841"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_d1d45b2902a34a958f51",
+      "title": "scGPA: an LLM-assisted workflow for directional virtual gene perturbation analysis from single-cell transcriptomes",
+      "doi": "10.1186/s12864-026-13270-0",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1186/s12864-026-13270-0",
+        "europe_pmc": "MED:42754836",
+        "openalex": "W7204193333",
+        "pmcid": "13584509",
+        "pmid": "42754836",
+        "pubmed": "42754836"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_037837ec4e7c4412a035",
+      "title": "Evaluating the learnability of single-cell large language models on multiple tasks",
+      "doi": "10.1186/s12864-026-12975-6",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1186/s12864-026-12975-6",
+        "europe_pmc": "MED:42249309",
+        "openalex": "W7163700209",
+        "pmcid": "13465196",
+        "pmid": "42249309"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_5db4522e23224708a96f",
+      "title": "Benchmarking algorithms for generalizable single-cell perturbation response prediction",
+      "doi": "10.1038/s41592-025-02980-0",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1038/s41592-025-02980-0",
+        "openalex": "W4417297892",
+        "pmid": "41381899"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_b7c4fc1577664e669d36",
+      "title": "PertEval-scFM: Benchmarking Single-Cell Foundation Models for Perturbation Effect Prediction",
+      "doi": "10.1101/2024.10.02.616248",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1101/2024.10.02.616248",
+        "openalex": "W4403090726"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_33eee60d907e4e6e9617",
+      "title": "Benchmarking foundation cell models for post-perturbation RNA-seq prediction",
+      "doi": "10.1186/s12864-025-11600-2",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1186/s12864-025-11600-2",
+        "openalex": "W4409705874",
+        "pmcid": "12016270",
+        "pmid": "40269681"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_5653162502944926b2e0",
+      "title": "Predicting cellular responses to perturbation across diverse contexts with State.",
+      "doi": "10.1016/j.cell.2026.07.052",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1016/j.cell.2026.07.052",
+        "pmid": "42673963",
+        "pubmed": "42673963"
+      },
+      "related_paper_ids": [
+        "paper_64cb590a02644355992e"
+      ],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_40e9479c44e24d4ba73d",
+      "title": "Systema: a framework for evaluating genetic perturbation response prediction beyond systematic variation",
+      "doi": "10.1038/s41587-025-02777-8",
+      "year": 2025,
+      "identifiers": {
+        "crossref": "10.1038/s41587-025-02777-8",
+        "doi": "10.1038/s41587-025-02777-8",
+        "europe_pmc": "MED:40854979",
+        "openalex": "W4413495491",
+        "pmcid": "13271886",
+        "pmid": "40854979"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_753572a3cbe84d8a9d5c",
+      "title": "A Multi-modal LLM-Knowledge Fusion Framework for Predicting Single-cell Genetic Perturbation Effects",
+      "doi": "10.64898/2026.04.24.720560",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.04.24.720560",
+        "openalex": "W7160182526"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_5f55a7ea3f904e38b52b",
+      "title": "pertTF: context-aware AI modeling for genome-scale and cross-system perturbation prediction",
+      "doi": "10.64898/2026.03.12.711379",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.03.12.711379",
+        "openalex": "W7137023334",
+        "pmcid": "13015719",
+        "pmid": "41889931"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_dbb63e5fad4b40bfb4f7",
+      "title": "ScAPE: A lightweight multitask learning baseline method to predict transcriptomic responses to perturbations",
+      "doi": "10.1101/2025.09.08.674873",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.09.08.674873",
+        "openalex": "W4414158134"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_6fc8282932ba4d9e82d2",
+      "title": "Unbalanced Perturbation Dynamics For Cell Fate Design",
+      "doi": "10.64898/2026.06.30.735555",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.06.30.735555",
+        "openalex": "W7167327233"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_3ac2aab34bb9494695a4",
+      "title": "Deep learning perturbation models can outperform baselines on calibrated metrics",
+      "doi": "10.1038/s41587-026-03307-w",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1038/s41587-026-03307-w",
+        "openalex": "W7215048940",
+        "pmid": "42823510"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_c3613a0289a74bb18f23",
+      "title": "How Much Can AI Virtual Cells Gain from Unified Perturbational Modeling?",
+      "doi": "10.64898/2026.10.25.761625",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.10.25.761625",
+        "openalex": "W7223955329"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_d3ad241fc4ca44588465",
+      "title": "Basal expression predicts context-specific drug responses only where they are reproducible: a leakage-safe 47-line LOCO benchmark on Tahoe-100M",
+      "doi": "10.21203/rs.3.rs-10846736/v1",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.21203/rs.3.rs-10846736/v1",
+        "openalex": "W7204922213"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_b58f1cc7607840f78559",
+      "title": "Virtual Cell Challenge 2026: Benchmarking zero-shot generalization across cellular contexts",
+      "doi": "10.1016/j.cell.2026.08.004",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1016/j.cell.2026.08.004",
+        "openalex": "W7204251304",
+        "pmid": "42648290"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_c61998a0b3444436909e",
+      "title": "A knowledge-driven framework for predicting single-cell responses for unprofiled drugs",
+      "doi": "10.1038/s42256-026-01286-w",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1038/s42256-026-01286-w",
+        "openalex": "W7204223536"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_9303a1714f814a71b8dc",
+      "title": "Reliable single-cell perturbations explain and improve model performance",
+      "doi": "10.64898/2026.08.11.744177",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.08.11.744177",
+        "openalex": "W7202270001"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_06547b3726f348b182e1",
+      "title": "PerturbLDM: conditional latent diffusion for modelling single-cell perturbation responses",
+      "doi": "10.64898/2026.08.07.743610",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.08.07.743610",
+        "openalex": "W7202270453"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_cab0753a25ce48e6a16e",
+      "title": "COMPASS: Component-Wise Inference of Shared and Gene-Specific Perturbation Response",
+      "doi": "10.64898/2026.08.03.742643",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.08.03.742643",
+        "openalex": "W7196974954"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_da95dd9a3e6844dc9f40",
+      "title": "DELPHAI predicts heterogeneous perturbation responses with learned single-cell fitness",
+      "doi": "10.64898/2026.07.01.735965",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.07.01.735965",
+        "openalex": "W7167499121"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_bd70b175453d402fbca7",
+      "title": "Mapping information-rich genotype-phenotype landscapes with genome-scale Perturb-seq",
+      "doi": "10.1016/j.cell.2022.05.013",
+      "year": 2022,
+      "identifiers": {
+        "doi": "10.1016/j.cell.2022.05.013",
+        "openalex": "W4281716291",
+        "pmcid": "9380471",
+        "pmid": "35688146"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_f8407e20f47342a39c62",
+      "title": "scGen predicts single-cell perturbation responses",
+      "doi": "10.1038/s41592-019-0494-8",
+      "year": 2019,
+      "identifiers": {
+        "doi": "10.1038/s41592-019-0494-8",
+        "openalex": "W2965552103",
+        "pmid": "31363220"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_8ce5f51a8fdc4cf3ac96",
+      "title": "Massively multiplex chemical transcriptomics at single-cell resolution",
+      "doi": "10.1126/science.aax6234",
+      "year": 2019,
+      "identifiers": {
+        "doi": "10.1126/science.aax6234",
+        "openalex": "W2993905360",
+        "pmcid": "7289078",
+        "pmid": "31806696"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_7ef5ad54b83d4e78bab4",
+      "title": "Multiplexed single-cell transcriptional response profiling to define cancer vulnerabilities and therapeutic mechanism of action",
+      "doi": "10.1038/s41467-020-17440-w",
+      "year": 2020,
+      "identifiers": {
+        "doi": "10.1038/s41467-020-17440-w",
+        "openalex": "W3080295962",
+        "pmcid": "7453022",
+        "pmid": "32855387"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_6e2584694f944fdb8ed9",
+      "title": "Conditional out-of-distribution generation for unpaired data using transfer VAE",
+      "doi": "10.1093/bioinformatics/btaa800",
+      "year": 2020,
+      "identifiers": {
+        "doi": "10.1093/bioinformatics/btaa800",
+        "openalex": "W3117464799",
+        "pmid": "33381839"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_944d408cc59d40018845",
+      "title": "scPreGAN, a deep generative model for predicting the response of single-cell expression to perturbation",
+      "doi": "10.1093/bioinformatics/btac357",
+      "year": 2022,
+      "identifiers": {
+        "doi": "10.1093/bioinformatics/btac357",
+        "openalex": "W4281777185",
+        "pmid": "35639705"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_455e102d3ce045bda964",
+      "title": "Genome-scale perturb-seq in primary human CD4+ T cells maps context-specific regulators of T cell programs and human immune traits",
+      "doi": "10.1016/j.cell.2026.08.002",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1016/j.cell.2026.08.002",
+        "openalex": "W7117167451",
+        "pmcid": "13614707",
+        "pmid": "42664972"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_420f3408dd554abbadfb",
+      "title": "scGPT: toward building a foundation model for single-cell multi-omics using generative AI",
+      "doi": "10.1038/s41592-024-02201-0",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s41592-024-02201-0",
+        "openalex": "W4392168151",
+        "pmid": "38409223"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_8163e363cd944e7685a3",
+      "title": "Predicting transcriptional outcomes of novel multigene perturbations with GEARS",
+      "doi": "10.1038/s41587-023-01905-6",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1038/s41587-023-01905-6",
+        "openalex": "W4385955324",
+        "pmcid": "11180609",
+        "pmid": "37592036"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_dca0caee31d0434f95bd",
+      "title": "Predicting cellular responses to complex perturbations in high‐throughput screens",
+      "doi": "10.15252/msb.202211517",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.15252/msb.202211517",
+        "openalex": "W4375955255",
+        "pmcid": "10258562",
+        "pmid": "37154091"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_d01c146df3d640e484cb",
+      "title": "scPerturb: harmonized single-cell perturbation data",
+      "doi": "10.1038/s41592-023-02144-y",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s41592-023-02144-y",
+        "openalex": "W4391262585",
+        "pmcid": "12220817",
+        "pmid": "38279009"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_2d8fbbb47c4c4a73aaf8",
+      "title": "Optimal distance metrics for single-cell RNA-seq populations",
+      "doi": "10.1101/2023.12.26.572833",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1101/2023.12.26.572833",
+        "openalex": "W4390264190"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_108ac7c23e8d41e481ea",
+      "title": "A systematic comparison of computational methods for expression forecasting",
+      "doi": "10.1101/2023.07.28.551039",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1101/2023.07.28.551039",
+        "openalex": "W4385409126",
+        "pmcid": "10418073",
+        "pmid": "37577640"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_3e494bdf165540c59f96",
+      "title": "Virtual Cells Need Context, Not Just Scale",
+      "doi": "10.64898/2026.02.04.703804",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.02.04.703804",
+        "openalex": "W7128703985",
+        "pmcid": "12919078",
+        "pmid": "41727131"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_b7272cc04a7e4d90ac9f",
+      "title": "Transfer learning enables predictions in network biology",
+      "doi": "10.1038/s41586-023-06139-9",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1038/s41586-023-06139-9",
+        "openalex": "W4378838672",
+        "pmcid": "10949956",
+        "pmid": "37258680"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_c34f067d283349d6b5e1",
+      "title": "Large-scale foundation model on single-cell transcriptomics",
+      "doi": "10.1038/s41592-024-02305-7",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s41592-024-02305-7",
+        "openalex": "W4399387478",
+        "pmid": "38844628"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_01cfe56b04114d0d9fda",
+      "title": "Learning single-cell perturbation responses using neural optimal transport",
+      "doi": "10.1038/s41592-023-01969-x",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1038/s41592-023-01969-x",
+        "openalex": "W4387130479",
+        "pmcid": "10630137",
+        "pmid": "37770709"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_c9bd138d4864463f96e3",
+      "title": "Disentanglement of single-cell data with biolord",
+      "doi": "10.1038/s41587-023-02079-x",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s41587-023-02079-x",
+        "openalex": "W4390880427",
+        "pmcid": "11554562",
+        "pmid": "38225466"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_5ec89b1ba56b456688c8",
+      "title": "Generative modeling of single-cell gene expression for dose-dependent chemical perturbations",
+      "doi": "10.1016/j.patter.2023.100817",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1016/j.patter.2023.100817",
+        "openalex": "W4385760593",
+        "pmcid": "10436058",
+        "pmid": "37602218"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_be3ea497d9cc4129953b",
+      "title": "scDisInFact: disentangled learning for integration and prediction of multi-batch multi-condition single-cell RNA-sequencing data",
+      "doi": "10.1038/s41467-024-45227-w",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s41467-024-45227-w",
+        "openalex": "W4391349656",
+        "pmcid": "10187255",
+        "pmid": "37205545"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_6ccd088c60454cec85c7",
+      "title": "PerturBase: a comprehensive database for single-cell perturbation data analysis and visualization",
+      "doi": "10.1093/nar/gkae858",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1093/nar/gkae858",
+        "openalex": "W4403216706",
+        "pmcid": "11701531",
+        "pmid": "39377396"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_993875049011432f9f3a",
+      "title": "AttentionPert: accurately modeling multiplexed genetic perturbations with multi-scale effects",
+      "doi": "10.1093/bioinformatics/btae244",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1093/bioinformatics/btae244",
+        "openalex": "W4400140744",
+        "pmcid": "11211811",
+        "pmid": "38940174"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_5523731991d94331b76b",
+      "title": "Toward subtask-decomposition-based learning and benchmarking for predicting genetic perturbation outcomes and beyond",
+      "doi": "10.1038/s43588-024-00698-1",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s43588-024-00698-1",
+        "openalex": "W4402926790",
+        "pmid": "39333790"
+      },
+      "related_paper_ids": [
+        "paper_c8d67462e967422bbdef"
+      ],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_3a27799e15a541388cd4",
+      "title": "Predicting single-cell cellular responses to perturbations using cycle consistency learning",
+      "doi": "10.1093/bioinformatics/btae248",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1093/bioinformatics/btae248",
+        "openalex": "W4400140760",
+        "pmcid": "11256949",
+        "pmid": "38940153"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_531f52acf990427799e8",
+      "title": "SCREEN: predicting single-cell gene expression perturbation responses via optimal transport",
+      "doi": "10.1007/s11704-024-31014-9",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1007/s11704-024-31014-9",
+        "openalex": "W4393066616"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_3302d60fd8204af3b447",
+      "title": "Homogeneous Space Construction and Projection for Single-Cell Expression Prediction Based on Deep Learning",
+      "doi": "10.3390/bioengineering10090996",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.3390/bioengineering10090996",
+        "openalex": "W4386091496",
+        "pmcid": "10525719",
+        "pmid": "37760098"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_6a9dce22af584d529eaa",
+      "title": "Tabular Foundation Models Are Competitive Cellular Perturbation Predictors Across Biological Scales",
+      "doi": "10.64898/2026.06.28.735106",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.06.28.735106",
+        "openalex": "W7166861138"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_fd5017a82b08420ab953",
+      "title": "CSTATE: Predicting cellular responses to perturbations",
+      "doi": "10.1145/3807503.3819991",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1145/3807503.3819991",
+        "openalex": "W7171487066"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_6c1ab7a4f4a44d11b718",
+      "title": "CellOS: Learning a World Model of Cellular State through Joint Embedding Prediction",
+      "doi": "10.64898/2026.06.18.733163",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.06.18.733163",
+        "openalex": "W7165675637"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_46e1895ae6964e1c8190",
+      "title": "DoFormer: Causal Transformer for Gene Perturbation",
+      "doi": "10.64898/2026.05.02.722054",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.05.02.722054",
+        "openalex": "W7160047080"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_f6d0320e234441dd89ca",
+      "title": "Learning Causal Representations of Single Cells via Sparse Mechanism Shift Modeling",
+      "doi": "10.48550/arxiv.2211.03553",
+      "year": 2022,
+      "identifiers": {
+        "arxiv": "2211.03553",
+        "arxiv_work": "2211.03553",
+        "doi": "10.48550/arxiv.2211.03553",
+        "openalex": "W4308826408"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_71d3735942a84109846e",
+      "title": "Conditional Monge Gap enables generalizable single-cell perturbation modelling",
+      "doi": "10.1038/s42256-026-01242-8",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1038/s42256-026-01242-8",
+        "openalex": "W7163045559"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_cbdf339e89d34974bc65",
+      "title": "A community machine learning challenge to predict the effects of gene perturbations on T cell differentiation for cancer immunotherapy",
+      "doi": "10.64898/2026.05.21.726863",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.05.21.726863",
+        "openalex": "W7162081376",
+        "pmcid": "13228547",
+        "pmid": "42239045"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_a721bda4672c45f0bd93",
+      "title": "Are Current AI Virtual Cell Models Useful for Scientific Discovery?",
+      "doi": "10.64898/2026.04.23.719015",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.04.23.719015",
+        "openalex": "W7155598843"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_bb9a67b70619488eb8fc",
+      "title": "MVCBench: A Multimodal Benchmark for Drug-induced Virtual Cell Phenotypes",
+      "doi": "10.64898/2026.04.22.720110",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.04.22.720110",
+        "openalex": "W7155543416"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_dfcba417c4b241c79142",
+      "title": "X-Cell: Scaling Causal Perturbation Prediction Across Diverse Cellular Contexts via Diffusion Language Models",
+      "doi": "10.64898/2026.03.18.712807",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.03.18.712807",
+        "openalex": "W7140116110"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_8d912dd966ce443fa14e",
+      "title": "Predicting and interpreting cell-type-specific drug responses in the small-data regime using inductive priors",
+      "doi": "10.1038/s42256-026-01202-2",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1038/s42256-026-01202-2",
+        "openalex": "W7136291794"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_38df55b917474dc18ce2",
+      "title": "Deep-learning-based gene perturbation effect prediction does not yet outperform simple linear baselines",
+      "doi": "10.1038/s41592-025-02772-6",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1038/s41592-025-02772-6",
+        "openalex": "W4412929241",
+        "pmcid": "12328236",
+        "pmid": "40759747"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_524e7c8cc9d244e599a1",
+      "title": "Predicting transcriptional responses to novel chemical perturbations using deep generative model for drug discovery",
+      "doi": "10.1038/s41467-024-53457-1",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1038/s41467-024-53457-1",
+        "openalex": "W4403784877",
+        "pmcid": "11513139",
+        "pmid": "39462106"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_8e6f48e91b2940e7a11b",
+      "title": "Tahoe-100M : A Giga-Scale Single-Cell Perturbation Atlas for Context-Dependent Gene Function and Cellular Modeling",
+      "doi": "10.1101/2025.02.20.639398",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.02.20.639398",
+        "openalex": "W4407896879"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_d942a65358514fa280e6",
+      "title": "X-Atlas/Orion: Genome-wide Perturb-seq Datasets via a Scalable Fix-Cryopreserve Platform for Training Dose-Dependent Biological Foundation Models",
+      "doi": "10.1101/2025.06.11.659105",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.06.11.659105",
+        "openalex": "W4411338098"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_9d6582646b87482a88a8",
+      "title": "Scouter: Predicting Transcriptional Responses to Genetic Perturbations with LLM embeddings",
+      "doi": "10.1101/2024.12.06.627290",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1101/2024.12.06.627290",
+        "openalex": "W4405258682"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_d0c635dd16574eebbebe",
+      "title": "Phenotypic reversion and target prioritization for cellular inflammation via representation learning with foundation models",
+      "doi": "10.64898/2026.03.04.709607",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.03.04.709607",
+        "openalex": "W7134112833"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_9bf693f389174b24a279",
+      "title": "Towards building a World Model to simulate perturbation-induced cellular dynamics by AlphaCell",
+      "doi": "10.64898/2026.03.02.709176",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.03.02.709176",
+        "openalex": "W7133882930"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_acad448646af41f18432",
+      "title": "Predicting how perturbations reshape cellular trajectories with PerturbGen",
+      "doi": "10.64898/2026.03.04.709254",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.03.04.709254",
+        "openalex": "W7134068549"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_3320e66abbc34d649547",
+      "title": "MAP: A Knowledge-driven Framework for Predicting Single-cell Responses for Unprofiled Drugs",
+      "doi": "10.64898/2026.02.25.708091",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.02.25.708091",
+        "openalex": "W7131815884"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_8ce04bf0dea14f4fb905",
+      "title": "Discrete Diffusion for Single-Cell Gene Expression Modeling",
+      "doi": "10.64898/2026.02.19.705033",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.02.19.705033",
+        "openalex": "W7130640639"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_dbc39c84d91347d089bd",
+      "title": "Foundation Models Improve Perturbation Response Prediction",
+      "doi": "10.64898/2026.02.18.706454",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.02.18.706454",
+        "openalex": "W7130536297"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_9593815a38234ddd9af4",
+      "title": "Forecasting cell state futures from static snapshots",
+      "doi": "10.64898/2026.02.08.704720",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.02.08.704720",
+        "openalex": "W7128502339"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_548b36960d714d1086c4",
+      "title": "TwinCell: Large Causal Cell Model for Reliable and Interpretable Therapeutic Target Prioritisation",
+      "doi": "10.64898/2026.01.29.702072",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.01.29.702072",
+        "openalex": "W7127103959"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_f85df047b16d479c966b",
+      "title": "Stack: In-Context Learning of Single-Cell Biology",
+      "doi": "10.64898/2026.01.09.698608",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.64898/2026.01.09.698608",
+        "openalex": "W7119591224",
+        "pmcid": "12803207",
+        "pmid": "41542582"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_f269bdaa32f846b8b0ff",
+      "title": "Causal identification of single-cell experimental perturbation effects with CINEMA-OT",
+      "doi": "10.1038/s41592-023-02040-5",
+      "year": 2023,
+      "identifiers": {
+        "doi": "10.1038/s41592-023-02040-5",
+        "openalex": "W4388217091",
+        "pmcid": "10630139",
+        "pmid": "37919419"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_a9bbc21992ef48739720",
+      "title": "PerturBench: Benchmarking Machine Learning Models for Cellular Perturbation Analysis",
+      "doi": "10.52202/085713-3225",
+      "year": 2025,
+      "identifiers": {
+        "arxiv": "2408.10609",
+        "arxiv_work": "2408.10609",
+        "doi": "10.52202/085713-3225",
+        "openalex": "W4403007117"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_6e32991f1a8c4f26ae2c",
+      "title": "sc-OTGM: Single-Cell Perturbation Modeling by Solving Optimal Mass Transport on the Manifold of Gaussian Mixtures",
+      "doi": "10.48550/arxiv.2405.03726",
+      "year": 2024,
+      "identifiers": {
+        "arxiv": "2405.03726",
+        "arxiv_work": "2405.03726",
+        "doi": "10.48550/arxiv.2405.03726",
+        "openalex": "W4396813462"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_bc6beea5cf5a42229467",
+      "title": "Unified multimodal learning enables generalized cellular response prediction to diverse perturbations",
+      "doi": "10.1101/2025.11.13.688367",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.11.13.688367",
+        "openalex": "W4416296169"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_dc1edad4cb404d5d9a01",
+      "title": "Deep Learning-Based Genetic Perturbation Models Do Outperform Uninformative Baselines on Well-Calibrated Metrics",
+      "doi": "10.1101/2025.10.20.683304",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.10.20.683304",
+        "openalex": "W4415376838"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_da327b02c4754aa3afb5",
+      "title": "scDRP: Disentangled representation learning for predicting single-cell responses to perturbations and estimating individual treatment effects",
+      "doi": "10.1101/2025.11.21.689783",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.11.21.689783",
+        "openalex": "W4416721860",
+        "pmcid": "12699455",
+        "pmid": "41394575"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_801d9b0a5d2c4df1a15f",
+      "title": "Causality-oriented regulatory inference and rational transcriptomic reprogramming design with CASCADE",
+      "doi": "10.1101/2025.11.20.689377",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.11.20.689377",
+        "openalex": "W4416512364"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_4014861f9a1b476d9404",
+      "title": "scOTM: A Deep Learning Framework for Predicting Single-Cell Perturbation Responses with Large Language Models",
+      "doi": "10.3390/bioengineering12080884",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.3390/bioengineering12080884",
+        "openalex": "W4413401295",
+        "pmcid": "12383350",
+        "pmid": "40868397"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_521ef6f39ed84517afe3",
+      "title": "Scaling Large Language Models for Next-Generation Single-Cell Analysis",
+      "doi": "10.1101/2025.04.14.648850",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1101/2025.04.14.648850",
+        "openalex": "W4409624394",
+        "pmcid": "12632461",
+        "pmid": "41279114"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_7be67d5261ea438298aa",
+      "title": "Benchmarking AI Models for In Silico Gene Perturbation of Cells",
+      "doi": "10.1101/2024.12.20.629581",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1101/2024.12.20.629581",
+        "openalex": "W4405688978"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_c7a3280f14a64601bd27",
+      "title": "Scaling Dense Representations for Single Cell with Transcriptome-Scale Context",
+      "doi": "10.1101/2024.11.28.625303",
+      "year": 2024,
+      "identifiers": {
+        "doi": "10.1101/2024.11.28.625303",
+        "openalex": "W4404945205"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_80955c130bd648b9b5d2",
+      "title": "Modeling variable guide efficiency in pooled CRISPR screens with ContrastiveVI+",
+      "doi": "10.48550/arxiv.2411.08072",
+      "year": 2024,
+      "identifiers": {
+        "arxiv": "2411.08072",
+        "arxiv_work": "2411.08072",
+        "doi": "10.48550/arxiv.2411.08072",
+        "openalex": "W4404406827"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_9a4f0cdb28bd4ff986e5",
+      "title": "Defining and benchmarking open problems in single-cell analysis",
+      "doi": "10.1038/s41587-025-02694-w",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.1038/s41587-025-02694-w",
+        "openalex": "W4411900437",
+        "pmcid": "11030530",
+        "pmid": "38645152"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_19d4ca2a49274195ad35",
+      "title": "Identifiability Guarantees for Causal Disentanglement from Soft Interventions",
+      "doi": "10.52202/075280-2186",
+      "year": 2023,
+      "identifiers": {
+        "arxiv": "2307.06250",
+        "arxiv_work": "2307.06250",
+        "doi": "10.52202/075280-2186",
+        "openalex": "W7133184728"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_ddf3f5af77b44f858e24",
+      "title": "Modelling Cellular Perturbations with the Sparse Additive Mechanism Shift Variational Autoencoder",
+      "doi": "10.52202/075280-0001",
+      "year": 2023,
+      "identifiers": {
+        "arxiv": "2311.02794",
+        "arxiv_work": "2311.02794",
+        "doi": "10.52202/075280-0001",
+        "openalex": "W7133243038"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    }
+  ],
+  "originals_included_in_public_repository": false
+}

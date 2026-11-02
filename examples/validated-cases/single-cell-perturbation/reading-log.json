@@ -1,0 +1,194 @@
+{
+  "case_id": "single-cell-perturbation",
+  "model": "deepseek-flash",
+  "reads": [
+    {
+      "material_id": "mat_56a5f469ef724d09a97b",
+      "paper_id": "paper_3ac2aab34bb9494695a4",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        3
+      ],
+      "returned_pages": [
+        3
+      ],
+      "char_offset": 0,
+      "returned_characters": 6000,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_9c21524d5f314234bd07",
+      "paper_id": "paper_8c4faf4a13d44ed0a826",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        5
+      ],
+      "returned_pages": [
+        5
+      ],
+      "char_offset": 0,
+      "returned_characters": 2314,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_198c15e0a62149ee9ef7",
+      "paper_id": "paper_d3ad241fc4ca44588465",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        4
+      ],
+      "returned_pages": [
+        4
+      ],
+      "char_offset": 0,
+      "returned_characters": 2715,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_fe45a8b6ee864609b2ca",
+      "paper_id": "paper_b7ab84fca5f6485aa5a1",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        3
+      ],
+      "returned_pages": [
+        3
+      ],
+      "char_offset": 0,
+      "returned_characters": 2639,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_0a91d18aad1c41c69a7f",
+      "paper_id": "paper_7691f9d9842745e4ad64",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        14
+      ],
+      "returned_pages": [
+        14
+      ],
+      "char_offset": 0,
+      "returned_characters": 6000,
+      "content_returned": true,
+      "new_relative_to_original_included": false
+    },
+    {
+      "material_id": "mat_fe45a8b6ee864609b2ca",
+      "paper_id": "paper_b7ab84fca5f6485aa5a1",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        2
+      ],
+      "returned_pages": [
+        2
+      ],
+      "char_offset": 0,
+      "returned_characters": 4820,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_56a5f469ef724d09a97b",
+      "paper_id": "paper_3ac2aab34bb9494695a4",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        6
+      ],
+      "returned_pages": [
+        6
+      ],
+      "char_offset": 0,
+      "returned_characters": 6000,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_9c21524d5f314234bd07",
+      "paper_id": "paper_8c4faf4a13d44ed0a826",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        12
+      ],
+      "returned_pages": [
+        12
+      ],
+      "char_offset": 0,
+      "returned_characters": 3282,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_198c15e0a62149ee9ef7",
+      "paper_id": "paper_d3ad241fc4ca44588465",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        3
+      ],
+      "returned_pages": [
+        3
+      ],
+      "char_offset": 0,
+      "returned_characters": 2556,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_fe45a8b6ee864609b2ca",
+      "paper_id": "paper_b7ab84fca5f6485aa5a1",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        4
+      ],
+      "returned_pages": [
+        4
+      ],
+      "char_offset": 0,
+      "returned_characters": 2671,
+      "content_returned": true,
+      "new_relative_to_original_included": true
+    },
+    {
+      "material_id": "mat_0a91d18aad1c41c69a7f",
+      "paper_id": "paper_7691f9d9842745e4ad64",
+      "role": "main_text",
+      "format": "pdf",
+      "view": "text",
+      "requested_pages": [
+        18
+      ],
+      "returned_pages": [
+        18
+      ],
+      "char_offset": 0,
+      "returned_characters": 6000,
+      "content_returned": true,
+      "new_relative_to_original_included": false
+    }
+  ],
+  "whole_paper_reading_claimed": false
+}

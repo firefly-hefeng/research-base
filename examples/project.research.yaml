@@ -1,0 +1,50 @@
+# 拟定配置。部署时放入研究项目的 .research/config.yaml。
+# ID 和方向为演示内容；实际由 collection create / attach 写入。
+# research 为项目方向说明，其余调用默认值优先于 Collection 默认值。
+# 读取或接入本配置不回写共享 Collection；显式请求参数优先于此配置。
+schema_version: 1
+library_ref: lab-default
+library_id: lib_demo
+collection_id: col_demo
+
+research:
+  title: 检索增强生成评估
+  description: 研究检索与生成环节的评估方法及实验设置
+  keywords:
+    - retrieval augmented generation
+    - evaluation
+
+discovery:
+  sources:
+    - openalex
+    - crossref
+  query: retrieval augmented generation evaluation
+  source_queries: {}
+  date_from: '2024-01-01'
+  date_to: null
+  budget:
+    max_requests: 100
+
+acquisition:
+  roles:
+    - main_text
+  accepted_formats:
+    - pdf
+  version_policy:
+    - published
+    - accepted
+    - preprint
+  browser_fallback: true
+  retry_limit_per_channel: 3
+
+freshness:
+  max_age_days: 30
+
+context:
+  max_papers: 8
+  max_chars: 12000
+
+integration:
+  mode: agents
+  entry_file: AGENTS.md
+  template_version: 1

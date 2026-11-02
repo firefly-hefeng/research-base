@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "data": {
+    "collection_id": "col_demo",
+    "collection_revision": 12,
+    "task": "为检索增强生成系统设计检索质量评估实验",
+    "generated_at": "2026-11-02T08:00:00Z",
+    "freshness": {
+      "plan_fingerprint": "sha256:demo-plan-fingerprint",
+      "last_complete_search_at": "2026-10-25T03:00:00Z",
+      "coverage_through": "2026-10-25",
+      "last_search_all_sources_complete": true,
+      "max_age_days": 30,
+      "needs_refresh": false,
+      "reason": null
+    },
+    "papers": [
+      {
+        "paper_id": "paper_demo_001",
+        "version_id": "version_demo_001",
+        "title": "Example Paper on Retrieval Evaluation",
+        "year": 2026,
+        "identifiers": {"doi": "10.5555/research-base-demo"},
+        "membership": "included",
+        "version_kind": "published",
+        "fulltext_available": true,
+        "text_searchable": true,
+        "content_scope": "fulltext",
+        "search_mode": "fts",
+        "matches": [
+          {
+            "material_id": "material_demo_pdf",
+            "page": 4,
+            "section": null,
+            "text": "Demonstration excerpt for an evaluation experiment."
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "material_demo_pdf",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available"
+          },
+          {
+            "material_id": "material_demo_code_link",
+            "role": "code",
+            "format": "url",
+            "status": "external",
+            "url": "https://code.example/retrieval-evaluation"
+          }
+        ]
+      }
+    ],
+    "gaps": [],
+    "limits": {"max_papers": 8, "max_chars": 12000},
+    "truncated": false,
+    "next_actions": [
+      {
+        "tool": "read_material",
+        "arguments": {
+          "material_id": "material_demo_pdf",
+          "view": "text",
+          "pages": [4, 5],
+          "max_chars": 8000
+        }
+      }
+    ]
+  }
+}

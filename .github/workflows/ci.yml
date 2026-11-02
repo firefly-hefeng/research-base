@@ -1,0 +1,39 @@
+name: Offline checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.11", "3.13"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      RB_RUN_MCP_TESTS: "0"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install package and test dependencies
+        run: python -m pip install -e ".[mcp,dev]"
+      - name: Check the public file selection
+        run: python scripts/check_public_export.py --git-index --strict-links
+      - name: Compile modules and examples
+        run: python -m compileall -q src scripts
+      - name: Prepare local test storage
+        run: python -c "from pathlib import Path; Path('.research-base').mkdir(exist_ok=True)"
+      - name: Run tests without live services
+        run: python -m pytest -q -m "not live" --basetemp=.research-base/ci-tests

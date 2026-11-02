@@ -1,0 +1,129 @@
+{
+  "checked_at": "2026-11-02T11:53:30.445517Z",
+  "purpose": "qualitative research-design validation, not a performance or time-saving benchmark",
+  "experiments_run": false,
+  "cases": [
+    {
+      "case_id": "rag-evaluation",
+      "screened_graph_candidates": 39,
+      "recommended_added_records": 13,
+      "included_records": 18,
+      "verified_work_groups": 18,
+      "available_main_text_work_groups": 14,
+      "available_main_text_files": 14,
+      "original_fixed_work_groups": 5,
+      "original_fixed_groups_with_main_text": 5,
+      "new_selected_records_with_main_text": 9,
+      "new_selected_acquisition_target_states": {
+        "needs_user": 4,
+        "succeeded": 8,
+        "waiting_browser": 1
+      },
+      "agent_status": "completed",
+      "agent_tool_calls": 14,
+      "agent_new_main_text_papers_with_returned_text": 5,
+      "agent_read_calls": 8,
+      "read_scope_notice": "Returned passages are not necessarily whole pages or whole papers. See the independent review and read log.",
+      "model": "deepseek-flash",
+      "model_usage": {
+        "prompt_tokens": 134781,
+        "completion_tokens": 2757,
+        "total_tokens": 137538,
+        "prompt_cache_hit_tokens": 103680,
+        "prompt_cache_miss_tokens": 31101
+      },
+      "scientific_review_required": true,
+      "resolved_version_groups": [],
+      "unresolved_version_groups": []
+    },
+    {
+      "case_id": "single-cell-perturbation",
+      "screened_graph_candidates": 321,
+      "recommended_added_records": 97,
+      "included_records": 102,
+      "verified_work_groups": 101,
+      "available_main_text_work_groups": 44,
+      "available_main_text_files": 44,
+      "original_fixed_work_groups": 5,
+      "original_fixed_groups_with_main_text": 3,
+      "new_selected_records_with_main_text": 42,
+      "new_selected_acquisition_target_states": {
+        "waiting_browser": 54,
+        "succeeded": 41,
+        "needs_user": 2
+      },
+      "agent_status": "completed",
+      "agent_tool_calls": 17,
+      "agent_new_main_text_papers_with_returned_text": 4,
+      "agent_read_calls": 11,
+      "read_scope_notice": "Returned passages are not necessarily whole pages or whole papers. See the independent review and read log.",
+      "model": "deepseek-flash",
+      "model_usage": {
+        "prompt_tokens": 119537,
+        "completion_tokens": 3614,
+        "total_tokens": 123151,
+        "prompt_cache_hit_tokens": 78976,
+        "prompt_cache_miss_tokens": 40561
+      },
+      "scientific_review_required": true,
+      "resolved_version_groups": [
+        {
+          "paper_ids": [
+            "paper_7691f9d9842745e4ad64",
+            "paper_e8f4a74130dd4e2f94b5"
+          ],
+          "basis": "explicit provider publication relation recorded in library; original IDs preserved",
+          "verified_relation": true
+        }
+      ],
+      "unresolved_version_groups": [
+        {
+          "paper_ids": [
+            "paper_3ac2aab34bb9494695a4",
+            "paper_dc1edad4cb404d5d9a01"
+          ],
+          "basis": "similar calibrated-metrics response title; formal article/preprint requires provider verification",
+          "verified_relation": false
+        },
+        {
+          "paper_ids": [
+            "paper_c61998a0b3444436909e",
+            "paper_3320e66abbc34d649547"
+          ],
+          "basis": "same MAP framework in abstract; formal article/preprint requires provider verification",
+          "verified_relation": false
+        },
+        {
+          "paper_ids": [
+            "paper_e48d455199c24435928c",
+            "paper_5c551f1e2f4c4e17a6ef"
+          ],
+          "basis": "same TFActProfiler framework and authors; formal article/preprint requires provider verification",
+          "verified_relation": false
+        },
+        {
+          "paper_ids": [
+            "paper_c3d93441e6ea481795f3",
+            "paper_518c387f9cae4bdb9cf7"
+          ],
+          "basis": "identical title, different SSRN DOI; requires identity/version resolution",
+          "verified_relation": false
+        }
+      ]
+    }
+  ],
+  "bio_graph_progress": {
+    "initial_requests": 8,
+    "additional_requests": 24,
+    "streams_complete": true,
+    "graph_candidate_count": 321,
+    "newly_added_to_round2_collection": 293,
+    "total_requests": 32
+  },
+  "bio_screening_model_requests": {
+    "actual_requests": 33,
+    "valid_batches": 21,
+    "invalid_responses_retried": 12,
+    "host_overrides": 18
+  }
+}

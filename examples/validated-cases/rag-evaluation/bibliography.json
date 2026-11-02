@@ -1,0 +1,235 @@
+{
+  "case_id": "rag-evaluation",
+  "papers": [
+    {
+      "paper_id": "paper_266dda869e9d4d17a177",
+      "title": "Towards Query-Agnostic RAG Evaluation via Query Coverage and Claim Verifiability",
+      "doi": null,
+      "year": 2026,
+      "identifiers": {
+        "arxiv": "2608.11238",
+        "arxiv_work": "2608.11238",
+        "semantic_scholar": "61b3e9c5eb2e9896dcc18ea2a47604c0310626c8"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_9e5597c3ba2040c08d73",
+      "title": "Retriever or reasoner? Decomposing retrieval-augmented generation performance in external audit supervision",
+      "doi": "10.53479/43986",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.53479/43986",
+        "openalex": "W7166087419",
+        "semantic_scholar": "4087da4ff3d90f8d7009e7465c929a26835c909a"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_4285243a1053420bacd4",
+      "title": "Evidence-First Retrieval Augmented Generation with Claim Repair for Security Operations Center Workflows",
+      "doi": "10.1109/ichora69329.2026.11537178",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1109/ichora69329.2026.11537178",
+        "openalex": "W7163409161",
+        "semantic_scholar": "2214f45b06848fe99fdfb344ad091126fdfca5b6"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_0cfd529387cb4dc49255",
+      "title": "Coverage, Not Averages: Semantic Stratification for Trustworthy Retrieval Evaluation",
+      "doi": "10.48550/arxiv.2604.20763",
+      "year": 2026,
+      "identifiers": {
+        "arxiv": "2604.20763",
+        "arxiv_work": "2604.20763",
+        "doi": "10.48550/arxiv.2604.20763",
+        "semantic_scholar": "0493b7032ccc5b080edff1b1c40e6cac824e4f07"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_1035572365894b0d943a",
+      "title": "Case-Aware LLM-as-a-Judge Evaluation for Enterprise-Scale RAG Systems",
+      "doi": "10.48550/arxiv.2602.20379",
+      "year": 2026,
+      "identifiers": {
+        "arxiv": "2602.20379",
+        "arxiv_work": "2602.20379",
+        "doi": "10.48550/arxiv.2602.20379",
+        "semantic_scholar": "c5e1627bbb1d7098fb201a1c1d1bb07a0336d157"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_c7a51b17669c42f49d06",
+      "title": "RAGChecker: A Fine-grained Framework for Diagnosing Retrieval-Augmented Generation",
+      "doi": "10.52202/079017-0692",
+      "year": 2024,
+      "identifiers": {
+        "crossref": "10.52202/079017-0692",
+        "doi": "10.52202/079017-0692"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_c84503e8f3f246bfaaf1",
+      "title": "Hybrid Retrieval for Retrieval Augmented Generation in the German Language Production Domain",
+      "doi": "10.12720/jait.16.6.819-829",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.12720/jait.16.6.819-829",
+        "openalex": "W4411255859"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_b07902b1b4674d76abff",
+      "title": "Response Quality Assessment for Retrieval-Augmented Generation via Conditional Conformal Factuality",
+      "doi": "10.1145/3726302.3730244",
+      "year": 2025,
+      "identifiers": {
+        "arxiv": "2506.20978",
+        "arxiv_work": "2506.20978",
+        "doi": "10.1145/3726302.3730244",
+        "openalex": "W4412378237"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_456db2ca24cb4a08aa09",
+      "title": "Document GraphRAG: Knowledge Graph Enhanced Retrieval Augmented Generation for Document Question Answering Within the Manufacturing Domain",
+      "doi": "10.3390/electronics14112102",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.3390/electronics14112102",
+        "openalex": "W4410600121"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_d59127db3b5c4a7aaaff",
+      "title": "HawkBench: Investigating Resilience of RAG Methods on Stratified Information-Seeking Tasks",
+      "doi": "10.52202/085713-2087",
+      "year": 2025,
+      "identifiers": {
+        "crossref": "10.52202/085713-2087",
+        "doi": "10.52202/085713-2087"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_b6446c8dad5e4273897a",
+      "title": "From Retrieval to Evidence: A Task-Adaptive Two-Layer Knowledge Architecture for LLM Agents",
+      "doi": "10.3390/make8100322",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.3390/make8100322",
+        "openalex": "W7221165794"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_a6c856f65a604feb9827",
+      "title": "MAEDA: An LLM-Powered Multi-Agent Evaluation Framework for EDA Tool Documentation QA",
+      "doi": "10.23919/date69613.2026.11539506",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.23919/date69613.2026.11539506",
+        "openalex": "W7163548154"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_e64ba4654d8542bf8bae",
+      "title": "CP-RAG: Mitigating Distracting Content in Retrieval-Augmented Generation for Industrial Knowledge Question Answering",
+      "doi": "10.1109/jiot.2026.3652422",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1109/jiot.2026.3652422",
+        "openalex": "W7123344909"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_97ed9695cf374d168918",
+      "title": "SC-SAE-RAG: Bounded Section-Chain Evidence Recovery for Scientific Literature Question Answering",
+      "doi": "10.1109/access.2026.3744475",
+      "year": 2026,
+      "identifiers": {
+        "doi": "10.1109/access.2026.3744475",
+        "openalex": "W7222962849"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": false
+    },
+    {
+      "paper_id": "paper_8a3e2bfc77fb4f0b84a7",
+      "title": "METIS: Fast Quality-Aware RAG Systems with Configuration Adaptation",
+      "doi": "10.1145/3731569.3764855",
+      "year": 2025,
+      "identifiers": {
+        "arxiv": "2412.10543",
+        "arxiv_work": "2412.10543",
+        "doi": "10.1145/3731569.3764855",
+        "openalex": "W4414735868"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_bc2d459249ed46a292ff",
+      "title": "CuBE: A Customizable Bounds Evaluation Framework for Automated Assessment of RAG Systems in Government Services",
+      "doi": "10.3390/app151910447",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.3390/app151910447",
+        "openalex": "W4414554920"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_827c04bd4a3b4ad6b17c",
+      "title": "Design and Performance Evaluation of LLM-Based RAG Pipelines for Chatbot Services in International Student Admissions",
+      "doi": "10.3390/electronics14153095",
+      "year": 2025,
+      "identifiers": {
+        "doi": "10.3390/electronics14153095",
+        "openalex": "W4412907229"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    },
+    {
+      "paper_id": "paper_35ef2d0312dd4bfd873f",
+      "title": "Can LLMs be Trusted for Evaluating RAG Systems? A Survey of Methods and Datasets",
+      "doi": "10.1109/sds66131.2025.00010",
+      "year": 2025,
+      "identifiers": {
+        "arxiv": "2504.20119",
+        "arxiv_work": "2504.20119",
+        "doi": "10.1109/sds66131.2025.00010",
+        "openalex": "W4412966133"
+      },
+      "related_paper_ids": [],
+      "main_text_available_locally": true
+    }
+  ],
+  "originals_included_in_public_repository": false
+}

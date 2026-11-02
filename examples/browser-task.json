@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "data": {
+    "task_id": "task_demo_001",
+    "job_id": "job_acquire_demo",
+    "paper_id": "paper_demo_001",
+    "target": {
+      "role": "main_text",
+      "accepted_formats": ["pdf"],
+      "requested_version_id": null,
+      "version_policy": ["published", "accepted", "preprint"]
+    },
+    "expected_identity": {
+      "doi": "10.5555/research-base-demo",
+      "title": "Example Paper on Retrieval Evaluation",
+      "authors": ["Example Author"],
+      "year": 2026
+    },
+    "landing_urls": [
+      "https://doi.org/10.5555/research-base-demo"
+    ],
+    "lease": {
+      "lease_id": "lease_demo_001",
+      "token": "example-token-not-a-real-credential",
+      "expires_at": "2026-11-02T08:10:00Z"
+    },
+    "handoff": {
+      "mode": "shared_local_filesystem",
+      "download_dir": "C:/ResearchLibrary/.staging/browser/task_demo_001/lease_demo_001"
+    }
+  }
+}
