@@ -1,0 +1,28 @@
+{
+  "review_date": "2026-11-03",
+  "review_scope": "Task-scoped original use, interpretation review, final-draft acceptance and background acquisition",
+  "reviewers": [
+    {"role": "Codex core implementation agent", "scope": "usage, detail verification and regression tests"},
+    {"role": "Codex independent interface reviewer", "scope": "Observed source/version/hash and final-draft bypass reproduction"},
+    {"role": "Codex acquisition agent", "scope": "Open primary routes, archive provenance and version identity"},
+    {"role": "Codex primary curator", "scope": "Background adapter, workflow integration and independent correction of scientific drafts"},
+    {"role": "Independent configured-model calls", "scope": "Authorized selected original passages and corrected final drafts; same model family as the scientific drafter"}
+  ],
+  "findings": [
+    {"priority": "P1", "problem": "Catalog hashes alone allowed a locally modified original to retain old review credit.", "resolution": "Critical source checks rehash actual bytes and reject changed identity, version, role or scope.", "verification": "Actual-file tamper and stale-anchor regressions pass."},
+    {"priority": "P1", "problem": "A model could submit a correct interpretation and contradict it in the final draft.", "resolution": "Independent final-draft hook binds exact text SHA256 and rechecks current source and interpretation revisions after callback.", "verification": "Contradictory-final, callback failure, revised interpretation and changed-source regressions pass."},
+    {"priority": "P2", "problem": "Retyping extracted PDF quotes introduced whitespace, mathematical-character and read-ID errors.", "resolution": "Actual read responses expose passage addresses; the host resolves their original text. Wrong or foreign-session IDs remain rejected.", "verification": "Passage addressing and cross-session refusal regressions pass; two real cases completed source-bound submissions."},
+    {"priority": "P2", "problem": "Same-model review missed reversed filtering errors, cross-case contamination and class-versus-correctness confusion.", "resolution": "Preserve raw drafts, apply independent Codex source/metric curation, add mathematical reference interfaces, and re-review corrected texts.", "verification": "Final published plans carry new independent review hashes. No general scientific-correctness guarantee is claimed."},
+    {"priority": "P2", "problem": "Foreground computer use interrupted the researcher's desktop.", "resolution": "Default background task-owned tab adapter rejects borrowed tabs and has no window-activation or OS-input API.", "verification": "Cell page interaction and PDF download succeeded through tab-directed background input; adapter regressions reject forbidden/unsupported paths."},
+    {"priority": "P2", "problem": "Large PDF payloads exceeded a single browser-bridge transfer.", "resolution": "Transfer bounded chunks with continuous offsets and browser/local SHA256 equality; do not expose partial files as PDFs.", "verification": "State formal PDF: 27988343 bytes, 54 chunks, matching full digest; corruption/cleanup tests pass."},
+    {"priority": "P2", "problem": "A shared bioRxiv DOI could collapse v1 and v3 or allow an old posted-date stamp to satisfy a new revision.", "resolution": "Keep explicit repository revisions and verify known posted-date expectations; preserve old originals.", "verification": "bioRxiv/medRxiv revision and old-PDF-date regressions pass; DCAF v3 dated 2026-10-31 was imported."}
+  ],
+  "remaining_limits": [
+    "Independent model verdicts can share systematic errors and are not scientific certificates.",
+    "Strict passage anchors cover extracted text; figure-only or skipped content may require original visual reading and remains outside text-anchor proof.",
+    "A backend must honor background navigation/input semantics; not every site can be completed unattended.",
+    "No scientific benchmark or model-training performance gain has been measured."
+  ],
+  "project_source_sent_to_external_review": false,
+  "originals_or_author_code_exported_publicly": false
+}

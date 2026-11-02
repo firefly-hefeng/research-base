@@ -11,6 +11,11 @@ def observed_identifiers(identifiers=None, *, doi=None, landing_url=None, fullte
         if not isinstance(url,str):
             continue
         parsed = urlsplit(url)
+        if parsed.scheme in ('http', 'https') and parsed.hostname in ('biorxiv.org', 'www.biorxiv.org', 'medrxiv.org', 'www.medrxiv.org'):
+            revision = re.search(r'/(10\.\d{4,9}/[^/?#]+?v\d+)(?:\.full(?:\.pdf)?(?:\+html)?)?/?$', unquote(parsed.path), re.I)
+            if revision:
+                namespace = 'medrxiv_revision' if 'medrxiv' in parsed.hostname else 'biorxiv_revision'
+                ids.setdefault(namespace, revision[1].lower())
         if parsed.scheme not in ('http','https') or parsed.hostname not in ('arxiv.org','www.arxiv.org','export.arxiv.org'):
             continue
         match = re.fullmatch(r'/(?:abs|pdf)/(.+?)(?:\.pdf)?/?', unquote(parsed.path))

@@ -551,6 +551,8 @@ class JobsMixin:
         paper = self.get_paper(task["paper_id"])
         from datetime import datetime, timezone
         return {"task_id": task["id"], "job_id": task["job_id"], "paper_id": task["paper_id"],
+                "execution_policy": {"mode": "background", "foreground_allowed": False, "os_input_allowed": False,
+                                     "user_tabs_allowed": False, "enforced_by": "trusted_browser_worker_adapter"},
                 "target": {**loads(task["target"]), "accepted_formats": ["pdf"]},
                 "expected_identity": {k: paper.get(k) for k in ("doi", "title", "authors", "year")},
                 "landing_urls": list(dict.fromkeys(v["metadata"]["landing_url"] for v in paper["versions"] if v["metadata"].get("landing_url"))),

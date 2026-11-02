@@ -147,7 +147,12 @@ class ResearchBase(ResearchSpaceMixin, MaterialsMixin, DiscoveryWorkflowsMixin, 
             if data["doi"]:
                 match = db.execute("SELECT * FROM identifiers WHERE namespace='related_doi' AND value=?", (data["doi"],)).fetchone()
                 if match:
-                    matches.append(match)
+                    exact = db.execute("SELECT * FROM identifiers WHERE namespace='doi' AND value=?", (data["doi"],)).fetchone()
+                    linked = (exact and exact["paper_id"] != match["paper_id"] and db.execute(
+                        "SELECT 1 FROM paper_relations WHERE (published_paper_id=? AND preprint_paper_id=?) OR (published_paper_id=? AND preprint_paper_id=?)",
+                        (exact["paper_id"],match["paper_id"],match["paper_id"],exact["paper_id"])).fetchone())
+                    if not linked:
+                        matches.append(match)
             papers = {m["paper_id"] for m in matches}
             if len(papers) > 1:
                 publication = db.execute("SELECT paper_id FROM identifiers WHERE namespace='doi' AND value=?", (published_doi,)).fetchone() if published_doi else None
@@ -169,6 +174,12 @@ class ResearchBase(ResearchSpaceMixin, MaterialsMixin, DiscoveryWorkflowsMixin, 
             source_record = db.execute("SELECT version_id FROM source_records WHERE source=? AND source_id=?", (candidate.source, candidate.source_id)).fetchone()
             version_id, version = uid("ver"), None
             possible = [match["version_id"] for match in (exact_arxiv, exact_doi) if match and match["version_id"]]
+            if any(ids.get(key) for key in ("biorxiv_revision", "medrxiv_revision")):
+                for candidate_version in db.execute("SELECT id,metadata FROM versions WHERE paper_id=?", (paper_id,)):
+                    meta = loads(candidate_version["metadata"])
+                    edition_ids = observed_identifiers(meta.get("identifiers"), landing_url=meta.get("landing_url"), fulltext_urls=meta.get("fulltext_urls"))
+                    if any(ids.get(key) and ids[key] == edition_ids.get(key) for key in ("biorxiv_revision", "medrxiv_revision")):
+                        possible.insert(0, candidate_version["id"])
             if source_record:
                 possible.append(source_record[0])
             for possible_id in dict.fromkeys(possible):
@@ -182,7 +193,11 @@ class ResearchBase(ResearchSpaceMixin, MaterialsMixin, DiscoveryWorkflowsMixin, 
                 old_arxiv = old_identity.get("identifiers", {}).get("arxiv")
                 arxiv_changed = bool(old_arxiv and arxiv and old_arxiv != arxiv
                                      and (re.search(r"v\d+$", old_arxiv) or re.search(r"v\d+$", arxiv)))
-                if not (kind_changed or doi_changed or arxiv_changed):
+                prior_ids = observed_identifiers(old_identity.get("identifiers"), doi=old_identity.get("doi"),
+                    landing_url=old_identity.get("landing_url"), fulltext_urls=old_identity.get("fulltext_urls"))
+                preprint_revision_changed = any(ids.get(key) and ids[key] != prior_ids.get(key)
+                    for key in ("biorxiv_revision", "medrxiv_revision"))
+                if not (kind_changed or doi_changed or arxiv_changed or preprint_revision_changed):
                     version_id, version = possible_id, prior_version
                     break
             if version:
@@ -213,6 +228,9 @@ class ResearchBase(ResearchSpaceMixin, MaterialsMixin, DiscoveryWorkflowsMixin, 
             if new_rank == old_rank:
                 old_arxiv = prior.get("identifiers", {}).get("arxiv", "")
                 new_arxiv = data.get("identifiers", {}).get("arxiv", "")
+                for namespace in ("biorxiv_revision", "medrxiv_revision"):
+                    if prior.get("identifiers", {}).get(namespace) and ids.get(namespace):
+                        old_arxiv, new_arxiv = prior["identifiers"][namespace], ids[namespace]
                 old_revision, new_revision = re.search(r"v(\d+)$", old_arxiv), re.search(r"v(\d+)$", new_arxiv)
                 if old_revision and new_revision and re.sub(r"v\d+$", "", old_arxiv) == re.sub(r"v\d+$", "", new_arxiv):
                     newer = int(new_revision[1]) >= int(old_revision[1])

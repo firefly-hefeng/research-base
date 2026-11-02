@@ -34,6 +34,7 @@ _STAGE_QUESTIONS = {
         "Are effect sizes, variability, controls and the unit of evaluation comparable with the reference studies?",
         "Could leakage, confounding, measurement choices or a changed setting explain the result?",
         "Which claims are supported by the actual observed results, and which remain hypotheses or extrapolations?",
+        "Is the guarantee about an expectation, an average, a risk rate or every individual trial? Do not silently strengthen its level.",
     ],
     "novelty": [
         "How does the proposed contribution differ from the closest methods in assumptions, setting, mechanism and evidence?",
@@ -45,11 +46,14 @@ _STAGE_QUESTIONS = {
 _PROFILE_QUESTIONS = {
     "general": [
         "Choose the discipline's appropriate primary evidence and methods; publication date or venue alone does not establish quality.",
+        "Resolve definitions continuing onto adjacent pages; completed selected ranges do not establish a complete concept. Library version labels are not independent evidence of peer review.",
     ],
     "machine_learning": [
         "Check dataset provenance, preprocessing and train/validation/test separation at the appropriate independent unit; keep tuning separate from final evaluation.",
         "Inspect strong simple baselines, metric definitions, hyperparameter/search budgets, code versions and variability before transferring published performance claims.",
         "For retrieval or generation, distinguish retrieval relevance, answer correctness and claim support; inspect judge/calibration protocols and synthetic-data overlap where applicable.",
+        "For each decision-critical metric identify numerator, denominator, positive class, evaluation unit, conditions and aggregation; a correct name or quote alone is insufficient.",
+        "A per-instance conjunction of binary indicators equals their product; its mean generally differs from multiplying marginal accuracies. Keep instance and aggregate definitions separate.",
     ],
     "single_cell": [
         "Distinguish cells from independent biological replicates, donors and perturbations; inspect batch, cell-type and control construction.",
@@ -57,6 +61,8 @@ _PROFILE_QUESTIONS = {
         "Inspect control-noise sensitivity, uncertainty across biological units and whether validation supports the intended biological generalization rather than only an in-distribution score.",
         "Distinguish feasible prediction baselines from evaluation-only positive controls that access held-out responses; keep such controls out of model fitting, tuning and deployment claims.",
         "Check the exact metric's noise assumptions before transferring a correction; a nonzero null estimate or a change in rankings requires uncertainty and alternative explanations, not an automatic leakage diagnosis.",
+        "Configuration declarations are not an audit of executed splits; separate manuscript claims, pinned code behavior and observed execution. Two control arrays do not prove independent biological sampling.",
+        "Declare the calibration-response budget before calling a setup zero-shot or few-shot. A positive mean gain does not imply protection in every released trial; report harmful-release risk and uncertainty separately.",
     ],
 }
 

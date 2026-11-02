@@ -6,7 +6,11 @@ Research Base 面向实验室成员和科研 agent，负责多源发现文献、
 
 最新[前沿更新验证](docs/frontier-refresh-validation.md)已完成两个方向 2025—2026 明示查询范围的分页与新鲜度核验，加入 ACL Anthology 来源，并用新增论文及作者原代码修订[真实研究方案](examples/frontier-refresh/README.md)。已读原件、缺失全文和范围限制分别保留。
 
-[研究知识接口](docs/research-knowledge-interface.md)提供精选前沿参考空间和按任务、阶段、学科准备的原文入口。局部 AGENTS.md v2 要求实际读取；绑定集合的内置 agent 在输出前检查原文使用，未满足时返回缺口，创新性判断还须满足检索新鲜度。原始路径仍可直接使用，检查只验证访问过程，不替代科学判断。
+[研究知识接口](docs/research-knowledge-interface.md)提供精选前沿参考空间和按任务、阶段、学科准备的原文入口。[关键细节核验](docs/checked-reading.md)增加任务关键点、实际原文锚、独立复核和最终稿约束；局部 AGENTS.md 已升级至 v3。原始路径仍可直接使用，程序与独立复核均不替代科研实验。
+
+[后台浏览器获取](docs/background-browser.md)使用任务标签页与浏览器内输入，不控制系统鼠标键盘；大 PDF 分块传回并核对整体哈希。单细胞本轮选定的 9 篇近期论文已取得匹配全文，历史获取缺口记录保留。
+
+最新[全文与细节核验验收](docs/checked-reading-validation.md)保留两例的实际运行、未通过记录、独立校正和最终研究方案，不将程序或同模型复核通过当作科学正确性保证。
 
 最新[研究工作流验证](docs/research-validation-round3.md)完成单细胞六条引用流、两个用例的逐条候选筛选与公开全文获取，并保留实际原件读取和独立复核后的研究方案。[公开验证摘要](examples/validated-cases/README.md)区分候选、可读全文、严格版本目标及模型阅读范围；原始论文和密钥保留在执行机器。
 

@@ -1,0 +1,308 @@
+{
+  "validated_client_date": "2026-11-03",
+  "generated_at_utc": "2026-11-02T20:44:50.841036Z",
+  "cases": [
+    {
+      "case": "rag",
+      "model": "deepseek-flash",
+      "orchestration": "guided_scientific_agent_then_codex_curation_and_independent_review",
+      "read_calls": 7,
+      "returned_characters": 31113,
+      "selected_pages_returned": true,
+      "reading_ready": true,
+      "detail_ready": true,
+      "ready_for_checked_synthesis": true,
+      "current_frontier_ready": true,
+      "critical_check_count": 3,
+      "detail_revisions": {
+        "fresco": 1,
+        "ebg": 1,
+        "rare": 1
+      },
+      "negative_control": {
+        "verdict": "needs_context",
+        "blocked": true,
+        "reading_ready": true
+      },
+      "final_draft_review": "supported",
+      "approved_draft_utf8_sha256": "cb308338bc92cf4014e60521eba13a3c7e968acb0af8769352420d48467a183b",
+      "curation_actor": "Codex",
+      "curation_corrections": [
+        "FP/FN truth-prediction-action direction and cross-case contamination"
+      ],
+      "scientific_agent_read_calls": 7,
+      "verification_read_actor": "independent verifier; scientific agent reading is reported separately",
+      "rules_loaded": true,
+      "targets": [
+        {
+          "paper_id": "paper_bca044d62a284ca8a881",
+          "title": "FRESCO: Benchmarking and Optimizing Re-rankers for Evolving Semantic Conflict in Retrieval-Augmented Generation",
+          "material_id": "mat_298c038b319c42f3a750",
+          "pages": [
+            3,
+            4,
+            5
+          ],
+          "role": "main_text"
+        },
+        {
+          "paper_id": "paper_4ce0597511d144938cfe",
+          "title": "The Bottleneck Is Retrieval, Not Reading: Diagnosing Evidence-Based Generation with RAG for Long Context Question Answering",
+          "material_id": "mat_24bd396793134da3b0c0",
+          "pages": [
+            3,
+            4
+          ],
+          "role": "main_text"
+        },
+        {
+          "paper_id": "paper_4564ea050ae3475cae93",
+          "title": "RARE: Redundancy-Aware Retrieval Evaluation Framework for High-Similarity Corpora",
+          "material_id": "mat_73175a7d745b43ebb2e5",
+          "pages": [
+            6,
+            7
+          ],
+          "role": "main_text"
+        }
+      ],
+      "run_history": [
+        {
+          "run": "checked-v1",
+          "status": "needs_verification",
+          "read_calls": 10,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "needs_context",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": null,
+          "orchestration": "agent_tool_loop"
+        },
+        {
+          "run": "checked-v2",
+          "status": "completed",
+          "read_calls": 9,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": "supported",
+          "orchestration": "agent_tool_loop"
+        },
+        {
+          "run": "checked-v3",
+          "status": "needs_materials",
+          "read_calls": 16,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "needs_context",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": null,
+          "orchestration": "agent_tool_loop"
+        },
+        {
+          "run": "guided-v1",
+          "status": "needs_verification",
+          "read_calls": 7,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": null,
+          "orchestration": "guided_host_using_tool_registry"
+        },
+        {
+          "run": "guided-v2",
+          "status": "completed",
+          "read_calls": 7,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "needs_context",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": "supported",
+          "orchestration": "guided_host_using_tool_registry"
+        },
+        {
+          "run": "finalized-v1",
+          "status": "completed",
+          "read_calls": 7,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "needs_context",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": "supported",
+          "orchestration": "guided_scientific_agent_then_codex_curation_and_independent_review"
+        }
+      ],
+      "source_bodies_exported": false,
+      "experiments_run": false
+    },
+    {
+      "case": "bio",
+      "model": "deepseek-flash",
+      "orchestration": "guided_scientific_agent_then_codex_curation_and_independent_review",
+      "read_calls": 8,
+      "returned_characters": 28012,
+      "selected_pages_returned": true,
+      "reading_ready": true,
+      "detail_ready": true,
+      "ready_for_checked_synthesis": true,
+      "current_frontier_ready": true,
+      "critical_check_count": 4,
+      "detail_revisions": {
+        "pie": 1,
+        "de": 1,
+        "control": 1,
+        "adapter": 1
+      },
+      "negative_control": {
+        "verdict": "contradicted",
+        "blocked": true,
+        "reading_ready": true
+      },
+      "final_draft_review": "supported",
+      "approved_draft_utf8_sha256": "def9a9b269779cbdb6105f04c62d090f71c33210463a733dfcee10c605d9f046",
+      "curation_actor": "Codex",
+      "curation_corrections": [
+        "Class versus correctness, sampling independence, mean benefit versus individual risk, calibration information budget"
+      ],
+      "scientific_agent_read_calls": 8,
+      "verification_read_actor": "independent verifier; scientific agent reading is reported separately",
+      "rules_loaded": true,
+      "targets": [
+        {
+          "paper_id": "paper_0d5580a341c94a19b408",
+          "title": "PIE: Generalizing perturbation effects across unseen perturbations, contexts and datasets",
+          "material_id": "mat_53ef3eb6255e443fb3ca",
+          "pages": [
+            4,
+            6,
+            8
+          ],
+          "role": "main_text"
+        },
+        {
+          "paper_id": "paper_5c7d5277ac41454e93e9",
+          "title": "Beyond Expression Prediction: Benchmarking Differential Expression Classification in Single-Cell Perturbation Models",
+          "material_id": "mat_75b46df1754b4a9f9017",
+          "pages": [
+            10,
+            11
+          ],
+          "role": "main_text"
+        },
+        {
+          "paper_id": "paper_625a51d648c14fe08a83",
+          "title": "A split-control criterion for few-shot adaptation in single-cell perturbation prediction",
+          "material_id": "mat_1ceecc148603426fb68c",
+          "pages": [
+            6
+          ],
+          "role": "main_text"
+        },
+        {
+          "paper_id": "paper_625a51d648c14fe08a83",
+          "title": "A split-control criterion for few-shot adaptation in single-cell perturbation prediction",
+          "material_id": "mat_a487b2002dec43898970",
+          "pages": [
+            1
+          ],
+          "role": "code",
+          "source_commit": "6789706cc63dfe0a60e7a717fb51c63590452422"
+        }
+      ],
+      "run_history": [
+        {
+          "run": "checked-v2",
+          "status": "completed",
+          "read_calls": 8,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": "supported",
+          "orchestration": "agent_tool_loop"
+        },
+        {
+          "run": "checked-v3",
+          "status": "needs_verification",
+          "read_calls": 8,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": null,
+          "orchestration": "agent_tool_loop"
+        },
+        {
+          "run": "guided-v1",
+          "status": "needs_verification",
+          "read_calls": 8,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": null,
+          "orchestration": "guided_host_using_tool_registry"
+        },
+        {
+          "run": "guided-v2",
+          "status": "completed",
+          "read_calls": 8,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": "supported",
+          "orchestration": "guided_host_using_tool_registry"
+        },
+        {
+          "run": "finalized-v1",
+          "status": "completed",
+          "read_calls": 8,
+          "selected_pages_returned": true,
+          "negative_control": {
+            "verdict": "contradicted",
+            "blocked": true,
+            "reading_ready": true
+          },
+          "final_draft_review": "supported",
+          "orchestration": "guided_scientific_agent_then_codex_curation_and_independent_review"
+        }
+      ],
+      "source_bodies_exported": false,
+      "experiments_run": false
+    }
+  ],
+  "single_cell_selected_originals_available": 9,
+  "single_cell_selected_originals": 9,
+  "originals_full_abstracts_author_code_credentials_exported": false,
+  "experiments_run": false,
+  "limitations": [
+    "Selected queries, originals and critical questions are bounded; this is not exhaustive frontier coverage.",
+    "Autonomous tool-loop runs that did not complete were blocked and retained in run_history; successful final runs used guided host orchestration.",
+    "Independent reviewer calls used the same configured model and did miss errors. Codex source/metric curation and re-review corrected known errors; exact matches and accepted drafts are not scientific correctness certificates.",
+    "Original PDF availability does not mean every figure or page has been read or extracted completely.",
+    "No scientific benchmark performance, full reproduction or time-saving percentage was measured."
+  ]
+}

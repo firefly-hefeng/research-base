@@ -113,3 +113,9 @@ class SelectedOriginals:
 
     def list_sources(self):
         return self.base.list_sources()
+
+    def get_verification_material(self, material_id):
+        """Trusted host-only source check; never part of model tool specs."""
+        if material_id not in self.pages:
+            raise ResearchError("VALIDATION_SCOPE", "Only selected originals can be verified")
+        return next(item for item in self.base.list_materials() if item["material_id"] == material_id)

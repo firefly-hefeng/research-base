@@ -5,7 +5,7 @@ import json
 import os
 from copy import deepcopy
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urlparse
 
 import httpx
@@ -27,6 +27,13 @@ For a bound research task, the host opens begin_research and supplies a session_
 read_research_material (or observed read_material) to inspect the originals needed for your decision,
 then check_research before synthesis. Follow the stage's reading questions, compare strong relevant
 baselines and assumptions, and distinguish an experimental proposal from an observed result.
+For host-required critical_checks, use submit_research_detail with passage_id anchors from returned
+passage navigation, or read_id plus exact quotes. A source-bound submission still needs independent host review; you cannot
+approve yourself or remove required checks. Resolve definitions across page boundaries with
+read_research_context and follow continuations. For metrics state numerator, denominator, positive
+class, evaluation unit, aggregation and conditions. Keep deployable baselines separate from controls
+using held-out responses; distinguish manuscript, code/config declarations and executed evidence.
+Version labels do not establish peer review and two control arrays do not establish independent sampling.
 Only selected ranges actually returned count as access; passing the check does not validate your
 interpretation or establish that the collection is the entire frontier. Missing originals require
 acquisition or a clearly limited hypothesis, never an invented literature-grounded conclusion.
@@ -136,21 +143,31 @@ class ResearchAgent:
     def run(self, task: str, *, collection_id: str | None = None, project_root: str | Path | None = None,
             allow_writes: bool = False,
             max_steps: int = 8, max_tool_calls: int = 24, research_stage: str = "design",
-            profile: str | None = None, focus_paper_ids: list[str] | None = None) -> dict:
+            profile: str | None = None, focus_paper_ids: list[str] | None = None,
+            critical_checks: list[dict] | None = None,
+            detail_reviewer: Callable[[dict], dict] | None = None,
+            synthesis_reviewer: Callable[[dict], dict] | None = None) -> dict:
         if not isinstance(task, str) or not task.strip() or len(task) > 12000:
             raise ResearchError("INVALID_ARGUMENT", "A nonempty task up to 12000 characters is required")
         if (not isinstance(max_steps, int) or isinstance(max_steps, bool)
                 or not isinstance(max_tool_calls, int) or isinstance(max_tool_calls, bool)
                 or not 1 <= max_steps <= 32 or not 1 <= max_tool_calls <= 128):
             raise ResearchError("INVALID_ARGUMENT", "Agent steps or tool-call budget is outside the allowed range")
+        if detail_reviewer is not None and not callable(detail_reviewer):
+            raise ResearchError("INVALID_ARGUMENT", "detail_reviewer must be a trusted host callback")
+        if synthesis_reviewer is not None and not callable(synthesis_reviewer):
+            raise ResearchError("INVALID_ARGUMENT", "synthesis_reviewer must be a trusted host callback")
         project_integration, rules, navigation = None, "", None
         if project_root is not None:
             collection_id, rules, navigation, project_integration = self._prepare_project(task, project_root, collection_id)
+        if critical_checks and not collection_id:
+            raise ResearchError("INVALID_ARGUMENT", "Critical detail checks require a bound research collection")
         registry = ToolRegistry(self.core, allow_writes=allow_writes, collection_id=collection_id)
         session_id = None
         if collection_id:
             opened = registry.research.begin(task, collection_id=collection_id, stage=research_stage,
                 profile=profile, focus_paper_ids=focus_paper_ids, max_papers=8, max_chars=10000,
+                critical_checks=critical_checks,
                 project_root=project_integration["project_root"] if project_integration else None)
             session_id = opened["session_id"]
             registry.required_session_id = session_id
@@ -162,6 +179,7 @@ class ResearchAgent:
                     "collection_id": collection_id, "truncated": True,
                     "freshness": preparation.get("context", {}).get("freshness"),
                     "reading_questions": preparation.get("reading_questions"),
+                    "critical_checks": opened.get("usage", {}).get("critical_checks", []),
                     "preview": navigation[:14000],
                     "next_action": "Use get_frontier/get_paper/list_materials for complete original locations."}, ensure_ascii=False)
             if project_integration:
@@ -188,11 +206,25 @@ class ResearchAgent:
             result["research_session_id"] = session_id
             if not check["ready"]:
                 # Do not publish an ungrounded model draft as a completed research answer.
-                result["status"] = "needs_materials"
-                result["answer"] = "本次研究的原文使用检查尚未通过，研究结论未发布。请读取相关原文、完成所选范围的续读，或补充缺失材料后继续；具体缺口见 research_usage。"
+                if check.get("reading_ready") and check.get("detail_gaps"):
+                    result["status"] = "needs_verification"
+                    result["answer"] = "本次研究的关键细节尚未完成独立核验，研究结论未发布。请补齐原文上下文、修订解释并交由宿主复核；具体缺口见 research_usage。"
+                else:
+                    result["status"] = "needs_materials"
+                    result["answer"] = "本次研究的原文使用检查尚未通过，研究结论未发布。请读取相关原文、完成所选范围的续读，或补充缺失材料后继续；具体缺口见 research_usage。"
             elif not check.get("current_frontier_ready", False):
                 result["status"] = "completed_with_limits"
                 result["answer"] = "文献检索的新鲜度或覆盖范围尚未确认；以下内容仅基于本次已读取的材料，不能视为已核对当前全领域前沿。\n\n" + result["answer"]
+            if check["ready"] and check.get("critical_checks"):
+                try:
+                    final_check = registry.require_checked_synthesis(session_id, result["answer"], synthesis_reviewer)
+                    result["synthesis_review"] = final_check["synthesis_review"]
+                    result["research_usage"] = final_check["research_usage"]
+                except ResearchError as exc:
+                    result["status"] = "needs_verification"
+                    result["answer"] = "本次研究的最终稿尚未通过独立核验，研究结论未发布。已核验的细节不能代替对最终解释和方案的复核。"
+                    result["synthesis_review"] = {"status": "required", "error_code": exc.code,
+                                                  **deepcopy(exc.details)}
             return result
 
         for _ in range(max_steps):
@@ -210,9 +242,9 @@ class ResearchAgent:
                 if not isinstance(content, str):
                     raise ResearchError("MODEL_INVALID_RESPONSE", "Model returned non-text content")
                 result = guard(self._result("completed", content, trace, usage, project_integration))
-                if result["status"] == "needs_materials" and corrections < 2 and model_tool_calls < max_tool_calls:
+                if result["status"] in ("needs_materials", "needs_verification") and corrections < 2 and model_tool_calls < max_tool_calls:
                     corrections += 1
-                    messages.append({"role": "user", "content": "The host's original-material usage check did not pass. Use the current session's original-reading interfaces and complete the required selected ranges before synthesis. Do not repeat an unsupported final answer. Check result: " + json.dumps(result["research_usage"], ensure_ascii=False)})
+                    messages.append({"role": "user", "content": "The host's original-material or independent detail check did not pass. Complete selected ranges and resolve the required critical checks with source-bound interpretations and independent host review. Do not repeat an unsupported final answer. Check result: " + json.dumps(result["research_usage"], ensure_ascii=False)})
                     continue
                 return result
             if not isinstance(tool_calls, list):
@@ -235,16 +267,31 @@ class ResearchAgent:
                         raise ValueError("arguments must be an object")
                     # Preserve every delivered read: very large tool payloads would otherwise be
                     # shortened after the usage manager observed them.
-                    if name in ("read_material", "read_research_material"):
+                    if name in ("read_material", "read_research_material", "read_research_context"):
                         arguments["max_chars"] = min(arguments.get("max_chars", 12000), 12000) if isinstance(arguments.get("max_chars", 12000), int) else arguments.get("max_chars")
                     result = registry.call(name, arguments)
+                    if (name == "submit_research_detail" and "data" in result
+                            and detail_reviewer is not None and session_id):
+                        try:
+                            packet = registry.research.detail_review_packet(session_id, arguments["check_id"])
+                            if packet.get("status") != "unresolved":
+                                review = detail_reviewer(deepcopy(packet))
+                                if not isinstance(review, dict) or set(review) != {"verdict", "reviewer", "reason"}:
+                                    raise ValueError("Invalid review response")
+                                result["data"]["independent_review"] = registry.review_research_detail(
+                                    session_id, arguments["check_id"], expected_revision=packet["revision"], **review)
+                        except Exception:
+                            # Reviewer errors may contain private text or provider details.
+                            # Fail closed and let the host inspect its own callback diagnostics.
+                            result["data"]["independent_review"] = {"status": "unavailable",
+                                "next_action": "A trusted host must review the current revision before checked synthesis."}
                 except (ValueError, RecursionError):
                     result = {"schema_version": 1, "error": {"code": "INVALID_ARGUMENT", "message": "Tool arguments must be valid JSON", "retryable": False, "details": {}}}
                 trace.append({"name": name, "status": "error" if "error" in result else "ok",
                               **({"error_code": result["error"]["code"]} if "error" in result else {})})
                 model_tool_calls += 1
                 encoded = json.dumps(result, ensure_ascii=False)
-                if name in ("read_material", "read_research_material") and "data" in result:
+                if name in ("read_material", "read_research_material", "read_research_context") and "data" in result:
                     # Keep the observed text intact when serializing. Bulky metadata is
                     # navigable separately; escaping text must not turn it into a preview.
                     material = result["data"].get("material", {})
@@ -293,7 +340,7 @@ class ResearchAgent:
             if message.get("role") != "tool":
                 continue
             content = message.get("content", "")
-            if names.get(message.get("tool_call_id")) in ("read_material", "read_research_material"):
+            if names.get(message.get("tool_call_id")) in ("read_material", "read_research_material", "read_research_context"):
                 try:
                     result = json.loads(content)
                     data = result.get("data", {})

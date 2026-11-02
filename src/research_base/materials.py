@@ -5,13 +5,26 @@ import hashlib
 import json
 import re
 import shutil
+from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
 from pypdf import PdfReader
 
 from .models import ResearchError
+from .identity import observed_identifiers
 from .storage import atomic_write, dumps, loads, now, uid
+
+
+def _posted_date(text):
+    match = re.search(r"this\s+version\s+posted\s+([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})", text, re.I)
+    if not match:
+        return None
+    months = {name: index for index, name in enumerate(("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"), 1)}
+    try:
+        return date(int(match[3]), months[match[1][:3].lower()], int(match[2])).isoformat()
+    except (KeyError, ValueError):
+        return None
 
 
 def safe_url(value: str | None) -> str | None:
@@ -102,10 +115,14 @@ class MaterialsMixin:
             raise ResearchError("NOT_FOUND", "Material does not exist")
         return row
 
-    def import_material(self, paper_id, path=None, url=None, role="main_text", version_id=None, confirmed=False):
+    def import_material(self, paper_id, path=None, url=None, role="main_text", version_id=None, confirmed=False, source_url=None):
         paper = self._require_paper(paper_id)
         if bool(path) == bool(url):
             raise ResearchError("INVALID_ARGUMENT", "Provide exactly one local path or URL")
+        if source_url:
+            if not path:
+                raise ResearchError("INVALID_ARGUMENT", "Download provenance accompanies a local file import only")
+            source_url = safe_url(source_url)
         if role not in ("main_text", "supplement", "code", "data", "model", "other"):
             raise ResearchError("INVALID_ARGUMENT", "Unsupported material role")
         with self.store.connect() as db:
@@ -136,8 +153,8 @@ class MaterialsMixin:
         with target.open("rb") as handle:
             fmt = "pdf" if handle.read(5) == b"%PDF-" else source.suffix.lower().lstrip(".") or "bin"
         with self.store.connect() as db:
-            db.execute("INSERT INTO materials(id,paper_id,version_id,role,format,status,relative_path,original_name,created_at) VALUES(?,?,?,?,?,'staged',?,?,?)",
-                       (mid, paper_id, version_id, role, fmt, str(target.relative_to(self.root)), source.name, now()))
+            db.execute("INSERT INTO materials(id,paper_id,version_id,role,format,status,relative_path,original_name,source_url,created_at) VALUES(?,?,?,?,?,'staged',?,?,?,?)",
+                       (mid, paper_id, version_id, role, fmt, str(target.relative_to(self.root)), source.name, source_url, now()))
         return self._finalize_material(mid, confirmed=confirmed)
 
     def _finalize_material(self, material_id, confirmed=False):
@@ -151,6 +168,7 @@ class MaterialsMixin:
         if not path.stat().st_size:
             raise ResearchError("INVALID_FILE", "Empty material")
         pages, issues, parse_status = [], [], "not_started"
+        version_observations = {}
         if row["format"] == "pdf":
             try:
                 reader = PdfReader(path)
@@ -209,6 +227,13 @@ class MaterialsMixin:
                 observed = set(re.findall(r"[a-z0-9]+", header.lower()))
                 title_match = len(words & observed) / max(1, len(words))
                 expected = normalized_doi(paper.get("doi"))
+                repository_ids = observed_identifiers(paper.get("identifiers"), landing_url=paper.get("landing_url"), fulltext_urls=paper.get("fulltext_urls"))
+                expected_posted = paper.get("extra", {}).get("posted_date")
+                if expected_posted and any(repository_ids.get(key) for key in ("biorxiv_revision", "medrxiv_revision")):
+                    observed_posted = _posted_date(identity_region)
+                    version_observations = {"expected_posted_date": expected_posted, "observed_posted_date": observed_posted}
+                    if not confirmed and observed_posted != expected_posted:
+                        issues.append("Preprint posted-date stamp does not match the requested repository revision")
                 exact_doi = bool(expected and expected in dois)
                 if not confirmed:
                     if row["version_id"]:
@@ -248,7 +273,7 @@ class MaterialsMixin:
             issues.append("Main text format needs confirmation")
         if issues:
             with self.store.connect() as db:
-                db.execute("UPDATE materials SET details=?,parse_status=? WHERE id=?", (dumps({"identity_issues": issues}), parse_status, material_id))
+                db.execute("UPDATE materials SET details=?,parse_status=? WHERE id=?", (dumps({"identity_issues": issues, **version_observations}), parse_status, material_id))
             return self._material(self._require_material(material_id))
         digest = hashlib.sha256()
         with path.open("rb") as stream:
@@ -263,6 +288,7 @@ class MaterialsMixin:
             temp.replace(object_path)
         details = {"identity_confirmed": True, "identity_confirmation_method": "user" if confirmed else "automatic",
                    "parsed_pages": len(pages), "parser": "pypdf-v1", "confirmed_at": now()}
+        details.update(version_observations)
         derived = self.root / "derived" / material_id / "pypdf-v1"
         if pages:
             atomic_write(derived / "pages.jsonl", "\n".join(dumps({"page": p, "text": text}) for p, text in pages) + "\n")

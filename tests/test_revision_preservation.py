@@ -45,3 +45,41 @@ def test_publication_with_shared_arxiv_alias_reuses_its_compatible_version(tmp_p
             again = base.add_paper(published)
             assert len(again["versions"]) == 2 and again["preferred_version_id"] == formal_id
         assert len(base.add_paper(preprint)["versions"]) == 2
+
+
+@pytest.mark.parametrize("repository", ["biorxiv", "medrxiv"])
+def test_repository_revisions_with_one_doi_preserve_old_originals(tmp_path, repository):
+    with ResearchBase(tmp_path / "library") as base:
+        def record(revision):
+            return {"source": repository, "source_id":"10.5555/revision-work", "doi":"10.5555/revision-work",
+                    "title":"Research on Stable Material Identity", "version_kind":"preprint",
+                    "landing_url":f"https://www.{repository}.org/content/10.5555/revision-workv{revision}"}
+        first = base.add_paper(record(1))
+        v1 = first["preferred_version_id"]
+        path = tmp_path / "author-code.md"
+        path.write_text("Original first revision implementation", encoding="utf-8")
+        material = base.import_material(first["paper_id"], path=path, role="code", version_id=v1,
+                                        source_url="https://example.org/code.md")
+        updated = base.add_paper(record(3))
+        v3 = updated["preferred_version_id"]
+        assert updated["paper_id"] == first["paper_id"] and v3 != v1
+        assert len(updated["versions"]) == 2
+        older = base.add_paper(record(1))
+        assert len(older["versions"]) == 2 and older["preferred_version_id"] == v3
+        original = next(m for m in older["materials"] if m["material_id"] == material["material_id"])
+        assert original["version_id"] == v1 and original["source_url"] == "https://example.org/code.md"
+
+
+def test_updating_a_linked_formal_publication_keeps_both_stable_work_ids(tmp_path):
+    with ResearchBase(tmp_path / "library") as base:
+        formal = base.add_paper({"source":"publisher","source_id":"formal", "doi":"10.5555/formal",
+            "title":"Formal Publication about Research", "version_kind":"unknown"})
+        preprint = base.add_paper({"source":"repository","source_id":"preprint", "doi":"10.5555/preprint",
+            "title":"Research Preprint Version", "version_kind":"preprint"})
+        base.add_paper({"source":"repository","source_id":"preprint", "doi":"10.5555/preprint",
+            "title":"Research Preprint Version", "version_kind":"preprint", "extra":{"published_doi":"10.5555/formal"}})
+        updated = base.add_paper({"source":"publisher_browser","source_id":"formal", "doi":"10.5555/formal",
+            "title":"Formal Publication about Research", "version_kind":"published"})
+        assert updated["paper_id"] == formal["paper_id"] != preprint["paper_id"]
+        assert base.get_paper(preprint["paper_id"])["doi"] == "10.5555/preprint"
+        assert any(v["kind"] == "published" and v["paper_id"] == formal["paper_id"] for v in updated["versions"])

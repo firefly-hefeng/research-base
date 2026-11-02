@@ -192,7 +192,7 @@ def test_v1_rules_upgrade_without_changing_external_bytes(tmp_path, with_state):
     assert upgraded.startswith(prefix) and upgraded.endswith(suffix)
     assert b"begin_research" in upgraded and b"check_research" in upgraded
     config = yaml.safe_load((tmp_path / ".research/config.yaml").read_text(encoding="utf-8"))
-    assert config["integration"]["template_version"] == 2
+    assert config["integration"]["template_version"] == module.TEMPLATE_VERSION
     assert doctor_project(tmp_path)["template_upgrade_available"] is False
     assert attach(tmp_path)["status"] == "unchanged"
 
@@ -206,3 +206,27 @@ def test_edited_orphan_v1_rules_remain_a_conflict(tmp_path):
     assert error.value.code == "RULES_CONFLICT"
     assert entry.read_bytes() == raw
     assert not (tmp_path / ".research/config.yaml").exists()
+
+
+@pytest.mark.parametrize("with_state", [False, True])
+def test_v2_rules_upgrade_preserves_researcher_rules(tmp_path, with_state):
+    prefix = b"\xef\xbb\xbf# Lab rules\r\n<!-- vesti:keep -->\r\n"
+    suffix = b"\r\n# Researcher additions\r\n"
+    legacy = module.LEGACY_TEMPLATE_V2.replace("\n", "\r\n").encode()
+    if with_state:
+        attach(tmp_path)
+        state_path = tmp_path / ".research/state/binding.json"
+        state = json.loads(state_path.read_text())
+        state["managed_block_hash"] = module._hash(legacy)
+        state_path.write_text(json.dumps(state), encoding="utf-8")
+    entry = tmp_path / "AGENTS.md"
+    entry.write_bytes(prefix + legacy + suffix)
+    diagnosis = doctor_project(tmp_path)
+    assert diagnosis["installed_template_version"] == 2
+    assert diagnosis["template_upgrade_available"]
+    assert attach(tmp_path)["status"] == "updated"
+    raw = entry.read_bytes()
+    assert raw.startswith(prefix) and raw.endswith(suffix)
+    assert b"submit_research_detail" in raw and b"ready_for_checked_synthesis" in raw
+    assert doctor_project(tmp_path)["installed_template_version"] == 3
+    assert attach(tmp_path)["status"] == "unchanged"

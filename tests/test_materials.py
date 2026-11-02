@@ -41,6 +41,25 @@ def pdf(path, page_texts):
         writer.write(output)
 
 
+def test_repository_revision_checks_the_pdf_posted_date_not_just_shared_doi(base, tmp_path):
+    title = "Stable Experimental Benchmark for Research Systems"
+    doi = "10.5555/version-date"
+    paper = base.add_paper({"source":"biorxiv", "source_id":doi+"v3", "title":title, "doi":doi,
+        "version_kind":"preprint", "landing_url":"https://www.biorxiv.org/content/"+doi+"v3",
+        "extra":{"posted_date":"2026-10-31"}})
+    wrong = tmp_path / "old.pdf"
+    pdf(wrong, [title+" " + doi + " this version posted October 19, 2026."])
+    staged = base.import_material(paper["paper_id"], path=wrong, version_id=paper["preferred_version_id"])
+    assert staged["status"] == "staged"
+    assert any("posted-date" in issue for issue in staged["details"]["identity_issues"])
+    right = tmp_path / "current.pdf"
+    pdf(right, [title+" " + doi + " this version posted October 31, 2026."])
+    ready = base.import_material(paper["paper_id"], path=right, version_id=paper["preferred_version_id"],
+        source_url="https://www.biorxiv.org/content/"+doi+"v3.full.pdf")
+    assert ready["status"] == "available"
+    assert ready["details"]["observed_posted_date"] == "2026-10-31"
+
+
 def test_original_and_text_paths_are_absolute_and_directly_readable(base, tmp_path):
     record = add(base)
     source = tmp_path / "article.pdf"
