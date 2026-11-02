@@ -1,0 +1,52 @@
+{
+  "case_id": "rag-evaluation",
+  "artifact_kind": "independent_review",
+  "separate_from_raw_model_output": true,
+  "review_scope": "Model access was checked against host-observed reads, then those original physical pages were independently inspected. Additional reviewer pages are listed separately and were not read by the model.",
+  "papers": [
+    {
+      "paper_id": "paper_b07902b1b4674d76abff",
+      "title": "Response Quality Assessment for Retrieval-Augmented Generation via Conditional Conformal Factuality",
+      "model_physical_pages": [2],
+      "model_returned_chars": 5941,
+      "additional_reviewer_physical_pages": [3]
+    },
+    {
+      "paper_id": "paper_c84503e8f3f246bfaaf1",
+      "title": "Hybrid Retrieval for Retrieval Augmented Generation in the German Language Production Domain",
+      "model_physical_pages": [4, 5],
+      "model_returned_chars": 8418,
+      "additional_reviewer_physical_pages": [9]
+    }
+  ],
+  "model_read_calls": 3,
+  "model_returned_chars": 14359,
+  "selected_ranges_complete": true,
+  "usage_check_passed": true,
+  "current_frontier_ready": false,
+  "reading_scope_claim_correct": false,
+  "independent_scientific_corrections_required": true,
+  "scientific_correctness_certified": false,
+  "experiments_run": false,
+  "supported_design_changes": [
+    "Separate query-level calibration and final evaluation, and investigate automatic factuality-label errors.",
+    "Report the hybrid paper's question-hit measure separately from chunk precision and claim support.",
+    "Control chunk lengths, top-k and quota-merge configurations when comparing retrieval methods.",
+    "Retain explicit missing-method and search-freshness limitations."
+  ],
+  "corrections": [
+    "No tool receipt supports additional Conformal-RAG pages 4 or 5; the observed pages 4 and 5 belong to the hybrid-retrieval paper.",
+    "The hybrid matching protocol permits one or two chunks, not two sentences.",
+    "Independent calibration and test queries do not require banning a shared fixed retrieval corpus; manage duplicate or related questions and tuning leakage separately.",
+    "The cosine-product claim score is specified in Algorithm 1, not the paper's Equation 1."
+  ],
+  "additional_reviewer_findings": [
+    "Conformal page 3 conditions the guarantee on correct calibration annotations; the conditional experiment assumes pre-specified groups with labels available at inference.",
+    "Hybrid page 9 explicitly cautions about LLM-generated questions and direct lexical carry-over favoring full-text search. These limitations were added by the reviewer, not attributed to model reading."
+  ],
+  "remaining_work": [
+    "Inspect code, supplements, detailed data separation and empirical result pages before implementation.",
+    "Validate annotation reliability and distribution assumptions in the intended deployment setting.",
+    "Refresh the matching search plan and consider other key work before a current-frontier or novelty claim."
+  ]
+}

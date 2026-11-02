@@ -1,0 +1,132 @@
+[
+  {
+    "case_id": "rag-evaluation",
+    "plan": {
+      "query": "Text RAG evaluation, factuality, calibration and retrieval robustness",
+      "source_queries": {
+        "arxiv": "(all:\"retrieval augmented generation\" OR all:\"retrieval-augmented generation\") AND (ti:evaluation OR ti:evaluating OR ti:benchmark OR ti:benchmarking OR ti:factuality OR ti:faithfulness OR ti:calibration OR ti:calibrated OR ti:reranking OR ti:rerankers OR ti:\"re-ranking\")",
+        "acl_anthology": "{\"collections\":[\"2025.acl\",\"2025.emnlp\",\"2025.findings\",\"2026.acl\",\"2026.emnlp\",\"2026.findings\",\"2026.eacl\"],\"any\":[\"retrieval augmented\",\"retrieval-augmented\",\"RAG\"],\"all\":[]}"
+      },
+      "date_from": "2025-01-01",
+      "date_to": "2026-11-03",
+      "budget": {
+        "max_requests": 10
+      },
+      "sources": [
+        "acl_anthology",
+        "arxiv"
+      ]
+    },
+    "sources": {
+      "acl_anthology": {
+        "complete": true,
+        "pages": 27,
+        "records": 1248,
+        "total": 1248,
+        "error": null
+      },
+      "arxiv": {
+        "complete": true,
+        "pages": 13,
+        "records": 636,
+        "total": 636,
+        "error": null
+      }
+    },
+    "job_id": "job_43124ea807f54b75a28a",
+    "state": "succeeded",
+    "freshness": {
+      "plan_fingerprint": "sha256:11b5d7182f200e643860e325f4519c2c87c1ec246cbd635dd8b890ebee14f259",
+      "scope_basis": "configured_plan",
+      "last_complete_search_at": "2026-11-02T18:22:16.001226Z",
+      "coverage_through": "2026-11-03",
+      "search_scope": {
+        "query": "Text RAG evaluation, factuality, calibration and retrieval robustness",
+        "sources": [
+          "acl_anthology",
+          "arxiv"
+        ],
+        "source_queries": {
+          "acl_anthology": "{\"collections\":[\"2025.acl\",\"2025.emnlp\",\"2025.findings\",\"2026.acl\",\"2026.emnlp\",\"2026.findings\",\"2026.eacl\"],\"any\":[\"retrieval augmented\",\"retrieval-augmented\",\"RAG\"],\"all\":[]}",
+          "arxiv": "(all:\"retrieval augmented generation\" OR all:\"retrieval-augmented generation\") AND (ti:evaluation OR ti:evaluating OR ti:benchmark OR ti:benchmarking OR ti:factuality OR ti:faithfulness OR ti:calibration OR ti:calibrated OR ti:reranking OR ti:rerankers OR ti:\"re-ranking\")"
+        },
+        "date_from": "2025-01-01",
+        "date_to": "2026-11-03"
+      },
+      "checked_age_days": 0.007291107002314815,
+      "coverage_age_days": -1,
+      "max_age_days": 7,
+      "needs_refresh": false,
+      "reason": null,
+      "notice": "Freshness describes the completed provider queries and date window, not exhaustive field coverage or scientific quality."
+    },
+    "reported_budget_units": 40,
+    "counter_note": "Persisted job requests count provider-page budget units; cached ACL pages consume units without another HTTP attempt. Actual total HTTP attempts were not separately recorded for this run.",
+    "records_unit": "Stored paper identifiers; retained archive/publication records are not automatically one independent study."
+  },
+  {
+    "case_id": "single-cell-perturbation",
+    "plan": {
+      "query": "Single-cell perturbation predictive modeling, benchmarking and generalization",
+      "source_queries": {
+        "europe_pmc": "(TITLE_ABS:\"single-cell\" OR TITLE_ABS:\"single cell\") AND (TITLE_ABS:perturbation OR TITLE_ABS:perturbations) AND (TITLE_ABS:predict* OR TITLE_ABS:benchmark* OR TITLE_ABS:generalization OR TITLE_ABS:generalisation)",
+        "pubmed": "(\"single-cell\"[Title/Abstract] OR \"single cell\"[Title/Abstract]) AND perturbation[Title/Abstract] AND (predict*[Title/Abstract] OR benchmark*[Title/Abstract] OR generalization[Title/Abstract] OR generalisation[Title/Abstract])"
+      },
+      "date_from": "2025-01-01",
+      "date_to": "2026-11-03",
+      "budget": {
+        "max_requests": 10
+      },
+      "sources": [
+        "europe_pmc",
+        "pubmed"
+      ]
+    },
+    "sources": {
+      "europe_pmc": {
+        "complete": true,
+        "pages": 15,
+        "records": 685,
+        "total": 685,
+        "error": null
+      },
+      "pubmed": {
+        "complete": true,
+        "pages": 8,
+        "records": 353,
+        "total": 353,
+        "error": null
+      }
+    },
+    "job_id": "job_1617eeaae3be415f90b7",
+    "state": "succeeded",
+    "freshness": {
+      "plan_fingerprint": "sha256:bf035a2ae3a5dd2f1fdd6ddb7cde764512fa77d13b5f68022553ba03d834a352",
+      "scope_basis": "configured_plan",
+      "last_complete_search_at": "2026-11-02T18:16:56.126445Z",
+      "coverage_through": "2026-11-03",
+      "search_scope": {
+        "query": "Single-cell perturbation predictive modeling, benchmarking and generalization",
+        "sources": [
+          "europe_pmc",
+          "pubmed"
+        ],
+        "source_queries": {
+          "europe_pmc": "(TITLE_ABS:\"single-cell\" OR TITLE_ABS:\"single cell\") AND (TITLE_ABS:perturbation OR TITLE_ABS:perturbations) AND (TITLE_ABS:predict* OR TITLE_ABS:benchmark* OR TITLE_ABS:generalization OR TITLE_ABS:generalisation)",
+          "pubmed": "(\"single-cell\"[Title/Abstract] OR \"single cell\"[Title/Abstract]) AND perturbation[Title/Abstract] AND (predict*[Title/Abstract] OR benchmark*[Title/Abstract] OR generalization[Title/Abstract] OR generalisation[Title/Abstract])"
+        },
+        "date_from": "2025-01-01",
+        "date_to": "2026-11-03"
+      },
+      "checked_age_days": 0.010996341597222223,
+      "coverage_age_days": -1,
+      "max_age_days": 7,
+      "needs_refresh": false,
+      "reason": null,
+      "notice": "Freshness describes the completed provider queries and date window, not exhaustive field coverage or scientific quality."
+    },
+    "reported_budget_units": 31,
+    "counter_note": "Persisted job requests count provider-page budget units; cached ACL pages consume units without another HTTP attempt. Actual total HTTP attempts were not separately recorded for this run.",
+    "records_unit": "Stored paper identifiers; retained archive/publication records are not automatically one independent study."
+  }
+]

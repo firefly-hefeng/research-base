@@ -1,0 +1,488 @@
+[
+  {
+    "case_id": "rag-evaluation",
+    "selection_method": "Independent primary-record relevance review, then exact identifier selection; other candidates remain unreviewed.",
+    "papers": [
+      {
+        "paper_id": "paper_bca044d62a284ca8a881",
+        "title": "FRESCO: Benchmarking and Optimizing Re-rankers for Evolving Semantic Conflict in Retrieval-Augmented Generation",
+        "doi": "10.18653/2026.findings-emnlp.54",
+        "arxiv": "2604.14227v1",
+        "primary_url": "https://aclanthology.org/2026.findings-emnlp.54/",
+        "task_relevance": "Adds temporally conflicting evidence and factual recency as a distinct reranker diagnostic, missing from the current static hybrid-retrieval comparison.",
+        "first_submitted": "2026-04-14",
+        "latest_arxiv_revision": "2026-04-14",
+        "publication_month": "2026-10",
+        "scope_limit": "Historical Wikipedia revision construction and recency-seeking questions require inspection; do not transfer the abstract's reported gain into laboratory predictions.",
+        "decision": "included_for_original_review",
+        "identity_selection": "exact_formal_doi; alternative archive identities are not merged",
+        "alternate_archive_records_retained": [
+          "paper_96c60a39dbb84690b4f4"
+        ],
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [
+          {
+            "source": "acl_anthology",
+            "source_id": "2026.findings-emnlp.54",
+            "version_id": "ver_4e6e3b98541240e9a4e7",
+            "observed_at": "2026-11-02T18:22:02.308574Z",
+            "dates": {
+              "publication_month": "October",
+              "publication_year": 2026,
+              "publication_date_precision": "month",
+              "publication_interval_start": "2026-10-01",
+              "publication_interval_end": "2026-10-31"
+            }
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "mat_298c038b319c42f3a750",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "d430349bf63591e34b5d5716607abf3dec796e27751cc95cff92434d1933e6aa"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_4ce0597511d144938cfe",
+        "title": "The Bottleneck Is Retrieval, Not Reading: Diagnosing Evidence-Based Generation with RAG for Long Context Question Answering",
+        "doi": null,
+        "arxiv": "2610.26951v1",
+        "primary_url": "https://arxiv.org/abs/2610.26951",
+        "task_relevance": "Recent preprint separates retrieving any relevant chunk from retrieving all required evidence and scores answer plus evidence jointly; directly tests blind spots in answer-only evaluation.",
+        "first_submitted": "2026-10-18",
+        "latest_arxiv_revision": "2026-10-18",
+        "publication_month": null,
+        "scope_limit": "DataCite DOI is explicitly pending registration on the official page; preserve arXiv identity rather than asserting a registered publication DOI. Inspect benchmark transformations, evidence labels and matched RAG/long-context budgets before importing conclusions.",
+        "decision": "included_for_original_review",
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [],
+        "materials": [
+          {
+            "material_id": "mat_24bd396793134da3b0c0",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "5b96b15e247d8641c8443f0b3cf171cc35cc4ef897a939ec383ad1a1eb66e5cd"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_32d5b696a3f845a796cd",
+        "title": "Retrieving Facts or Reinforcing Beliefs? Towards Understanding Confirmation Bias in RAG Systems for Scientific Claim Verification",
+        "doi": "10.18653/2026.emnlp-main.44",
+        "arxiv": null,
+        "primary_url": "https://aclanthology.org/2026.emnlp-main.44/",
+        "task_relevance": "CoBiT adds claim/counterclaim paired evaluation and separates reranking bias from generation bias; useful for scientific research workflows that might retrieve only supportive evidence.",
+        "first_submitted": null,
+        "latest_arxiv_revision": null,
+        "publication_month": "2026-10",
+        "scope_limit": "Official metadata specifies 707 minimally perturbed pairs. Must read construction and metric definitions; raw overall bias numbers cannot be transferred to a new corpus.",
+        "decision": "included_for_original_review",
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [
+          {
+            "source": "acl_anthology",
+            "source_id": "2026.emnlp-main.44",
+            "version_id": "ver_de1c3daa564d4e58be35",
+            "observed_at": "2026-11-02T18:21:35.538608Z",
+            "dates": {
+              "publication_month": "October",
+              "publication_year": 2026,
+              "publication_date_precision": "month",
+              "publication_interval_start": "2026-10-01",
+              "publication_interval_end": "2026-10-31"
+            }
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "mat_514fc8c2c34246339a3d",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "341f83797fbff315644e678eb8ab862911c035d47093e93b173ab790063563e2"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_4564ea050ae3475cae93",
+        "title": "RARE: Redundancy-Aware Retrieval Evaluation Framework for High-Similarity Corpora",
+        "doi": "10.18653/v1/2026.acl-long.923",
+        "arxiv": "2604.19047v2",
+        "primary_url": "https://aclanthology.org/2026.acl-long.923/",
+        "task_relevance": "Addresses redundant evidence and alternate valid support in similar documents; extends the current concern that chunk gold labels can falsely penalize valid retrieval.",
+        "first_submitted": "2026-04-21",
+        "latest_arxiv_revision": "2026-06-30",
+        "publication_month": "2026-07",
+        "scope_limit": "Inspect atomic fact construction, PerfRecall definition, generated QA filtering and domain datasets before choosing this metric or reproducing the reported degradation.",
+        "decision": "included_for_original_review",
+        "identity_selection": "exact_formal_doi; alternative archive identities are not merged",
+        "alternate_archive_records_retained": [
+          "paper_218d750772aa46719233"
+        ],
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [
+          {
+            "source": "acl_anthology",
+            "source_id": "2026.acl-long.923",
+            "version_id": "ver_88dea04537a54445bf0b",
+            "observed_at": "2026-11-02T18:21:22.542504Z",
+            "dates": {
+              "publication_month": "July",
+              "publication_year": 2026,
+              "publication_date_precision": "month",
+              "publication_interval_start": "2026-07-01",
+              "publication_interval_end": "2026-07-31"
+            }
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "mat_73175a7d745b43ebb2e5",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "13dedadcffcb291377788ac08d55adc77df00e09e05ade623d9fd210ad377c63"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_1930c10b64954979b43d",
+        "title": "SciRerankBench: Benchmarking Rerankers Towards Scientific Retrieval-Augmented Generation with LLMs",
+        "doi": "10.18653/2026.emnlp-main.2613",
+        "arxiv": "2508.08742v3",
+        "primary_url": "https://aclanthology.org/2026.emnlp-main.2613/",
+        "task_relevance": "Scientific-domain reranker stress tests distinguish noisy, semantically similar but logically irrelevant, and counterfactual contexts.",
+        "first_submitted": "2025-08-12",
+        "latest_arxiv_revision": "2026-10-12",
+        "publication_month": "2026-10",
+        "scope_limit": "2025 first submission with 2026 revision/publication. Author lists differ between repository and proceedings metadata; retain version identity, do not assume byte-identical manuscripts or merge based on similar title alone.",
+        "decision": "included_for_original_review",
+        "identity_selection": "exact_formal_doi; alternative archive identities are not merged",
+        "alternate_archive_records_retained": [
+          "paper_1dc84b84825a472eab76"
+        ],
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [
+          {
+            "source": "acl_anthology",
+            "source_id": "2026.emnlp-main.2613",
+            "version_id": "ver_82dc38f717cc43f79dfe",
+            "observed_at": "2026-11-02T18:21:44.007663Z",
+            "dates": {
+              "publication_month": "October",
+              "publication_year": 2026,
+              "publication_date_precision": "month",
+              "publication_interval_start": "2026-10-01",
+              "publication_interval_end": "2026-10-31"
+            }
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "mat_549aa8503c1a4eafb9fe",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "8b32f177a2cc49e6123c838607c75edf2d751cef1d1091f0ce8038bb6971cd0a"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_606591871d7344b99a59",
+        "title": "Faithfulness-Aware Uncertainty Quantification for Fact-Checking the Output of Retrieval-Augmented Generation",
+        "doi": "10.18653/v1/2026.findings-acl.338",
+        "arxiv": "2505.21072v5",
+        "primary_url": "https://aclanthology.org/2026.findings-acl.338/",
+        "task_relevance": "FRANQ explicitly separates factuality from faithfulness to retrieved context; supports two-axis claim labeling instead of equating unsupported-by-context with false.",
+        "first_submitted": "2025-05-27",
+        "latest_arxiv_revision": "2026-04-29",
+        "publication_month": "2026-07",
+        "scope_limit": "Uncertainty estimates depend on the underlying model and assumptions; 2026 publication is not the first version. Inspect automatic labels, manual validation and required likelihood access before adopting a detector.",
+        "decision": "included_for_original_review",
+        "identity_selection": "exact_formal_doi; alternative archive identities are not merged",
+        "alternate_archive_records_retained": [
+          "paper_bf48ad95c99f402a8cd2"
+        ],
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [
+          {
+            "source": "acl_anthology",
+            "source_id": "2026.findings-acl.338",
+            "version_id": "ver_f13c2c661a7e44eca13f",
+            "observed_at": "2026-11-02T18:21:52.488520Z",
+            "dates": {
+              "publication_month": "July",
+              "publication_year": 2026,
+              "publication_date_precision": "month",
+              "publication_interval_start": "2026-07-01",
+              "publication_interval_end": "2026-07-31"
+            }
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "mat_7afbc05c21f548ea9475",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "1cf662a919460029102c7384ed8e0f77e3196a671dd54a07dc51dde94b2fe69d"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "single-cell-perturbation",
+    "selection_method": "Independent primary-record relevance review, then exact identifier selection; other candidates remain unreviewed.",
+    "papers": [
+      {
+        "paper_id": "paper_d5d6370b91ed4449a352",
+        "title": "Genetic Perturbation Prediction Models Fail Out-of-Distribution: A Rigorous Benchmark and Systematic Evaluation",
+        "doi": "10.64898/2026.10.16.759604",
+        "primary_url": "https://www.biorxiv.org/content/10.64898/2026.10.16.759604v1",
+        "task_relevance": "EL-PERTURB uses stratified OOD splits and compares model classes under knowledge/data-prior settings; useful for checking whether the plan tests interpolation or difficult extrapolation.",
+        "date": "2026-10-19",
+        "reading_caution": "Check preprocessing, input priors, model exclusions and tuning fairness before adopting a global failure claim. Not evidence that every present model fails in every biological setting.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [],
+        "materials": []
+      },
+      {
+        "paper_id": "paper_7ad63d93235f450893a3",
+        "title": "DCAF: Unifying Data Validity, Evaluation Validity and Predictive Modeling for Single-cell Perturbation Simulation",
+        "doi": "10.64898/2026.10.13.758713",
+        "primary_url": "https://www.biorxiv.org/content/10.64898/2026.10.13.758713v3",
+        "task_relevance": "Very recent alternative combining data reconstruction, evaluation criterion and predictive model; directly tests whether prior evaluation plan misses changing target/criterion assumptions.",
+        "date": "2026-10-31",
+        "reading_caution": "Reconstructed pre/post pairing is a modeled assumption, not observed matched-cell ground truth. Verify synthetic validation scope and separation of criteria versus model comparisons.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [],
+        "materials": []
+      },
+      {
+        "paper_id": "paper_0d5580a341c94a19b408",
+        "title": "PIE: Generalizing perturbation effects across unseen perturbations, contexts and datasets",
+        "doi": "10.64898/2026.10.02.756297",
+        "primary_url": "https://www.biorxiv.org/content/10.64898/2026.10.02.756297v1",
+        "task_relevance": "Population-level effect prediction using curated knowledge and observed response evidence; relevant competitor for jointly unseen context and perturbation settings.",
+        "date": "2026-10-05",
+        "reading_caution": "Audit knowledge-source availability, training response evidence, gene vocabularies and exact splits; release-page state-of-the-art claims are not independent replication.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [
+          {
+            "source": "biorxiv_details",
+            "source_id": "10.64898/2026.10.02.756297v1",
+            "version_id": "ver_8a535aaffc3846dab5ca",
+            "observed_at": "2026-11-02T18:21:28.219182Z",
+            "dates": {
+              "archive_posted_date": "2026-10-05",
+              "archive_version": "1"
+            }
+          }
+        ],
+        "materials": [
+          {
+            "material_id": "mat_24abc8e131bd4ee9b17d",
+            "role": "supplement",
+            "format": "md",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "f6b95042f2648fdb27fbb4a35b27406a97429e25a2aae48b5c1559c844e63804"
+          },
+          {
+            "material_id": "mat_00471caa8c3440b2b079",
+            "role": "code",
+            "format": "yaml",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "ee9ff26eb5c47eb0b97b16658ded07d42e9272bfbc41aad9f839bfcc00cf50ce"
+          },
+          {
+            "material_id": "mat_b6faac3c56cd4aa58c1f",
+            "role": "code",
+            "format": "yaml",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "3939cb0f499faa2955d0c2c762d2c1960de3a02a4ed61826532a30d2ff7f095f"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_625a51d648c14fe08a83",
+        "title": "A split-control criterion for few-shot adaptation in single-cell perturbation prediction",
+        "doi": "10.64898/2026.10.05.756906",
+        "primary_url": "https://www.biorxiv.org/content/10.64898/2026.10.05.756906v1",
+        "task_relevance": "Direct recent follow-up to the plan's shared-control concerns, extending independent-control scoring to few-shot adaptation decisions and control-depth planning.",
+        "date": "2026-10-13",
+        "reading_caution": "Separate calibration decisions, held-out targets and independent scoring references; do not assume a nonnegative mean gain guarantee transfers to new datasets.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [],
+        "materials": [
+          {
+            "material_id": "mat_81b806d8f0924ec08486",
+            "role": "supplement",
+            "format": "md",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "083191ab0c4564f1d30b1f4b3ee726228f89a238e73e5c0a95b4bf022eea3b9f"
+          },
+          {
+            "material_id": "mat_a487b2002dec43898970",
+            "role": "code",
+            "format": "py",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "ffe1c6bafcb3e00dd4572637a0438670c487590fd408447486c080dba1fcb5f7"
+          },
+          {
+            "material_id": "mat_a29a76757352446b9985",
+            "role": "code",
+            "format": "py",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "7210d2bb76d95f8affd6a2317b103d45b4ff0a874503d17d69756ea7e656c04b"
+          },
+          {
+            "material_id": "mat_686b15417a234d18a3c0",
+            "role": "supplement",
+            "format": "md",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "edc790291738bec8a3a61a9d248f9aa21f2bfc31fcef29b6bc34fe0f4643b3a7"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_9303a1714f814a71b8dc",
+        "title": "Reliable single-cell perturbations explain and improve model performance",
+        "doi": "10.64898/2026.08.11.744177",
+        "primary_url": "https://www.biorxiv.org/content/10.64898/2026.08.11.744177v1",
+        "task_relevance": "Measures perturbation reliability and shared versus specific responses; can inform quality strata and sample-size sensitivity beyond ranking models on unqualified responses.",
+        "date": "2026-08-12",
+        "reading_caution": "Inspect how reliability uses repeats/held-out measurements; labels derived from evaluation responses cannot silently become deployable predictor inputs.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [
+          {
+            "source": "openalex",
+            "source_id": "W7202270001",
+            "version_id": "ver_f9d0014554fc499cb904",
+            "observed_at": "2026-11-02T09:34:07.870360Z",
+            "dates": {
+              "publication_date": "2026-08-12"
+            }
+          }
+        ],
+        "materials": []
+      },
+      {
+        "paper_id": "paper_5653162502944926b2e0",
+        "title": "Predicting cellular responses to perturbation across diverse contexts with State",
+        "doi": "10.1016/j.cell.2026.07.052",
+        "primary_url": "https://pubmed.ncbi.nlm.nih.gov/42673963/",
+        "task_relevance": "Updated formal State/Cell-Eval reference, needed to avoid treating the 2025 preprint as the latest available State specification.",
+        "date": "2026-08-31",
+        "reading_caution": "Verify provider-declared preprint/publication relation before linking stable IDs, then read relevant published methods rather than substituting a commentary/highlight.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [],
+        "materials": [
+          {
+            "material_id": "mat_915d2f64b7004e2f986a",
+            "role": "code",
+            "format": "md",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "568c0b4f9d93374f7ebc7467c226fdde0050abfd60147bce0b316163bf4199d6"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_af5663459fce486eb0c7",
+        "title": "scArchon: a scalable benchmarking framework for assessing single-cell perturbation models",
+        "doi": "10.1186/s13059-026-04104-z",
+        "primary_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13162514/",
+        "task_relevance": "Open, reproducible benchmark infrastructure and gene-level biological checks provide an implementable counterweight to paper-specific metric proposals.",
+        "date": "2026-05-12",
+        "reading_caution": "Model set and dataset scope differ from genetic OOD benchmarks; no method ranking should be transferred without matching tasks.",
+        "decision": "included_for_original_review",
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [],
+        "materials": [
+          {
+            "material_id": "mat_62b654c744f6428abb9d",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "56a14cb74ea94d6c4d171046cfa3467d078208569f1602423e12fe5ba6908e4a"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_6268dfb9d7594e2597f6",
+        "title": "Benchmarking virtual cell models for in-the-wild perturbation response",
+        "arxiv": "2604.27646",
+        "primary_url": "https://arxiv.org/abs/2604.27646",
+        "task_relevance": "Explicit unseen-cell, unseen-perturbation and cross-dataset scenarios plus metric-aware ranking; useful for checking the plan's generalization matrix.",
+        "date": "2026-04-30",
+        "reading_caution": "Inspect per-task split and preprocessing implementation; a broad benchmark's abstract is not proof of leakage-safe pipeline details.",
+        "decision": "included_for_original_review",
+        "fulltext_available": true,
+        "text_searchable": true,
+        "publication_history": [],
+        "materials": [
+          {
+            "material_id": "mat_00119e1cfda845829545",
+            "role": "main_text",
+            "format": "pdf",
+            "status": "available",
+            "parse_status": "ready",
+            "sha256": "7797b82091734065388dbb297f690147eaaaab4ecb6c73520d2e7e1194ff4d11"
+          }
+        ]
+      },
+      {
+        "paper_id": "paper_5c7d5277ac41454e93e9",
+        "title": "Beyond Expression Prediction: Benchmarking Differential Expression Classification in Single-Cell Perturbation Models",
+        "doi": "10.64898/2026.07.20.739620",
+        "primary_url": "https://www.biorxiv.org/content/10.64898/2026.07.20.739620v1",
+        "task_relevance": "Evaluates DE classification instead of mean-expression accuracy under unseen perturbation and cell-line transfer; motivates endpoint and class-imbalance checks.",
+        "date": "2026-07-24",
+        "reading_caution": "Inspect full versus curated/downsampled subset definitions and class prevalence before interpreting accuracy or comparing with DE-overlap metrics.",
+        "decision": "included_for_original_review",
+        "fulltext_available": false,
+        "text_searchable": false,
+        "publication_history": [],
+        "materials": []
+      }
+    ]
+  }
+]

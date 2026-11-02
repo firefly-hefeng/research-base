@@ -73,7 +73,7 @@ class DiscoveryWorkflowsMixin:
             from .scholarly import normalized_seed
             normalized_seed(seed)
         available = {s["name"] for s in self.list_sources()}
-        chosen = sorted(set(sources or available))
+        chosen = sorted(set(sources or [s["name"] for s in self.list_sources() if s.get("default_enabled", True)]))
         if not chosen or set(chosen) - available:
             raise ResearchError("INVALID_ARGUMENT", "Unknown literature source")
         for value in (date_from, date_to):

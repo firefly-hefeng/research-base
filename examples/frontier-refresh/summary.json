@@ -1,0 +1,51 @@
+{
+  "validated_date": "2026-11-03",
+  "generated_at": "2026-11-02T18:32:44.746554Z",
+  "original_materials_exported": false,
+  "experiments_run": false,
+  "cases": [
+    {
+      "case_id": "rag-evaluation",
+      "provider_records": {
+        "acl_anthology": 1248,
+        "arxiv": 636
+      },
+      "unique_stored_ids_returned": 1877,
+      "selected_recent_works": 6,
+      "selected_with_available_main_text": 6,
+      "curated_entries": 11,
+      "matching_scope_fresh": true,
+      "local_research_agent_read_calls": 7,
+      "local_research_agent_returned_characters": 30370,
+      "usage_ready": true,
+      "current_frontier_ready": true,
+      "external_model_called_for_new_materials": false
+    },
+    {
+      "case_id": "single-cell-perturbation",
+      "provider_records": {
+        "europe_pmc": 685,
+        "pubmed": 353
+      },
+      "unique_stored_ids_returned": 704,
+      "selected_recent_works": 9,
+      "selected_with_available_main_text": 2,
+      "curated_entries": 14,
+      "matching_scope_fresh": true,
+      "local_research_agent_read_calls": 7,
+      "local_research_agent_returned_characters": 20754,
+      "usage_ready": true,
+      "current_frontier_ready": true,
+      "external_model_called_for_new_materials": false,
+      "author_code_works_available": 2,
+      "author_code_materials_available": 7
+    }
+  ],
+  "limitations": [
+    "Freshness covers declared queries, collection snapshots and date windows only; index lag, unindexed sources and unscreened candidates remain.",
+    "OpenAlex supplementary probes were rate limited; this source is not claimed completed in either declared plan.",
+    "Two October single-cell manuscripts were read through pinned author code, not manuscript PDFs; unresolved full texts remain visible.",
+    "No external DeepSeek call for the new material scope has been made; its transfer approval is pending. Local research agents used the actual component interfaces.",
+    "No benchmark performance, training, independent full reproduction, time-saving percentage or exhaustive field coverage is claimed."
+  ]
+}

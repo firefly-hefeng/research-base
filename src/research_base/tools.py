@@ -42,7 +42,29 @@ SEED = object_schema({
     "year": integer(1800, 2100),
 }, anyOf=[{"type": "object", "required": [field]} for field in ("title", "doi", "arxiv", "pmid")])
 SEEDS = {**array(SEED, 50), "minItems": 1}
+RESEARCH_STAGE = string(enum=["explore", "design", "implement", "interpret", "novelty"])
+RESEARCH_PROFILE = string(enum=["general", "machine_learning", "single_cell"])
+RESEARCH_ARGUMENTS = {"task": QUERY, "collection_id": ID, "stage": RESEARCH_STAGE,
+    "profile": RESEARCH_PROFILE, "focus_paper_ids": array(ID, 20),
+    "project_root": string(maxLength=4096),
+    "max_papers": integer(1, 50), "max_chars": integer(256, 100000)}
 READ_TOOLS = [
+    _definition("get_frontier", "Open a collection's curated key frontier reference space, original paths, versions, freshness and gaps. Curated selection is not a certification of exhaustive coverage.",
+        {"collection_id": ID}, ["collection_id"]),
+    _definition("prepare_research", "Prepare task/stage-specific navigation, curated anchors and discipline reading questions. Metadata only; no reading credit and no implicit network search.",
+        RESEARCH_ARGUMENTS, ["task", "collection_id"]),
+    _definition("begin_research", "Start a task-scoped research session before research decisions. Returns navigation and a session_id for original reading and the pre-synthesis check. Select focus_paper_ids only when those originals are necessary for this task.",
+        RESEARCH_ARGUMENTS, ["task", "collection_id"]),
+    _definition("read_research_material", "Read original text for a research session. Only returned nonempty original text counts as observed access; paths alone do not. Replay continuation arguments unchanged, including session_id, until the selected range is complete. Does not certify comprehension.",
+        {"session_id": ID, "material_id": ID, "view": string(enum=["text", "original"]),
+         "pages": array(integer(1, 100000), 100), "max_chars": integer(1, 20000),
+         "char_offset": integer(0, 100000000)}, ["session_id", "material_id"]),
+    _definition("extend_research", "Add task-relevant included papers found after initial navigation to this session. Keeps existing focus requirements and read receipts; does not count as reading or reset checks.",
+        {"session_id": ID, "paper_ids": {**array(ID, 20), "minItems": 1}}, ["session_id", "paper_ids"]),
+    _definition("check_research", "Check observed original reads before research synthesis. Reports unread focus papers, pending selected-range continuations and freshness limits. This is a procedural check, not scientific validation. Recheck after further reads.",
+        {"session_id": ID, "used_paper_ids": array(ID, 50)}, ["session_id"]),
+    _definition("end_research", "Release a finished research session in this connection. Its receipts are then unavailable; a host-bound active task cannot be ended by the model.",
+        {"session_id": ID}, ["session_id"]),
     _definition("list_sources", "List literature sources and their fields, coverage and availability.", {}),
     _definition("list_collections", "List available literature collections.", {}),
     _definition("list_papers", "Browse paper metadata in a collection or library without a search query, then choose original materials to inspect.",
@@ -64,6 +86,8 @@ READ_TOOLS = [
 ]
 
 WRITE_TOOLS = [
+    _definition("configure_frontier", "Explicitly curate key included papers and the discipline profile for a collection. Stores identifiers only; does not infer scientific authority from venue, age or citation counts.",
+        {"collection_id": ID, "paper_ids": array(ID, 20), "profile": RESEARCH_PROFILE}, ["collection_id", "paper_ids"]),
     _definition("create_collection", "Create a collection for a research topic.",
         {"name": string(minLength=1, maxLength=500), "description": string(maxLength=12000)}, ["name"]),
     _definition("update_collection", "Explicitly update shared collection defaults, including its discovery plan. Project configuration is not implicitly written back.",
@@ -183,11 +207,23 @@ class ToolRegistry:
                  collection_id: str | None = None):
         self.core = core
         self.collection_id = collection_id
+        from .usage import ResearchUsage
+        self.research = ResearchUsage(core)
+        self.required_session_id: str | None = None
         definitions = READ_TOOLS + (WRITE_TOOLS if allow_writes else []) + (LOCAL_TOOLS if local_admin and allow_writes else [])
         self._definitions = {item["function"]["name"]: deepcopy(item) for item in definitions}
 
     def specs(self) -> list[dict]:
         return deepcopy(list(self._definitions.values()))
+
+    def require_research_ready(self, session_id: str, *, used_paper_ids: list[str] | None = None,
+                               require_current_frontier: bool = False) -> dict:
+        """Trusted host hook immediately before accepting a research result."""
+        check = self.research.check(session_id, used_paper_ids=used_paper_ids)
+        if not check["ready"] or (require_current_frontier and not check["current_frontier_ready"]):
+            raise ResearchError("RESEARCH_USAGE_REQUIRED", "Research output requires original-material usage and the selected freshness policy",
+                                details={"research_usage": check})
+        return check
 
     def call(self, name: str, arguments: dict | None = None) -> dict:
         if name not in self._definitions:
@@ -196,10 +232,33 @@ class ToolRegistry:
             arguments = {} if arguments is None else arguments
             if isinstance(arguments, dict):
                 arguments = dict(arguments)
-                if (self.collection_id and name in ("list_papers", "list_materials", "search_library", "prepare_context")
+                if (self.collection_id and name in ("list_papers", "list_materials", "search_library", "prepare_context", "get_frontier", "prepare_research", "begin_research", "configure_frontier")
                         and "collection_id" not in arguments and not (name == "prepare_context" and arguments.get("project_root"))):
                     arguments["collection_id"] = self.collection_id
             _validate(arguments, self._definitions[name]["function"]["parameters"])
+            if self.required_session_id:
+                if name == "begin_research":
+                    raise ResearchError("RESEARCH_SESSION_BOUND", "The host already opened this task's research session; use its session_id. Start a new host run to change the task or research stage.")
+                if name in ("read_research_material", "check_research", "extend_research") and arguments["session_id"] != self.required_session_id:
+                    raise ResearchError("RESEARCH_SESSION_BOUND", "Use the host-bound research session for this task")
+                if name == "end_research":
+                    raise ResearchError("RESEARCH_SESSION_BOUND", "The host owns this active task's lifetime")
+            if name == "begin_research":
+                return success(self.research.begin(**arguments))
+            if name == "read_research_material":
+                return success(self.research.read(**arguments))
+            if name == "check_research":
+                return success(self.research.check(**arguments))
+            if name == "extend_research":
+                return success(self.research.extend(**arguments))
+            if name == "end_research":
+                return success(self.research.end(**arguments))
+            if name == "read_material" and self.required_session_id:
+                # Ordinary reads remain usable; the host observes their actual text too.
+                result = self.research.read(self.required_session_id, **arguments)
+                if result.get("continuation"):
+                    result["continuation"].pop("session_id", None)
+                return success(result)
             if name == "resume_job":
                 job_type = self.core.get_job(arguments["job_id"]).get("type")
                 if job_type not in ("discovery", "frontier", "citations"):

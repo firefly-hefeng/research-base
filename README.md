@@ -4,6 +4,10 @@ Research Base 面向实验室成员和科研 agent，负责多源发现文献、
 
 当前已有可运行的 Python 内核、CLI、可选 MCP 和 DeepSeek 工具调用 agent。默认采用本地文献库，多项目可以复用原件和索引。
 
+最新[前沿更新验证](docs/frontier-refresh-validation.md)已完成两个方向 2025—2026 明示查询范围的分页与新鲜度核验，加入 ACL Anthology 来源，并用新增论文及作者原代码修订[真实研究方案](examples/frontier-refresh/README.md)。已读原件、缺失全文和范围限制分别保留。
+
+[研究知识接口](docs/research-knowledge-interface.md)提供精选前沿参考空间和按任务、阶段、学科准备的原文入口。局部 AGENTS.md v2 要求实际读取；绑定集合的内置 agent 在输出前检查原文使用，未满足时返回缺口，创新性判断还须满足检索新鲜度。原始路径仍可直接使用，检查只验证访问过程，不替代科学判断。
+
 最新[研究工作流验证](docs/research-validation-round3.md)完成单细胞六条引用流、两个用例的逐条候选筛选与公开全文获取，并保留实际原件读取和独立复核后的研究方案。[公开验证摘要](examples/validated-cases/README.md)区分候选、可读全文、严格版本目标及模型阅读范围；原始论文和密钥保留在执行机器。
 
 ## 开始使用
@@ -47,6 +51,9 @@ research-base sources list
 | [第二轮议会](docs/council-round2.md) | 种子、引用、全文稳定性及科研接口交叉复评 |
 | [第二轮优化实现](docs/optimization-round2.md) | 种子恢复、独立引用图、分阶段获取和本轮验证口径 |
 | [科研 Agent 接口](docs/agent-api.md) | 工具接口、原始资料路径和 DeepSeek 接入 |
+| [研究知识接口](docs/research-knowledge-interface.md) | 前沿参考空间、阶段注入、原文使用检查与宿主接入 |
+| [本轮注入验证](docs/research-usage-validation.md) | 两个真实资料集、实际读取、科学复核及议会修复 |
+| [前沿更新验证](docs/frontier-refresh-validation.md) | 最新检索、新鲜度截止、近期原件与研究方案变化 |
 | [文献来源](docs/sources.md) | 来源覆盖、查询和分页限制、适配器扩展 |
 | [总体设计](docs/design.md) | 原则、模块边界、数据模型、存储组织、技术选型与首版范围 |
 | [接口和浏览器衔接](docs/interfaces.md) | 核心接口、任务状态、浏览器领取和交回协议、错误与幂等语义 |

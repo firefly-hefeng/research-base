@@ -220,9 +220,19 @@ class ProjectCore(Core):
         return {"collection_id": "c_project", "freshness": {"needs_refresh": True, "reason": "stale"},
                 "papers": [{"paper_id": "p1", "title": "Relevant Original Material"}], "gaps": []}
 
+    def prepare_research(self, task, **kwargs):
+        context = self.prepare_context(task, collection_id=kwargs["collection_id"],
+                                       max_papers=kwargs["max_papers"], max_chars=kwargs["max_chars"],
+                                       project_root=kwargs.get("project_root"))
+        return {"task": task, "stage": kwargs["stage"], "context": context,
+                "frontier": {}, "focus_paper_ids": [], "warnings": [], "project_root": kwargs.get("project_root")}
+
     def list_materials(self, **kwargs):
         self.material_queries.append(kwargs)
         return []
+
+    def get_paper(self, paper_id):
+        raise ResearchError("NOT_FOUND", "Navigation-only test fixture has no originals")
 
 
 def project_files(tmp_path, *, entry="AGENTS.md", rules="PROJECT RULE: compare current frontier before experiment design.", library="lib_project"):
@@ -253,8 +263,9 @@ def test_project_run_loads_actual_rules_prepares_context_once_and_scopes_tools(t
                 {"id": "materials", "type": "function", "function": {"name": "list_materials", "arguments": "{}"}}]}))
         return httpx.Response(200, json=completion({"role": "assistant", "content": "The collection is stale; verify newer work before finalizing."}))
     result = ResearchAgent(core, api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Design an experiment", project_root=root)
-    assert len(core.prepared) == 1
+    assert core.prepared[0][1]["collection_id"] == "c_project"
     assert core.prepared[0][1]["project_root"] == str(root.resolve())
+    assert sum(1 for item in core.prepared if item[1].get("max_chars") == 10000) == 1
     assert core.material_queries == [{"collection_id": "c_project"}]
     assert result["project_integration"]["rules_loaded"] is True
     assert result["project_integration"]["context_prepared"] is True

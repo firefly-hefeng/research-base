@@ -23,10 +23,11 @@ mcp_app = typer.Typer(no_args_is_help=True)
 sources_app = typer.Typer(no_args_is_help=True)
 library_app = typer.Typer(no_args_is_help=True)
 citations_app = typer.Typer(no_args_is_help=True)
+research_app = typer.Typer(no_args_is_help=True)
 for name, group in (("collection", collection_app), ("material", material_app), ("paper", paper_app),
                     ("worker", worker_app), ("job", job_app), ("browser", browser_app),
                     ("agent", agent_app), ("mcp", mcp_app), ("sources", sources_app), ("library", library_app),
-                    ("citations", citations_app)):
+                    ("citations", citations_app), ("research", research_app)):
     app.add_typer(group, name=name)
 
 
@@ -329,6 +330,29 @@ def acquire(ctx: typer.Context, collection: Annotated[str, typer.Option("--colle
     _invoke(ctx, "acquire_papers", collection, paper_ids=paper, request_id=request_id)
 
 
+@research_app.command("frontier")
+def research_frontier(ctx: typer.Context, collection: Annotated[str, typer.Option("--collection")]):
+    _invoke(ctx, "get_frontier", collection)
+
+
+@research_app.command("configure")
+def research_configure(ctx: typer.Context, collection: Annotated[str, typer.Option("--collection")],
+                       paper: Annotated[list[str] | None, typer.Option("--paper")] = None,
+                       profile: Annotated[str, typer.Option("--profile")] = "general"):
+    _invoke(ctx, "configure_frontier", collection, paper or [], profile=profile)
+
+
+@research_app.command("prepare")
+def research_prepare(ctx: typer.Context, task: Annotated[str, typer.Option("--task")],
+                     collection: Annotated[str, typer.Option("--collection")],
+                     project: Annotated[Path | None, typer.Option("--project")] = None,
+                     stage: Annotated[str, typer.Option("--stage")] = "design",
+                     profile: Annotated[str | None, typer.Option("--profile")] = None,
+                     focus: Annotated[list[str] | None, typer.Option("--focus")] = None):
+    _invoke(ctx, "prepare_research", task, collection_id=collection, stage=stage,
+            profile=profile, focus_paper_ids=focus, project_root=str(project) if project else None)
+
+
 @browser_app.command("claim")
 def browser_claim(ctx: typer.Context, worker: Annotated[str, typer.Option("--worker")],
                   session: Annotated[str, typer.Option("--session")] = "default",
@@ -400,11 +424,15 @@ def agent_run(ctx: typer.Context, task: str,
               collection: Annotated[str | None, typer.Option("--collection")] = None,
               project: Annotated[Path | None, typer.Option("--project", help="Explicit project whose local rules and task context should be loaded.")] = None,
               allow_writes: Annotated[bool, typer.Option("--allow-writes")] = False,
+              stage: Annotated[str, typer.Option("--stage", help="Research stage: explore/design/implement/interpret/novelty.")] = "design",
+              profile: Annotated[str | None, typer.Option("--profile")] = None,
+              focus: Annotated[list[str] | None, typer.Option("--focus", help="Task-specific originals that must be inspected.")] = None,
               max_steps: Annotated[int, typer.Option("--max-steps", min=1, max=32)] = 8):
     def action():
         from .agent import ResearchAgent
         with ResearchAgent(_base(ctx)) as agent:
-            return agent.run(task, collection_id=collection, project_root=project, allow_writes=allow_writes, max_steps=max_steps)
+            return agent.run(task, collection_id=collection, project_root=project, allow_writes=allow_writes,
+                max_steps=max_steps, research_stage=stage, profile=profile, focus_paper_ids=focus)
     _call(action)
 
 

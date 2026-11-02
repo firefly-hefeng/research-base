@@ -1,0 +1,110 @@
+{
+  "case_id": "single-cell-perturbation",
+  "artifact_kind": "local_research_agent_original_material_validation",
+  "agent_kind": "local_codex_research_agent",
+  "external_model_called": false,
+  "external_code_executed": false,
+  "manuscript_fulltexts_claimed": false,
+  "tool_chain": [
+    "begin_research",
+    "read_research_material",
+    "check_research",
+    "require_research_ready"
+  ],
+  "session_id": "research_f3d821c296064190ad19",
+  "read_calls": 7,
+  "unique_materials_read": 5,
+  "returned_characters": 20754,
+  "selected_ranges_complete": true,
+  "usage_ready": true,
+  "current_frontier_ready": true,
+  "host_publication_gate": "passed",
+  "freshness": {
+    "plan_fingerprint": "sha256:bf035a2ae3a5dd2f1fdd6ddb7cde764512fa77d13b5f68022553ba03d834a352",
+    "last_complete_search_at": "2026-11-02T18:16:56.126445Z",
+    "coverage_through": "2026-11-03",
+    "search_scope": {
+      "query": "Single-cell perturbation predictive modeling, benchmarking and generalization",
+      "sources": [
+        "europe_pmc",
+        "pubmed"
+      ],
+      "source_queries": {
+        "europe_pmc": "(TITLE_ABS:\"single-cell\" OR TITLE_ABS:\"single cell\") AND (TITLE_ABS:perturbation OR TITLE_ABS:perturbations) AND (TITLE_ABS:predict* OR TITLE_ABS:benchmark* OR TITLE_ABS:generalization OR TITLE_ABS:generalisation)",
+        "pubmed": "(\"single-cell\"[Title/Abstract] OR \"single cell\"[Title/Abstract]) AND perturbation[Title/Abstract] AND (predict*[Title/Abstract] OR benchmark*[Title/Abstract] OR generalization[Title/Abstract] OR generalisation[Title/Abstract])"
+      },
+      "date_from": "2025-01-01",
+      "date_to": "2026-11-03"
+    },
+    "needs_refresh": false,
+    "notice": "Freshness describes the completed provider queries and date window, not exhaustive field coverage or scientific quality."
+  },
+  "works": [
+    {
+      "paper_id": "paper_625a51d648c14fe08a83",
+      "title": "A split-control criterion for few-shot adaptation in single-cell perturbation prediction",
+      "doi": "10.64898/2026.10.05.756906",
+      "commit": "6789706cc63dfe0a60e7a717fb51c63590452422",
+      "read_materials": [
+        {
+          "material_id": "mat_81b806d8f0924ec08486",
+          "role": "supplement",
+          "repository_path": "docs/USAGE.md",
+          "source_url": "https://github.com/yyb2020/safedelta/blob/6789706cc63dfe0a60e7a717fb51c63590452422/docs/USAGE.md",
+          "sha256": "083191ab0c4564f1d30b1f4b3ee726228f89a238e73e5c0a95b4bf022eea3b9f"
+        },
+        {
+          "material_id": "mat_a487b2002dec43898970",
+          "role": "code",
+          "repository_path": "src/safedelta/adapter.py",
+          "source_url": "https://github.com/yyb2020/safedelta/blob/6789706cc63dfe0a60e7a717fb51c63590452422/src/safedelta/adapter.py",
+          "sha256": "ffe1c6bafcb3e00dd4572637a0438670c487590fd408447486c080dba1fcb5f7"
+        },
+        {
+          "material_id": "mat_a29a76757352446b9985",
+          "role": "code",
+          "repository_path": "src/safedelta/core.py",
+          "source_url": "https://github.com/yyb2020/safedelta/blob/6789706cc63dfe0a60e7a717fb51c63590452422/src/safedelta/core.py",
+          "sha256": "7210d2bb76d95f8affd6a2317b103d45b4ff0a874503d17d69756ea7e656c04b"
+        }
+      ]
+    },
+    {
+      "paper_id": "paper_0d5580a341c94a19b408",
+      "title": "PIE: Generalizing perturbation effects across unseen perturbations, contexts and datasets",
+      "doi": "10.64898/2026.10.02.756297",
+      "commit": "038940057545ae686db946ae247aeb0ff0101897",
+      "read_materials": [
+        {
+          "material_id": "mat_00471caa8c3440b2b079",
+          "role": "code",
+          "repository_path": "src/pie/configs/experiment/replogle_wdataset.yaml",
+          "source_url": "https://github.com/ArcInstitute/pie/blob/038940057545ae686db946ae247aeb0ff0101897/src/pie/configs/experiment/replogle_wdataset.yaml",
+          "sha256": "ee9ff26eb5c47eb0b97b16658ded07d42e9272bfbc41aad9f839bfcc00cf50ce"
+        },
+        {
+          "material_id": "mat_b6faac3c56cd4aa58c1f",
+          "role": "code",
+          "repository_path": "src/pie/configs/experiment/replogle_xdataset.yaml",
+          "source_url": "https://github.com/ArcInstitute/pie/blob/038940057545ae686db946ae247aeb0ff0101897/src/pie/configs/experiment/replogle_xdataset.yaml",
+          "sha256": "3939cb0f499faa2955d0c2c762d2c1960de3a02a4ed61826532a30d2ff7f095f"
+        }
+      ]
+    }
+  ],
+  "new_design_changes": [
+    "Separate zero-shot context/perturbation/joint and cross-dataset tests from calibration-based few-shot adaptation.",
+    "Add calibration-only empirical release versus retaining pooled-source predictions, with frozen adapter and scoring convention.",
+    "Split controls by independent experimental units where available; disjoint cells alone do not establish biological independence.",
+    "Preserve undefined PCC and complete paired scoring rows instead of zero-filling or dropping failures.",
+    "Pin PIE split/source revisions and audit actual training rows and evidence, rather than treating a target data directory as proof of training leakage."
+  ],
+  "remaining_limitations": [
+    "Only five author-released source/configuration documents were read, not the two manuscript PDFs.",
+    "Actual split JSON, datasets, additional source implementations and other new candidate full texts remain to be inspected.",
+    "No training, benchmark reproduction or scientific performance experiment ran.",
+    "Completed source queries and observed reading do not certify exhaustive academic coverage or scientific correctness."
+  ],
+  "scientific_correctness_certified": false,
+  "experiments_run": false
+}

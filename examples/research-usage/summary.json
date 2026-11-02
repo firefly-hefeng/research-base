@@ -1,0 +1,42 @@
+{
+  "validation_date": "2026-11-03",
+  "original_materials_published": false,
+  "cases": [
+    {
+      "case_id": "rag-evaluation",
+      "curated_papers": 5,
+      "required_papers_for_this_task": 2,
+      "metadata_only_blocked": true,
+      "paths_only_blocked": true,
+      "partial_selected_range_blocked": true,
+      "selected_ranges_complete": true,
+      "host_original_read_calls": 10,
+      "live_model_run": true,
+      "live_model_status": "completed_with_limits",
+      "model_original_read_calls": 3,
+      "model_returned_chars": 14359,
+      "current_frontier_ready": false,
+      "independent_scientific_corrections_required": true,
+      "external_original_scope": "Two approved materials; explicit physical-page allowlist; metadata-only navigation"
+    },
+    {
+      "case_id": "single-cell-perturbation",
+      "curated_papers": 5,
+      "required_papers_for_this_task": 2,
+      "metadata_only_blocked": true,
+      "paths_only_blocked": true,
+      "partial_selected_range_blocked": true,
+      "selected_ranges_complete": true,
+      "host_original_read_calls": 13,
+      "live_model_run": true,
+      "live_model_status": "completed_with_limits",
+      "model_original_read_calls": 4,
+      "model_returned_chars": 16104,
+      "current_frontier_ready": false,
+      "independent_scientific_corrections_required": true
+    }
+  ],
+  "experiments_run": false,
+  "scientific_correctness_certified": false,
+  "scope": "Checks original access and selected-range completion. Does not establish comprehension, exhaustive coverage, a new result, or measured efficiency gains."
+}

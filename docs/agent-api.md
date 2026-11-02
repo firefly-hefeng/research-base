@@ -10,14 +10,17 @@ Research Base 通过 Python、CLI 和可选 MCP 提供同一份文献库能力�
 
 这类路径只对能够访问库所在文件系统的宿主有效。DeepSeek API 收到一个本地绝对路径，并不能直接访问本机文件。内置 DeepSeek agent 因此使用 `read_material` 取得需要的文本；支持同机文件工具的其他宿主可以直接使用路径。远程 agent 应通过工具读取或显式导出的材料包取得内容，不能把服务器绝对路径当作跨机器下载地址。
 
-建议的调用顺序是：
+研究决策的推荐调用顺序是：
 
-1. 使用 `list_papers` 直接浏览集合并自行选文献，或用 `prepare_context`、`search_library` 找到与任务相关的论文。
-2. `get_paper` 查看论文与版本，`list_materials` 列出主文、附件、代码及数据入口。
-3. 按需要直接读取原件，或调用 `read_material(material_id, pages=[...])`。
-4. 需要移交其他工作环境时，由可信宿主显式调用 `export_collection` 导出集合与材料。
+1. `begin_research(task, collection_id, stage, profile)` 获取任务导航和精选前沿入口，可通过 focus_paper_ids 指定这次决策必须核对的论文。
+2. 用 `get_paper`、`list_materials` 或 `search_library` 自由选择材料与读取范围。
+3. `read_research_material(session_id, material_id, pages=[...])` 返回原文并登记实际返回范围；同机宿主也可通过可信读取器打开原件。
+4. 提交方案或结论前 `check_research(session_id, used_paper_ids=[...])`，处理缺失阅读、正文缺口和更新限制。
+5. 跨工作环境移交时，由可信宿主显式调用 `export_collection` 导出集合与材料。
 
-路径是读取入口，不代表内容已经被模型读过。扫描 PDF、提取失败和仅有外部链接的材料要保留状态，使用原件或宿主能力继续处理。
+文献浏览和资料管理仍可直接使用 `prepare_context`、`prepare_research`、`list_papers` 和普通 `read_material`，不要求创建会话。面向研究决策的完整用法和程序检查边界见[研究知识接口](research-knowledge-interface.md)。
+
+路径是读取入口，不代表内容已经被模型读过。同机宿主可用可信 `ResearchUsage.observe_read` 登记实际交付的文本；PDF 视觉阅读可在原件页图像真正交给模型后调用 `observe_visual_read`，记录物理页和已交付图像的 SHA256。两种回调均不暴露为模型工具，不能由模型自报代替宿主实际读取。扫描 PDF、提取失败和仅有外部链接的材料要保留状态，使用原件或宿主能力继续处理。
 
 `read_material` 截断时返回可直接重放的 `continuation` 参数对象，读完为 `null`。续读应原样传回该对象；其中 `pages` 保持原选择，`char_offset` 是这些页按物理页序拼接后的字符偏移。换成新的 `pages` 选择时必须把 `char_offset` 重置为 0，不能把上一选择的偏移带过去。`offset_scope` 说明这个范围；`next_page` 仅供导航，不能替代 `continuation`，也不能证明该页内容已经被读到。
 
@@ -44,11 +47,13 @@ result = registry.call("list_materials", {
 })
 ```
 
-默认工具包括 `list_sources`、`list_collections`、`list_papers`、`search_library`、`get_paper`、`list_materials`、`read_material`、`prepare_context` 和 `get_job`。`list_papers` 不要求检索词，支持 collection_id、成员状态、limit 和 offset，返回简要元数据、总数及 next_offset，便于 agent 分页浏览后自主选择材料。
+默认工具包括 `list_sources`、`list_collections`、`list_papers`、`search_library`、`get_paper`、`list_materials`、`read_material`、`prepare_context`、`get_frontier`、`prepare_research`、`begin_research`、`extend_research`、`read_research_material`、`check_research`、`end_research` 和 `get_job`。会话记录只保存本次调用的轻量读取范围，不更改文献或集合成员。`list_papers` 不要求检索词，支持 collection_id、成员状态、limit 和 offset，返回简要元数据、总数及 next_offset，便于 agent 分页浏览后自主选择材料。
 
 内置 agent 绑定 collection_id 后，省略集合参数的 list_papers、list_materials、search_library 和 prepare_context 默认使用该集合，避免一次列出整个库的材料。未绑定的通用注册表仍可全库浏览；调用方也可以显式指定其他集合。
 
-设置 `allow_writes=True` 才会提供创建集合、发现文献、改变纳入状态、批量获取和运行 worker 的工具。内置模型 agent 不获得任意文件路径导出、任意文件导入、shell 或代码执行工具。
+设置 `allow_writes=True` 才会提供创建集合、精选前沿配置 `configure_frontier`、发现文献、改变纳入状态、批量获取和运行 worker 的工具。内置模型 agent 不获得任意文件路径导出、任意文件导入、shell 或代码执行工具。
+
+Python 宿主可在接收研究输出前调用 `registry.require_research_ready(session_id, used_paper_ids=..., require_current_frontier=True)` 强制检查。会话 ID 由宿主保管；不满足时抛出 `RESEARCH_USAGE_REQUIRED`，不应接收为已完成研究结果。完整示例和视觉回调边界见[研究知识接口](research-knowledge-interface.md)。
 
 可信同机 MCP 服务使用 `allow_writes=True, local_admin=True`，额外提供材料导出和浏览器任务领取、续租、提交、恢复操作。它面向已授权使用本机库的宿主，不应未经鉴权改造成公共网络服务。
 
@@ -129,7 +134,7 @@ from research_base.core import ResearchBase
 base = ResearchBase("./.research-base/library")
 with ResearchAgent(base) as agent:
     result = agent.run(
-        "查找与当前实验设计相关的论文，并列出可以直接读取的原始材料",
+        "核对相关原文的实验条件、对照和指标，提出下一步实验设计",
         collection_id="实际集合ID",
         max_steps=8,
         max_tool_calls=24,
@@ -139,7 +144,9 @@ with ResearchAgent(base) as agent:
 
 `run` 默认只读。显式 `allow_writes=True` 允许模型为当前请求建立集合、检索、纳入和获取文献；浏览器操作仍由宿主完成。返回值包含最终答案、模型、用量汇总、调用工具名称和完成状态，不返回内部推理文本。
 
-模型正常完成时状态为 completed。达到轮次或上下文预算且此前工具调用已闭合时，程序压缩冗余导航元数据，优先保留实际读取的原文，再做一次不提供工具的最终合成；返回 completed_with_limits 和 limit_reason，要求答案说明全文、覆盖及更新方面的限制。该收尾不会增加工具调用次数。若工具调用预算在一个尚未闭合的批次中耗尽，则返回 tool_limit，不发送协议不完整的后续请求。达到预算和生成有限答案均不等于已完成全面研究。
+绑定集合或项目的研究任务在输出前由宿主执行使用检查，`completed` 或 `completed_with_limits` 要求当前会话读取检查通过。未满足时，在既有轮次和工具预算内最多提示模型补读两次；仍未满足则返回 `needs_materials` 和宿主生成的缺口说明，不把未经检查的科学草稿作为完成方案发布。返回值中的 `research_session_id` 和 `research_usage` 标明会话及检查结果。`current_frontier_ready` 与一般 `ready` 分开：创新性阶段还要求匹配检索新鲜度满足，其他阶段可在保留更新限制的前提下合成受限方案。检查使用当前检索状态；已声明的 used_paper_ids 阅读要求会累计保留，不会因后续省略参数而消失。未绑定集合的管理任务不启用该研究检查。
+
+达到轮次或上下文预算且此前工具调用已闭合时，程序可压缩冗余导航元数据，优先保留实际读取的原文，再做一次不提供工具的最终合成；使用检查仍须通过。通过后返回 completed_with_limits 和 limit_reason，要求答案说明全文、覆盖及更新方面的限制。若工具调用预算在一个尚未闭合的批次中耗尽，则返回 tool_limit，不发送协议不完整的后续请求。达到预算和检查通过均不等于已完成全面研究。
 
 ## 显式项目模式
 
@@ -153,11 +160,13 @@ with ResearchAgent(base) as agent:
 
 CLI 对应 `research-base agent run "设计下一步实验" --project ./my-research-project`；通过全局 --library 选择与该项目绑定身份一致的库。
 
-项目模式读取所选目录内的 `.research/config.yaml`，校验 library_id 和 collection_id，再按 integration.entry_file 读取规则；未配置时使用 AGENTS.md。文件必须位于明确选定的项目边界内，不向祖先或用户全局目录查找。规则内容加入 system 消息；模型请求前仅自动调用一次 prepare_context，将有界文献导航和 freshness 注入任务上下文，之后由模型选择具体原文读取。
+项目模式读取所选目录内的 `.research/config.yaml`，校验 library_id 和 collection_id，再按 integration.entry_file 读取规则；未配置时使用 AGENTS.md。文件必须位于明确选定的项目边界内，不向祖先或用户全局目录查找。规则内容加入 system 消息；模型请求前由宿主启动当前研究会话，将 session_id、有界文献导航、精选前沿、学科阅读问题和 freshness 注入任务上下文，之后由模型选择具体原文读取。绑定 collection_id 的模式也启用此会话检查。
+
+`run` 可通过 `research_stage="design"`、`profile` 和 `focus_paper_ids` 明确当前研究阶段、学科和必读论文。宿主创建的当前会话不可由模型新建另一个会话绕过；普通 `read_material` 调用也会计入当前会话，前提是读取实际原文且符合会话范围。后续发现需要的已纳入论文，可通过 `extend_research(session_id, paper_ids)` 扩展任务材料，不删除已有必读要求或读取记录。
 
 返回的 project_integration 包含 rules_loaded、rules_status、context_prepared、project_root 和实际入口文件。规则缺失或为空会明确报告，不能称为已加载；配置、库身份或路径边界错误则在模型请求前停止。规则过大或无法读取时也明确报错。运行过程只读，不安装、修改或恢复项目规则。
 
-project_integration 表明本次确实加载了哪些入口、是否准备了文献导航，不证明模型已理解或遵循全部研究要求。外部 MCP 宿主的规则加载仍由该宿主负责；这里的自动加载只适用于显式选择 project_root 的内置 agent。
+project_integration 表明本次确实加载了哪些入口、是否准备了文献导航；研究会话检查额外区分实际返回的原文和仅浏览导航。两者均不证明模型理解正确或文献覆盖完整。外部 MCP 宿主的规则加载仍由该宿主负责；这里的自动加载只适用于显式选择 project_root 的内置 agent。
 
 `plan_queries(task)` 可单独生成查询、同义词、来源选择和各来源检索式的 JSON 计划，不检索外部文献，也不修改集合。调用方可以审阅或调整后交给 `discover_papers`，便于接入现有科研工作流。
 

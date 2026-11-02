@@ -169,3 +169,40 @@ def test_recovery_never_overwrites_later_external_changes(tmp_path, monkeypatch)
 def test_template_copy_matches_repository_source():
     source = Path(__file__).parents[1] / "templates/AGENTS.research.md"
     assert source.read_text(encoding="utf-8").strip() == module.TEMPLATE
+
+
+@pytest.mark.parametrize("with_state", [False, True])
+def test_v1_rules_upgrade_without_changing_external_bytes(tmp_path, with_state):
+    prefix = b"\xef\xbb\xbf# Lab rules\r\n<!-- vesti:keep -->\r\n"
+    suffix = b"\r\n# Researcher additions\r\n"
+    legacy = module.LEGACY_TEMPLATE_V1.replace("\n", "\r\n").encode()
+    entry = tmp_path / "AGENTS.md"
+    if with_state:
+        attach(tmp_path)
+        state_path = tmp_path / ".research/state/binding.json"
+        state = json.loads(state_path.read_text())
+        state["managed_block_hash"] = module._hash(legacy)
+        state_path.write_text(json.dumps(state), encoding="utf-8")
+    entry.write_bytes(prefix + legacy + suffix)
+    diagnosis = doctor_project(tmp_path)
+    assert diagnosis["installed_template_version"] == 1
+    assert diagnosis["template_upgrade_available"] is True
+    assert attach(tmp_path)["status"] == "updated"
+    upgraded = entry.read_bytes()
+    assert upgraded.startswith(prefix) and upgraded.endswith(suffix)
+    assert b"begin_research" in upgraded and b"check_research" in upgraded
+    config = yaml.safe_load((tmp_path / ".research/config.yaml").read_text(encoding="utf-8"))
+    assert config["integration"]["template_version"] == 2
+    assert doctor_project(tmp_path)["template_upgrade_available"] is False
+    assert attach(tmp_path)["status"] == "unchanged"
+
+
+def test_edited_orphan_v1_rules_remain_a_conflict(tmp_path):
+    raw = module.LEGACY_TEMPLATE_V1.replace("prepare_context", "a_user_tool").encode()
+    entry = tmp_path / "AGENTS.md"
+    entry.write_bytes(raw)
+    with pytest.raises(ResearchError) as error:
+        attach(tmp_path)
+    assert error.value.code == "RULES_CONFLICT"
+    assert entry.read_bytes() == raw
+    assert not (tmp_path / ".research/config.yaml").exists()

@@ -1,6 +1,6 @@
 # 文献来源适配器
 
-当前提供八个可独立选择、分页和报告错误的开放来源。多来源能补充索引与学科覆盖，但结果存在重叠；来源数量不等于完整覆盖率。检索结果保留实际来源及标识符，交由文献库去重。
+当前提供九个可独立选择、分页和报告错误的开放来源。ACL Anthology 需显式指定官方集合与原生查询，默认通用检索仍选择其余八个来源。多来源能补充索引与学科覆盖，但结果存在重叠；来源数量不等于完整覆盖率。检索结果保留实际来源及标识符，交由文献库去重。
 
 | 规范名称 | 覆盖与用途 | 分页和注意事项 |
 | --- | --- | --- |
@@ -12,6 +12,7 @@
 | `semantic_scholar` | 跨学科学术图谱、开放 PDF 和外部标识关联 | bulk token；服务方每批最多 1000 条，不支持指定小批量，返回完整批次防止丢失数据 |
 | `doaj` | 多语言开放获取期刊论文，补充地区性期刊 | 页码；按官方 v4 定义每页最多 50；保留期刊国家、语言和原始全文入口 |
 | `datacite` | 仓储中的预印本、文本出版物、报告和学位论文 | 相关性排序及页码；前 10000 条上限显式报告；仅 publication 类型 |
+| `acl_anthology` | 明示 ACL/EMNLP/EACL/Findings 等官方会议集合的题名与摘要 | XML 快照 SHA256 绑定续接；需原生 JSON 查询；月份/年份范围不冒充精确发布日期 |
 
 PubMed 和 Europe PMC 有大量重叠，OpenAlex、Crossref、Semantic Scholar、DOAJ 和 DataCite 也并非彼此独立的文献集合。中文专门数据库和部分专业会议的覆盖仍需后续来源补充。HAL 已核对官方接口，但当前网络环境连接失败，因此暂不列入可用来源。
 
@@ -24,6 +25,10 @@ PubMed 和 Europe PMC 有大量重叠，OpenAlex、Crossref、Semantic Scholar�
 page_size 是单页期望大小，各来源限制见表。Semantic Scholar bulk 返回服务方完整批次，不在适配器中截掉多余结果；否则继续 token 会让被截数据永远丢失。调用方可以分批处理收到的结果。
 
 request_count 统计实际 HTTP 尝试数，包括 PubMed 的两步请求和瞬时错误重试。调用方在页边界检查预算时，最后一页可能略超出请求预算，应报告实际计数。
+
+ACL 的原生查询例如 `{"collections":["2025.acl","2025.findings","2026.acl","2026.emnlp","2026.findings"],"any":["retrieval augmented","retrieval-augmented","RAG"],"all":[]}`，经 source_queries.acl_anthology 传入，并显式选择该源。`any` 是任一词组、`all` 是全部词组；采用词边界匹配。Findings 的官方文件是 year.findings，acl/emnlp 属于其中的卷，不能猜成 year.findings-acl 文件。
+
+每个集合首次请求都获取当前官方 XML，后续页绑定同一 SHA256；跨进程重取后内容变化会返回 SOURCE_SNAPSHOT_CHANGED，要求另建检索，不假装无缝穷尽。失败、缺失、错误集合和不完整 XML 不当作空结果。单文件最多 25MB，缓存有界。适配器 request_count 可观察真实网络尝试；持久 job 的 requests 历史字段按至少一个预算单位计每次来源分页，因此缓存 ACL 页仍消耗预算单位，不能把它直接当成 HTTP 数。
 
 OpenAlex 当前无密钥时仅允许游标第一页，继续远程游标会返回 401。新任务因此使用官方支持的 basic paging；保存的页码状态固定单页大小，不能换大小续读。到 10000 条后返回 SOURCE_RESULT_LIMIT，不能报告已穷尽结果。旧远程游标仍需 OPENALEX_API_KEY，或另建无密钥检索任务；不会静默跳回第一页。见[官方分页说明](https://help.openalex.org/api/paging/)与[认证说明](https://help.openalex.org/api/authentication/)。
 
@@ -38,6 +43,8 @@ Crossref 使用 query.bibliographic，并显式设置 sort=score、order=desc。
 PubMed 保留调用方检索式和 NCBI 自动词语映射语义，不擅自把所有词强制改成 AND 或精确短语。适配器将 ESearch 返回的 querytranslation 和 warninglist 放入 SourcePage.warnings，调用方可在 job 来源提示中观察是否发生了同义词、MeSH 或 OR 扩展。对于非医学专有短语，可由研究者或 agent 显式通过 source_queries.pubmed 提供带 Title/Abstract 标签、引号和布尔运算的检索式；此选择应有意识地权衡召回和相关性。
 
 arXiv 元数据中的期刊 DOI 通常指向正式版。适配器将其放在 Candidate.extra.published_doi，保持预印本 Candidate.doi 为空并保留带版本的 arXiv 标识，避免把预印本与正式版误当成同一版本。其他跨源标识冲突由库的身份管理层处理。
+
+arXiv 初投与版本更新时间、Europe PMC 首次发表/入库/更新日期及 ACL 发表月份按原来源保留。get_paper.publication_history 提供有来源、版本和观察时间的轻量日期记录，不把索引更新当发表、把 2026 修订当初投，或从 DOI 内数字猜发布日期。
 
 DataCite 的 10.48550/arXiv.* DOI 则标识预印本自身：保留这个 DOI，同时关联 arxiv 标识并标记为 preprint，即使资源通用类型写作 Text 也不把它认作正式发表版。对于其他仓储文献，无法确认版本时保持 unknown。
 
@@ -57,7 +64,8 @@ PubMed 超过 10000 条的结果在到达上限时返回 SOURCE_RESULT_LIMIT，�
 - [Semantic Scholar API](https://api.semanticscholar.org/api-docs/graph)。
 - [DOAJ 官方 API 定义](https://doaj.org/api/v4/swagger.json)。
 - [DataCite 查询和过滤](https://support.datacite.org/docs/api-queries) 与 [分页规则](https://support.datacite.org/docs/pagination)。
+- [ACL Anthology 数据与开发](https://aclanthology.org/info/development/)及其[官方 XML 数据目录](https://github.com/acl-org/acl-anthology/tree/master/data/xml)。
 
-tests/test_sources.py 使用 HTTP 模拟样本检查八来源归一、日期参数、分页、版本关联、真实请求计数、限流和错误脱敏。实时服务结果与网络环境另作显式冒烟检查，不把实时排序和特定论文数量写成稳定测试断言。
+tests/test_sources.py 与 tests/test_acl_source.py 使用 HTTP 模拟样本检查来源归一、日期参数、分页、版本关联、快照变化、真实请求计数、限流和错误脱敏。实时服务结果与网络环境另作显式冒烟检查，不把实时排序和特定论文数量写成稳定测试断言。
 
 新增来源另有 DOAJ 多语言期刊、两页游标、年粒度日期、DataCite 排除数据集及预印本归类等检查。2026 年 11 月 2 日实际通过 DOAJ 与 DataCite 各两页检索，记录与优先级评审见[来源议员评审](council-sources.md)。

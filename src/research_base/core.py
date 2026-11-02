@@ -14,9 +14,10 @@ from .storage import Store, dumps, loads, now, uid
 from .jobs import JobsMixin
 from .workflows import DiscoveryWorkflowsMixin
 from .identity import observed_identifiers
+from .research import ResearchSpaceMixin
 
 
-class ResearchBase(MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
+class ResearchBase(ResearchSpaceMixin, MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
     def __init__(self, library_path, *, source_registry=None, client=None, max_file_bytes=100 * 1024 * 1024, scholarly_client=None):
         self.store = Store(library_path)
         self.root, self.library_id = self.store.root, self.store.library_id
@@ -247,6 +248,16 @@ class ResearchBase(MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
             placeholders = ",".join("?" for _ in related)
             versions = [{"version_id": v["id"], "paper_id": v["paper_id"], "kind": v["kind"], "metadata": loads(v["metadata"])} for v in db.execute("SELECT * FROM versions WHERE paper_id IN (" + placeholders + ") ORDER BY id", related)]
             records = [{"source": r[0], "source_id": r[1]} for r in db.execute("SELECT source,source_id FROM source_records WHERE paper_id=?", (paper_id,))]
+            date_observations = []
+            date_keys = ("publication_date", "first_publication_date", "first_submitted_at", "version_updated_at",
+                         "publication_month", "publication_year", "publication_date_precision", "publication_interval_start",
+                         "publication_interval_end", "archive_posted_date", "archive_version", "index_updated_at", "first_index_date")
+            for record in db.execute("SELECT source,source_id,version_id,metadata,fetched_at FROM source_records WHERE paper_id IN (" + placeholders + ") ORDER BY fetched_at DESC", related):
+                extra = loads(record[3], {}).get("extra", {})
+                observed = {key: extra[key] for key in date_keys if extra.get(key) not in (None, "")}
+                if observed:
+                    date_observations.append({"source": record[0], "source_id": record[1], "version_id": record[2],
+                                              "observed_at": record[4], "dates": observed})
             memberships = [{"collection_id": r[0], "status": r[1]} for r in db.execute("SELECT collection_id,status FROM memberships WHERE paper_id=?", (paper_id,))]
             tags = [r[0] for r in db.execute("SELECT tag FROM paper_tags WHERE paper_id=? ORDER BY tag", (paper_id,))]
         materials = self.list_materials(paper_id=paper_id)
@@ -262,6 +273,7 @@ class ResearchBase(MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
                     version["metadata"]["abstract_truncated"] = True
         return {**data, "paper_id": paper_id, "preferred_version_id": row["preferred_version_id"], "versions": versions,
                 "sources": records, "memberships": memberships, "materials": materials, "tags": tags, "related_paper_ids": [p for p in related if p != paper_id],
+                "publication_history": date_observations[:32], "publication_history_truncated": len(date_observations) > 32,
                 "fulltext_available": any(m["role"] == "main_text" and m["status"] == "available" and m["exists"] for m in materials),
                 "text_searchable": any(m["role"] == "main_text" and m["status"] == "available" and m["parse_status"] == "ready" for m in materials)}
 
@@ -420,6 +432,9 @@ class ResearchBase(MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
         max_chars = max_chars if max_chars is not None else context_defaults.get("max_chars", 12000)
         freshness_defaults = {**collection["config"].get("freshness", {}), **config.get("freshness", {})}
         freshness_days = freshness_days if freshness_days is not None else freshness_defaults.get("max_age_days", 30)
+        if (not isinstance(freshness_days, int) or isinstance(freshness_days, bool)
+                or not 0 <= freshness_days <= 36500):
+            raise ResearchError("INVALID_ARGUMENT", "freshness_days must be an integer in 0..36500")
         if not isinstance(max_papers, int) or not isinstance(max_chars, int) or not 1 <= max_papers <= 50 or not 256 <= max_chars <= 200000:
             raise ResearchError("INVALID_ARGUMENT", "Invalid context budget")
         discovery = config.get("discovery") or collection["config"].get("discovery") or {}
@@ -438,10 +453,19 @@ class ResearchBase(MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
             run = db.execute("SELECT * FROM search_runs WHERE collection_id=? AND fingerprint=?", (collection_id, fingerprint)).fetchone() if fingerprint else None
             other_run = db.execute("SELECT 1 FROM search_runs WHERE collection_id=? LIMIT 1", (collection_id,)).fetchone()
         reason = None if run else "scope_changed" if other_run else "never_completed"
+        age, coverage_age = None, None
         if run:
-            age = (datetime.now(timezone.utc) - datetime.fromisoformat(run["completed_at"].replace("Z", "+00:00"))).total_seconds() / 86400
+            checked_now = datetime.now(timezone.utc)
+            age = (checked_now - datetime.fromisoformat(run["completed_at"].replace("Z", "+00:00"))).total_seconds() / 86400
             if age > freshness_days:
                 reason = "stale"
+            try:
+                coverage_date = datetime.fromisoformat(run["coverage_through"][:10]).date()
+                coverage_age = (checked_now.date() - coverage_date).days
+                if coverage_age > freshness_days and reason is None:
+                    reason = "coverage_stale"
+            except (ValueError, TypeError):
+                reason = "coverage_unknown"
         result = self.search_library(task, collection_id=collection_id, limit=max_papers)
         papers, used, truncated, gaps = [], 0, bool(result["next_offset"]), []
         for full in result["papers"]:
@@ -466,12 +490,16 @@ class ResearchBase(MaterialsMixin, DiscoveryWorkflowsMixin, JobsMixin):
             gaps.append({"reason": "no_local_matches"})
         return {"collection_id": collection_id, "collection_revision": collection["revision"], "task": task, "generated_at": now(),
                 "freshness": {"plan_fingerprint": fingerprint, "scope_basis": scope_basis, "last_complete_search_at": run["completed_at"] if run else None,
-                              "coverage_through": run["coverage_through"] if run else None, "needs_refresh": reason is not None, "reason": reason},
+                              "coverage_through": run["coverage_through"] if run else None,
+                              "search_scope": {key: discovery.get(key) for key in ("query", "sources", "source_queries", "date_from", "date_to")},
+                              "checked_age_days": age, "coverage_age_days": coverage_age,
+                              "max_age_days": freshness_days, "needs_refresh": reason is not None, "reason": reason,
+                              "notice": "Freshness describes the completed provider queries and date window, not exhaustive field coverage or scientific quality."},
                 "papers": papers, "gaps": gaps, "truncated": truncated, "limits": {"max_papers": max_papers, "max_chars": max_chars},
                 "access": {"mode": "local_filesystem", "note": "local_path/text_path may be read directly by agents on this machine; otherwise use read_material or export a bundle"}}
 
     def _plan_fingerprint(self, plan):
         normalized = {k: plan.get(k) for k in ("query", "sources", "source_queries", "date_from", "date_to")}
-        normalized["sources"] = sorted(normalized.get("sources") or [s["name"] for s in self.list_sources()])
+        normalized["sources"] = sorted(normalized.get("sources") or [s["name"] for s in self.list_sources() if s.get("default_enabled", True)])
         normalized["source_queries"] = normalized.get("source_queries") or {}
         return "sha256:" + hashlib.sha256(dumps(normalized).encode()).hexdigest()

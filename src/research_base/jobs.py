@@ -60,7 +60,8 @@ class JobsMixin:
         if not isinstance(query, str) or not query.strip():
             raise ResearchError("INVALID_ARGUMENT", "Search query is required")
         available = {s["name"] for s in self.list_sources()}
-        sources = sources or list(available)
+        if not sources:
+            sources = [s["name"] for s in self.list_sources() if s.get("default_enabled", True)]
         if not sources or set(sources) - available:
             raise ResearchError("INVALID_ARGUMENT", "Unknown literature source", details={"available_sources": sorted(available)})
         from datetime import date

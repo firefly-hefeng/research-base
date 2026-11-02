@@ -1,0 +1,61 @@
+{
+  "case_id": "rag-evaluation",
+  "artifact_kind": "local_research_agent_original_based_revision",
+  "agent_kind": "local_research_agent",
+  "external_model_called": false,
+  "original_materials_exported": false,
+  "experiments_run": false,
+  "scientific_correctness_certified": false,
+  "actual_tool_flow": ["begin_research", "read_research_material", "check_research", "require_research_ready"],
+  "read_calls": 7,
+  "returned_characters": 30370,
+  "selected_ranges_complete": true,
+  "usage_check_passed": true,
+  "current_frontier_ready": true,
+  "matching_search_scope": {
+    "date_from": "2025-01-01",
+    "date_to": "2026-11-03",
+    "sources": ["acl_anthology", "arxiv"],
+    "acl_collections": ["2025.acl", "2025.emnlp", "2025.findings", "2026.acl", "2026.emnlp", "2026.findings", "2026.eacl"],
+    "query_purpose": "Text RAG evaluation, factuality, calibration and retrieval robustness",
+    "verification_method": "The component returned the matching persisted completed search checkpoint; the local agent did not independently repeat every provider request.",
+    "exhaustive_field_coverage_claimed": false
+  },
+  "papers": [
+    {
+      "paper_id": "paper_bca044d62a284ca8a881",
+      "title": "FRESCO: Benchmarking and Optimizing Re-rankers for Evolving Semantic Conflict in Retrieval-Augmented Generation",
+      "doi": "10.18653/2026.findings-emnlp.54",
+      "physical_pages": [3, 4, 21],
+      "returned_characters": 13380,
+      "source_url": "https://aclanthology.org/2026.findings-emnlp.54/",
+      "design_change": "Separate semantic sufficiency from temporal validity; evaluate explicit/implicit recency queries and static controls under fixed budgets.",
+      "interpretation_guard": "Newer timestamps alone do not establish relevance or validity. The obsolete-ratio formula was not read and is not claimed as reproduced."
+    },
+    {
+      "paper_id": "paper_4ce0597511d144938cfe",
+      "title": "The Bottleneck Is Retrieval, Not Reading: Diagnosing Evidence-Based Generation with RAG for Long Context Question Answering",
+      "arxiv": "2610.26951v1",
+      "physical_pages": [3, 4],
+      "returned_characters": 8504,
+      "source_url": "https://arxiv.org/abs/2610.26951",
+      "design_change": "Separate evidence availability, evidence utilization and joint answer/evidence correctness; add controlled multi-fact, position and context-length diagnostics.",
+      "interpretation_guard": "The joint metric is a conjunction, not a sum; no universal long-context superiority or new empirical result is inferred."
+    },
+    {
+      "paper_id": "paper_4564ea050ae3475cae93",
+      "title": "RARE: Redundancy-Aware Retrieval Evaluation Framework for High-Similarity Corpora",
+      "doi": "10.18653/v1/2026.acl-long.923",
+      "physical_pages": [6, 7],
+      "returned_characters": 8486,
+      "source_url": "https://aclanthology.org/2026.acl-long.923/",
+      "design_change": "Include verified equivalent support and report partial required-information coverage separately from complete coverage; stratify similarity, redundancy and hop count.",
+      "interpretation_guard": "Alternate valid evidence is not automatically wrong; redundant information is not counted repeatedly; cross-domain associations do not establish independent causal effects."
+    }
+  ],
+  "remaining_work": [
+    "Inspect exact implementation, code and restrictions before claiming reproduction of any complete paper method.",
+    "Validate labels and temporal facts, then perform the proposed controlled experiments and uncertainty analysis.",
+    "Continue updating the scoped search and checking unindexed sources or later versions; successful freshness checks do not certify the whole field."
+  ]
+}

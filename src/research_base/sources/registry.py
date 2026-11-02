@@ -210,7 +210,9 @@ class OpenAlex:
                                     doi=doi(item.get("doi")), abstract=abstract, identifiers=ids,
                                     version_kind=kind, landing_url=location.get("landing_page_url") or item.get("doi")
                                     or item.get("id"), fulltext_urls=pdfs, links=links,
-                                    references=item.get("referenced_works") or []))
+                                    references=item.get("referenced_works") or [],
+                                    extra={"publication_date": item.get("publication_date"),
+                                           "index_updated_at": item.get("updated_date")}))
         if basic_page is not None:
             next_cursor = f"oa-basic:{basic_page + 1}:{size}" if result and basic_page * size < total else None
             warnings = ["OpenAlex keyless basic paging covers at most 10000 results; indexed results can change between pages."]
@@ -346,7 +348,9 @@ class Arxiv:
                                     abstract=xml_text(entry.find("a:summary", ns)),
                                     identifiers={"arxiv": arxiv_id}, version_kind="preprint",
                                     landing_url=url, fulltext_urls=pdfs,
-                                    extra={"published_doi": doi(entry.findtext("ax:doi", "", ns))}))
+                                    extra={"published_doi": doi(entry.findtext("ax:doi", "", ns)),
+                                           "first_submitted_at": entry.findtext("a:published", "", ns),
+                                           "version_updated_at": entry.findtext("a:updated", "", ns)}))
         offset = start + len(result)
         return SourcePage(items=result, next_cursor=str(offset) if result and offset < total else None, total=total,
                           warnings=["arXiv date filtering uses submission date, not journal publication date."]
@@ -405,7 +409,10 @@ class EuropePMC:
                                     authors=authors, year=year(item.get("pubYear")), doi=doi(item.get("doi")),
                                     abstract=clean(item.get("abstractText")), identifiers=ids, version_kind=kind,
                                     landing_url=f"https://europepmc.org/article/{item.get('source', 'MED')}/{item['id']}",
-                                    fulltext_urls=unique(pdfs), links=links))
+                                    fulltext_urls=unique(pdfs), links=links,
+                                    extra={"first_publication_date": item.get("firstPublicationDate"),
+                                           "first_index_date": item.get("firstIndexDate"),
+                                           "index_updated_at": item.get("dateOfRevision")}))
         next_cursor = data.get("nextCursorMark")
         if not result or next_cursor == (cursor or "*"):
             next_cursor = None
@@ -568,6 +575,9 @@ class SourceRegistry:
         for cls in [OpenAlex, Crossref, Arxiv, EuropePMC, PubMed, SemanticScholar, DOAJ, DataCitePublications]:
             adapter = cls(self.transport)
             self.register(adapter.info["name"], adapter)
+        from .acl import AclAnthology
+        anthology = AclAnthology(self.transport)
+        self.register(anthology.info["name"], anthology)
 
     def register(self, name: str, adapter: SourceAdapter) -> None:
         if not name or not callable(getattr(adapter, "search", None)):

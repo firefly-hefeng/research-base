@@ -48,6 +48,12 @@ class FakeBase:
     def retry_acquisition(self, job_id, refresh_locations=True):
         return {"job_id": job_id, "refresh_locations": refresh_locations}
 
+    def configure_frontier(self, collection_id, paper_ids, profile="general"):
+        return {"collection_id": collection_id, "paper_ids": paper_ids, "profile": profile}
+
+    def prepare_research(self, task, **kwargs):
+        return {"task": task, **kwargs}
+
     def list_materials(self, paper_id=None, collection_id=None, include_paths=True):
         return [{"material_id": "mat-test", "local_path": "C:/library/article.pdf" if include_paths else None}]
 
@@ -71,6 +77,19 @@ def test_help_and_source_listing(monkeypatch, tmp_path):
     result = runner.invoke(app, ["--library", str(tmp_path / "library"), "--json", "sources", "list"])
     assert result.exit_code == 0, result.output
     assert json.loads(result.output)["data"] == [{"name": "openalex"}]
+
+
+def test_research_commands_preserve_stage_and_explicit_focus(monkeypatch):
+    install_fake(monkeypatch)
+    configured = runner.invoke(app, ["research", "configure", "--collection", "c", "--paper", "p1",
+                                      "--paper", "p2", "--profile", "single_cell"])
+    assert configured.exit_code == 0, configured.output
+    assert json.loads(configured.output)["data"]["paper_ids"] == ["p1", "p2"]
+    prepared = runner.invoke(app, ["research", "prepare", "--collection", "c", "--task", "Generalization",
+                                    "--stage", "novelty", "--focus", "p2"])
+    assert prepared.exit_code == 0, prepared.output
+    data = json.loads(prepared.output)["data"]
+    assert data["stage"] == "novelty" and data["focus_paper_ids"] == ["p2"]
 
 
 def test_create_collection_and_material_paths(monkeypatch, tmp_path):

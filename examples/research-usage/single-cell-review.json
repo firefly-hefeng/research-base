@@ -1,0 +1,45 @@
+{
+  "case_id": "single-cell-perturbation",
+  "artifact_kind": "independent_review",
+  "separate_from_raw_model_output": true,
+  "review_scope": "Only the specified original physical pages were independently checked; neither entire paper was reviewed.",
+  "papers": [
+    {
+      "paper_id": "paper_3ac2aab34bb9494695a4",
+      "title": "Deep learning perturbation models can outperform baselines on calibrated metrics",
+      "physical_pages": [3],
+      "returned_chars": 8645
+    },
+    {
+      "paper_id": "paper_b7ab84fca5f6485aa5a1",
+      "title": "Spurious correlation inflates performance in single-cell perturbation prediction",
+      "physical_pages": [2, 3],
+      "returned_chars": 7459
+    }
+  ],
+  "model_read_calls": 4,
+  "model_returned_chars": 16104,
+  "selected_ranges_complete": true,
+  "usage_check_passed": true,
+  "current_frontier_ready": false,
+  "scientific_correctness_certified": false,
+  "experiments_run": false,
+  "supported_design_changes": [
+    "Report complementary metric families and test sensitivity to data quality.",
+    "Evaluate combinatorial prediction beyond a single sparsely covered dataset.",
+    "Compare shared-control and independently split-control estimates with repeated splits."
+  ],
+  "corrections": [
+    "Interpolated duplicate accesses held-out data: use it only for evaluation calibration or an upper-bound reference, separated from predictors and tuning.",
+    "PCA-linear and additive predictors are baselines, not automatically positive controls.",
+    "Control splitting does not guarantee correct rankings on a new dataset; attenuation and variability require validation.",
+    "A nonzero null estimate does not by itself establish leakage.",
+    "The shared-control correction does not automatically apply to every Pearson delta definition.",
+    "Poor calibration in the reported settings does not establish universal MSE or Pearson underestimation."
+  ],
+  "remaining_work": [
+    "Read exact metric definitions, Methods, supplementary details and relevant code before fixing the implementation.",
+    "Validate rankings, uncertainty and generalization in the intended experimental setting.",
+    "Refresh the matching literature search and inspect other key work before making current-frontier or novelty claims."
+  ]
+}

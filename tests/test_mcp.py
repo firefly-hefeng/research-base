@@ -27,10 +27,21 @@ def _stdio_smoke(library):
                 listed = await session.list_tools()
                 names = {tool.name for tool in listed.tools}
                 assert {"search_library", "read_material", "list_materials", "prepare_context", "export_collection", "claim_browser_task", "import_material", "confirm_material_identity", "discover_frontier", "expand_citations", "retry_acquisition", "resume_job", "cancel_job"} <= names
+                assert {"get_frontier", "configure_frontier", "prepare_research", "begin_research",
+                        "extend_research", "read_research_material", "check_research", "end_research"} <= names
                 created = await session.call_tool("create_collection", {"name": "MCP collection"})
                 assert not created.isError
                 payload = json.loads(created.content[0].text)
                 collection_id = payload["data"]["collection_id"]
+                begun = await session.call_tool("begin_research", {"task": "Design an evaluation", "collection_id": collection_id})
+                assert not begun.isError
+                research_id = json.loads(begun.content[0].text)["data"]["session_id"]
+                checked = await session.call_tool("check_research", {"session_id": research_id})
+                assert not json.loads(checked.content[0].text)["data"]["ready"]
+                ended = await session.call_tool("end_research", {"session_id": research_id})
+                assert json.loads(ended.content[0].text)["data"]["status"] == "ended"
+                stale_session = await session.call_tool("check_research", {"session_id": research_id})
+                assert stale_session.isError
                 listed_collections = await session.call_tool("list_collections", {})
                 assert json.loads(listed_collections.content[0].text)["data"][0]["collection_id"] == collection_id
                 frontier = await session.call_tool("discover_frontier", {

@@ -110,7 +110,7 @@ def test_crossref_dates_abstract_and_pdf_link():
 
 ARXIV_XML = b'''<feed xmlns="http://www.w3.org/2005/Atom" xmlns:op="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom">
 <op:totalResults>5</op:totalResults><entry><id>http://arxiv.org/abs/2501.00001v2</id><title>Example preprint</title>
-<published>2025-01-01T00:00:00Z</published><author><name>Example Author</name></author><summary>A preprint summary.</summary>
+<published>2025-01-01T00:00:00Z</published><updated>2026-10-12T00:00:00Z</updated><author><name>Example Author</name></author><summary>A preprint summary.</summary>
 <arxiv:doi>10.1234/published-version</arxiv:doi><link title="pdf" type="application/pdf" href="https://arxiv.org/pdf/2501.00001v2"/>
 </entry></feed>'''
 
@@ -128,6 +128,8 @@ def test_arxiv_version_and_published_doi_are_not_conflated():
     assert item.version_kind == "preprint"
     assert item.doi is None
     assert item.extra["published_doi"] == "10.1234/published-version"
+    assert item.extra["first_submitted_at"] == "2025-01-01T00:00:00Z"
+    assert item.extra["version_updated_at"] == "2026-10-12T00:00:00Z"
     assert page.next_cursor == "3"
     assert page.warnings
 
@@ -261,7 +263,8 @@ def test_registry_extensions_and_validation():
             return SourcePage(items=[Candidate(source="custom", source_id="1", title=query)])
 
     source = registry(lambda request: pytest.fail("custom adapter has no network"))
-    assert len(source.list_sources()) == 8
+    assert len(source.list_sources()) == 9
+    assert next(item for item in source.list_sources() if item["name"] == "acl_anthology")["default_enabled"] is False
     source.register("custom", Custom())
     assert source.search_page("custom", "A query").items[0].title == "A query"
     for kwargs in [{"page_size": 0}, {"date_from": "tomorrow"}, {"date_from": "2026-01-01", "date_to": "2025-01-01"}]:
