@@ -50,7 +50,7 @@ Research Base 将研究项目绑定到一个文献 collection，再提供可被�
 <!-- research-base:managed:end -->
 ```
 
-规则通过 `.research/config.yaml` 查找集合，因此更换 collection 通常只需修改配置。v3 规则在原件读取要求上增加[关键细节与最终稿复核](checked-reading.md)，要求：
+规则通过 `.research/config.yaml` 查找集合，因此更换 collection 通常只需修改配置。v4 规则在[关键细节与最终稿复核](checked-reading.md)上明确默认严格研究与显式探索的区别，要求：
 
 1. 关键研究任务开始或阶段变化时调用 `begin_research`，查看任务导航、精选前沿入口与缺口。
 2. 按任务实际读取原文、必要的代码及附件，核对方法、假设、实验条件、对照、指标与局限。
@@ -79,9 +79,9 @@ manual 切换到 agents 复用上述规则安装；agents 切换到 manual 复�
 
 `attach` 既可安装也可重复执行更新。区块未被外部修改时，仅替换组件标记范围内的内容；区块外字节、原有 BOM 和换行保持不变。配置只更新本次显式指定的绑定或集成字段，其余设置保留。
 
-如果当前区块与已保存哈希不符，返回 RULES_CONFLICT 并保留原文。若是新克隆项目尚无本机状态，只有区块与已知 v1、v2 或当前模板完全一致时才可直接建立本机状态；其他情况保留原文并返回冲突。
+如果当前区块与已保存哈希不符，返回 RULES_CONFLICT 并保留原文。若是新克隆项目尚无本机状态，只有区块与已知 v1、v2、v3 或当前模板完全一致时才可直接建立本机状态；其他情况保留原文并返回冲突。
 
-出现半截标记、重复、嵌套区块或不明确的入口时停止自动更新，不猜测替换范围。重复 attach 可将未被改动的 v1/v2 受管区块升级为 v3，并将 template_version 更新为 3；区块外的原有规则、BOM 和换行仍保留。
+出现半截标记、重复、嵌套区块或不明确的入口时停止自动更新，不猜测替换范围。重复 attach 可将未被改动的 v1/v2/v3 受管区块升级为 v4，并将 template_version 更新为 4；区块外的原有规则、BOM 和换行仍保留。
 
 ### 卸载
 
@@ -116,6 +116,12 @@ research-base context --project . --task "当前研究任务"
 集合过期时补充发现、种子恢复或引用扩展，筛选后再纳入和获取。不能立即拿到全文的工作保持可见，研究分析注明实际读取范围。不能通过重新生成导航或重复 begin_research 将旧检索变成新检索。
 
 Python 宿主可在提交步骤使用 `ToolRegistry.require_research_ready`，根据输出是否声称当前前沿设置 require_current_frontier。会话 ID 应由宿主保存，不交给模型替换。外部 MCP 宿主必须真正加载规则，并在提交步骤检查当前任务和阶段的会话；只接入工具的宿主仍可忽略工具，因此组件不能单方面强制它。内置 agent 的检查范围、状态和接口示例见[研究知识接口](research-knowledge-interface.md)。
+
+内置 `ResearchAgent.run` 绑定项目或集合时默认 `research_mode="strict"`。任务检索命中作为 `suggested_focus_paper_ids` 提示，独立规划可从全部有限关键入口中重新选择最多三篇相关必读原件并说明理由；只有显式宿主 focus 才是不可替换的 `selected_focus_paper_ids`。无相关入口不能用其他全文凑数。默认规划每篇恰好提出一个短的、单一决策细节问题，不穷举整篇论文的方法/指标，不预设某种过滤、控制或阈值存在，也不预写科学答案。未读信息可在限定范围内保留 unknown，并在方案中避免依赖它；这不代表证明整篇论文没有该信息。显式宿主 `critical_checks` 仍支持至多八个问题。关键空间未配置或无法建立可信任务策略时明确报错；检索未更新、未读完整选择范围、细节未通过或末稿未通过时不发布严格研究完成。
+
+默认使用已配置 DeepSeek 的独立请求进行规划、细节审核和末稿审核，不共享科研 agent 的对话或思考过程。规划只发送任务及有限元数据；审核只发送本会话已返回的必要原件片段和待审方案，去除宿主路径和项目定位信息，不读取或上传项目源码。每轮最多十六次附加调用，`auxiliary_model_calls` 分别记录类型、状态及供应商返回的 token 用量；这些用量另于科研对话 `usage` 记录，不按未知单价估算费用。同模型独立请求仍可能共同犯错。
+
+已有宿主可传入 `critical_checks` 或 `critical_planner`，以及可信 `detail_reviewer`、`synthesis_reviewer`；设置 `automatic_review=False` 可禁止默认外部规划/审核。显式 `research_mode="explore"` 或 CLI `--research-mode explore` 保留轻量探索，结果标为 `exploration_completed`，不能作为严格研究完成。底层 `ResearchUsage.begin` 和 MCP `begin_research` 保持普通读取模式，返回的 `policy`、`enforcement` 会明确其边界；外部可信宿主使用 `ToolRegistry.begin_bound_research` 建立 strict 会话，并通过 `require_checked_synthesis` 接收实际最终稿。只有该最终稿接收回执中的 `strict_research_completed` 为真才代表本任务程序要求完成。
 
 ## Doctor 和接入验收
 

@@ -1,0 +1,447 @@
+{
+  "schema_version": 1,
+  "case": "rag",
+  "run": "paired-v4",
+  "reviewer": "Codex独立RAG议会席",
+  "reviewed_at": "2026-11-03T01:47:04.145481+00:00",
+  "blinding": {
+    "randomized_six_samples": true,
+    "arm_mapping_loaded_before_scoring": false,
+    "deepseek_judge_seen": false,
+    "limitation": "方案正文可透露是否使用原件，因此不是完全不可识别分组的盲法。"
+  },
+  "rubric": "按协议六项0–2分。0=缺失、不可用或实质错误；1=有用但缺必要操作细节；2=具体、有界且与所读材料相容。论文名、引用数、工具次数和篇幅不加分；有效的自拟方法不因不同于作者实现而扣分。",
+  "source_scope": [
+    {
+      "source": "FRESCO",
+      "material_id": "mat_298c038b319c42f3a750",
+      "physical_pages": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "source": "EBG / The Bottleneck Is Retrieval, Not Reading",
+      "material_id": "mat_24bd396793134da3b0c0",
+      "physical_pages": [
+        3,
+        4
+      ]
+    },
+    {
+      "source": "RARE / RedQA",
+      "material_id": "mat_73175a7d745b43ebb2e5",
+      "physical_pages": [
+        6,
+        7
+      ]
+    }
+  ],
+  "independent_blind_scores_sha256": "2d23d174ff54f6dc3f5fb84ef8ee2d363fd080982ffd633a59bcdb0056f81dfa",
+  "summary": [
+    {
+      "arm": "prior_only",
+      "scores": [
+        10,
+        7
+      ],
+      "mean_score": 8.5,
+      "delivered": 2,
+      "sample_count": 2,
+      "samples_with_material_errors": 0,
+      "samples_with_design_errors": 1,
+      "strict_completed": 0
+    },
+    {
+      "arm": "frontier_reading",
+      "scores": [
+        9,
+        11
+      ],
+      "mean_score": 10.0,
+      "delivered": 2,
+      "sample_count": 2,
+      "samples_with_material_errors": 1,
+      "samples_with_design_errors": 0,
+      "strict_completed": 0
+    },
+    {
+      "arm": "frontier_strict",
+      "scores": [
+        11,
+        10
+      ],
+      "mean_score": 10.5,
+      "delivered": 2,
+      "sample_count": 2,
+      "samples_with_material_errors": 0,
+      "samples_with_design_errors": 1,
+      "strict_completed": 2
+    }
+  ],
+  "results": [
+    {
+      "sample": "rag-d103b179",
+      "total": 9,
+      "scores": [
+        {
+          "criterion_id": "time_metric",
+          "score": 2,
+          "reason": "识别单正例排序设定与过时负例分母；时效标签条件和实体隔离明确，精确增益公式仍列待查。"
+        },
+        {
+          "criterion_id": "answer_evidence",
+          "score": 2,
+          "reason": "答案正确、全部金证据行和逐题同时成立明确，区分引用单位与检索侧Hit的自定口径。"
+        },
+        {
+          "criterion_id": "filter_errors",
+          "score": 0,
+          "reason": "已声明Fail为正类，却把误删有效证据标为高风险FN；该错误应是FP，FN是应删却被保留的内容。"
+        },
+        {
+          "criterion_id": "redundancy",
+          "score": 2,
+          "reason": "正确使用chunk必需信息、全部命中与语义等价金集，不将原始段落作为唯一可接受证据。"
+        },
+        {
+          "criterion_id": "component_diagnosis",
+          "score": 1,
+          "reason": "固定生成器的2×2×1设计可评检索/重排，但‘生成贡献’未给出生成端或其输入的完整配对干预。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "开发—冻结—测试、抽样仲裁与补读步骤明确，未把论文数值外推成实验室风险保证。"
+        }
+      ],
+      "material_errors": [
+        {
+          "type": "definition_error",
+          "claim": "Fail为正类时，将‘误删有效证据’称为高风险FN。",
+          "reason": "真实Fail却判Pass才是FN；有效内容被判Fail并删除是FP，错误代价方向颠倒。",
+          "source": "RARE主文物理页6，mat_73175a7d745b43ebb2e5"
+        }
+      ],
+      "design_errors": [],
+      "missing_details": [
+        "完整生成端干预",
+        "过滤率分母及FP/FN修正"
+      ],
+      "acceptable_alternatives": [
+        "2×2×1固定生成端用于检索/重排子任务",
+        "明确声明自己的Hit单位"
+      ],
+      "arm": "frontier_reading",
+      "repeat": 1,
+      "status": "completed",
+      "limit_reason": null,
+      "strict_research_completed": false,
+      "delivered": true,
+      "chinese_characters": 1015,
+      "within_1600_chinese_characters": true
+    },
+    {
+      "sample": "rag-7c288b23",
+      "total": 11,
+      "scores": [
+        {
+          "criterion_id": "time_metric",
+          "score": 2,
+          "reason": "区分查询时点有效性与充分性，正确限定单正例候选池和Obsolete Ratio分母；自定宏平均与原文未明聚合分开。"
+        },
+        {
+          "criterion_id": "answer_evidence",
+          "score": 1,
+          "reason": "答案、证据及逐题联合结果分开，但块级Evid的精确命中、完整多证据命中和行号映射仍未形成可执行判定规则。"
+        },
+        {
+          "criterion_id": "filter_errors",
+          "score": 2,
+          "reason": "应留被删与应删仍留方向正确，按通过/拒绝分层人审，明确从基准构造过滤迁移到候选块审计。"
+        },
+        {
+          "criterion_id": "redundancy",
+          "score": 2,
+          "reason": "明确等价替代金标，区分部分覆盖与全部必需信息命中；重复占位指标另作自拟诊断。"
+        },
+        {
+          "criterion_id": "component_diagnosis",
+          "score": 2,
+          "reason": "给出真实2×2×2组件/提示因子、固定候选重排和oracle控制，实体及时间范围也有泄漏约束。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "小样本校准后冻结判据，列出明确补读、建集、消融及人审步骤；没有把源论文结果当实验室结果。"
+        }
+      ],
+      "material_errors": [],
+      "design_errors": [],
+      "missing_details": [
+        "多证据Evid完整性及行号—块ID判定",
+        "Obsolete Ratio零分母与原文聚合规则"
+      ],
+      "acceptable_alternatives": [
+        "自建实体划分",
+        "自定宏平均并声明与论文口径尚未核对",
+        "基于提示的生成端干预"
+      ],
+      "arm": "frontier_reading",
+      "repeat": 2,
+      "status": "completed",
+      "limit_reason": null,
+      "strict_research_completed": false,
+      "delivered": true,
+      "chinese_characters": 1214,
+      "within_1600_chinese_characters": true
+    },
+    {
+      "sample": "rag-ec397d49",
+      "total": 11,
+      "scores": [
+        {
+          "criterion_id": "time_metric",
+          "score": 2,
+          "reason": "查询时点有效性、充分性和单正例设定清楚，过时比明确限定正例未居首；自定聚合与原文未知处有区分。"
+        },
+        {
+          "criterion_id": "answer_evidence",
+          "score": 1,
+          "reason": "逐题合取和任一命中/全部命中有区分，但Evid同时写成引用命中比例，仍需明确多证据完整支持的二元判定。"
+        },
+        {
+          "criterion_id": "filter_errors",
+          "score": 2,
+          "reason": "明确应删为正类，TP/FP误删/FN漏留完整一致；分层人工复核与自己的样本量和阈值分开。"
+        },
+        {
+          "criterion_id": "redundancy",
+          "score": 2,
+          "reason": "原段及等价替代共同作为gold，按必需信息区分Coverage和PerfRecall，并对尚未核对的语料冗余公式保持待查。"
+        },
+        {
+          "criterion_id": "component_diagnosis",
+          "score": 2,
+          "reason": "oracle/实际证据池×重排的对照加固定top-N换生成器，预算统一，明确oracle不可部署与分组防泄漏。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "基线、人工审计、冻结测试与待查边界具体；自己的聚合政策与论文原文分开，没有报告未运行结果。"
+        }
+      ],
+      "material_errors": [],
+      "design_errors": [],
+      "missing_details": [
+        "多证据Evid完整性及比例到二元判定",
+        "k=50是负例数还是候选总数需写清",
+        "高低冗余比较需匹配跳数和难度"
+      ],
+      "acceptable_alternatives": [
+        "自定逐查询平均并声明",
+        "按应删定义自己的正类",
+        "将源数据留为外部验证且不用于调参"
+      ],
+      "arm": "frontier_strict",
+      "repeat": 1,
+      "status": "completed",
+      "limit_reason": null,
+      "strict_research_completed": true,
+      "delivered": true,
+      "chinese_characters": 914,
+      "within_1600_chinese_characters": true
+    },
+    {
+      "sample": "rag-ca4d6fad",
+      "total": 10,
+      "scores": [
+        {
+          "criterion_id": "time_metric",
+          "score": 2,
+          "reason": "正确限定排序池和过时错误条件分母，并把正例居首记缺失作为自己的显式政策。"
+        },
+        {
+          "criterion_id": "answer_evidence",
+          "score": 1,
+          "reason": "逐样本合取而非边际乘积正确，但行级只看命中金标集，未说明多跳部分引用与完整支持的区别。"
+        },
+        {
+          "criterion_id": "filter_errors",
+          "score": 2,
+          "reason": "Fail正类下误删有效证据、漏留缺陷内容方向一致，并提出双人加仲裁审计；自定5%阈值未冒称论文保证。"
+        },
+        {
+          "criterion_id": "redundancy",
+          "score": 2,
+          "reason": "按必需信息计算部分/完整覆盖，等价段落进入金标，明确不按原段编号唯一匹配。"
+        },
+        {
+          "criterion_id": "component_diagnosis",
+          "score": 1,
+          "reason": "候选池、oracle与时间戳消融有用，但PerfRecall不变而Ans提升不能单独证明瓶颈在读取，且未设置明确生成器替换。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "开发集、冻结测试、独立复核和补读步骤具体；自定缺失值、阈值与原论文未明确之处有区分。"
+        }
+      ],
+      "material_errors": [],
+      "design_errors": [
+        {
+          "claim": "PerfRecall不变而Ans提升，说明瓶颈在读取，不能归功于检索。",
+          "reason": "相同完整命中率仍可能伴随排名、噪声或检索内容变化；需固定输入或进一步干预才可归因。"
+        }
+      ],
+      "missing_details": [
+        "多证据Evid完整性",
+        "生成端替换干预",
+        "过滤审计率的具体单位"
+      ],
+      "acceptable_alternatives": [
+        "零分母记缺失并单列",
+        "自定80/10/10实体划分",
+        "实验室自选过滤风险阈值"
+      ],
+      "arm": "frontier_strict",
+      "repeat": 2,
+      "status": "completed",
+      "limit_reason": null,
+      "strict_research_completed": true,
+      "delivered": true,
+      "chinese_characters": 1099,
+      "within_1600_chinese_characters": true
+    },
+    {
+      "sample": "rag-9eeb7c0e",
+      "total": 10,
+      "scores": [
+        {
+          "criterion_id": "time_metric",
+          "score": 1,
+          "reason": "有新旧事实与时间切分，但新版选中率不能直接替代查询时点有效性；具体冲突口径和聚合仍待查。"
+        },
+        {
+          "criterion_id": "answer_evidence",
+          "score": 1,
+          "reason": "分别报告答案、引用支持及两者不一致情况，但未定义多证据完整性和逐题联合率。"
+        },
+        {
+          "criterion_id": "filter_errors",
+          "score": 2,
+          "reason": "误删和漏留各有正确、不同的条件分母，配对比较下游效果，审计按簇和时间分层；无需强行采用作者的正类约定。"
+        },
+        {
+          "criterion_id": "redundancy",
+          "score": 2,
+          "reason": "同义改写/镜像构成事实簇，簇内只计一次的有效召回和引用支持判定可接受替代证据，避免只认原始文档。"
+        },
+        {
+          "criterion_id": "component_diagnosis",
+          "score": 2,
+          "reason": "分别固定候选集换重排、固定证据换生成端，并有金标输入、随机排序和时间偏置控制，分组隔离清楚。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "给出明确建集、冻结、基线、消融与预注册步骤，未读源细节保留待查；没有伪造实际阅读或结果。"
+        }
+      ],
+      "material_errors": [],
+      "design_errors": [],
+      "missing_details": [
+        "查询时点有效性规则",
+        "多证据联合评价",
+        "oracle比较时上下文长度/噪声的匹配"
+      ],
+      "acceptable_alternatives": [
+        "按相关事实簇定义去重召回",
+        "采用自己明确定义的过滤错误率",
+        "将近期精确指标留待核对"
+      ],
+      "arm": "prior_only",
+      "repeat": 1,
+      "status": "completed",
+      "limit_reason": null,
+      "strict_research_completed": false,
+      "delivered": true,
+      "chinese_characters": 1173,
+      "within_1600_chinese_characters": true
+    },
+    {
+      "sample": "rag-8c73236e",
+      "total": 7,
+      "scores": [
+        {
+          "criterion_id": "time_metric",
+          "score": 1,
+          "reason": "有时序切片和新旧冲突设计，但未具体定义查询时点有效性、排序指标分母及聚合。"
+        },
+        {
+          "criterion_id": "answer_evidence",
+          "score": 1,
+          "reason": "区分答案正确、断言支持和证据精确/召回，但缺逐题答案与完整证据同时成立的判定。"
+        },
+        {
+          "criterion_id": "filter_errors",
+          "score": 1,
+          "reason": "误删/漏留方向合理，但只抽被删除文档不能估计保留项中的漏留，两个率的分母也待补。"
+        },
+        {
+          "criterion_id": "redundancy",
+          "score": 1,
+          "reason": "有近重复注入和簇级隔离，但证据金标仍按片段重合，未说明如何接受非原始等价证据。"
+        },
+        {
+          "criterion_id": "component_diagnosis",
+          "score": 1,
+          "reason": "固定候选集和同证据换生成器是有效控制；开头2×2×3因子却未列出三个生成条件，并把oracle写成无证据，实验矩阵需消歧。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "划分、标注、预算和预注册步骤明确，承认未读具体源定义，没有据此编造数值或运行结果。"
+        }
+      ],
+      "material_errors": [],
+      "design_errors": [
+        {
+          "claim": "2×2×3设计中的生成器为‘无证据的oracle与实测证据’。",
+          "reason": "oracle金标证据与无证据控制是不同条件，目前层数、含义和可比较输出不清。"
+        }
+      ],
+      "missing_details": [
+        "保留项审计与率分母",
+        "等价证据金标",
+        "完整析因矩阵"
+      ],
+      "acceptable_alternatives": [
+        "自拟时序切片与噪声控制",
+        "不采用尚未核对的近期论文精确指标"
+      ],
+      "arm": "prior_only",
+      "repeat": 2,
+      "status": "completed",
+      "limit_reason": null,
+      "strict_research_completed": false,
+      "delivered": true,
+      "chinese_characters": 1022,
+      "within_1600_chinese_characters": true
+    }
+  ],
+  "interpretation_limit": "评分只审给定方案和授权页，不证明全文理解、科学正确、实验有效或节省时间；总分不能盖过关键项实质错误。",
+  "findings": [
+    "预先读原件增加了可执行的指标细节，但一份未约束读文稿仍把Fail正类下的误删叫作FN；材料可得不等于理解正确。",
+    "通用先验方案中的明确过滤分母、固定候选控制及等价簇处理可独立成立，不因缺论文名而被当作错误。",
+    "严格检查通过只对应选定问题和实际最终稿，仍存在多证据Evid判定等必要补充项，不是科学证书。"
+  ],
+  "limitations": [
+    "两个已用于开发的已知用例，每臂两次；这是开发后回归，不是未见任务泛化估计。",
+    "各臂计算量不同；本评分不衡量研究者用时、训练后性能或统计显著优势。",
+    "原件访问范围仍为此前授权的7页；不能把方案差异归因于本轮新下载的XML或PDF。",
+    "正文可泄露是否访问原件，盲法仅隐藏显式arm标签和运行信息。",
+    "未参考DeepSeek盲评分；原模型输出未被本席改写。"
+  ]
+}

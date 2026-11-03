@@ -200,14 +200,17 @@ class DetailChecks:
             end = min(len(text), start + 1200)
             material = catalog[anchor["material_id"]][0]
             count = material.get("details", {}).get("parsed_pages")
+            pagination = material.get("details", {}).get("pagination", {})
+            logical = pagination.get("kind") == "logical_sections" or pagination.get("physical_pages") is False
             physical_page = anchor["page"]
             navigation = {"previous_page": None, "next_page": None,
-                          "notice": "Navigation only: neighboring pages require a separate original-material read."}
+                          "notice": "Navigation only: neighboring logical XML sections require a separate text read, not physical-page evidence." if logical else "Navigation only: neighboring pages require a separate original-material read."}
             if isinstance(physical_page, int) and not isinstance(physical_page, bool):
                 navigation["previous_page"] = physical_page - 1 if physical_page > 1 else None
                 if isinstance(count, int) and not isinstance(count, bool) and physical_page < count:
                     navigation["next_page"] = physical_page + 1
             anchor["packet_context"] = {
+                "pagination": {"kind": "logical_sections" if logical else "physical_pages", "physical_pages": not logical},
                 "text": text[start:end], "normalized_start": start, "normalized_end": end,
                 "returned_fragment_chars": len(text),
                 "quote_complete": offset >= start and offset + len(anchor["quote"]) <= end,

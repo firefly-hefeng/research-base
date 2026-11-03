@@ -62,3 +62,18 @@ def test_scoped_originals_still_support_actual_session_reads_and_continuation(sc
     checked = tools.require_research_ready(sid, used_paper_ids=papers[:2])
     assert checked["ready"]
     assert checked["read_paper_ids"] == sorted(papers[:2])
+
+
+def test_scoped_navigation_preserves_host_frontier_eligibility_for_strict_default(scoped):
+    core, collection, papers, targets = scoped
+    frontier = core.get_frontier(collection)
+    assert {p["paper_id"] for p in frontier["papers"] if p["eligible"]} == set(papers[:2])
+    assert all(p["membership"] == "included" for p in frontier["papers"])
+    assert all(m["permitted_pages"] == [1] for p in frontier["papers"] for m in p["materials"])
+    checks = [{"check_id": f"method-{i}", "paper_id": pid, "kind": "method_scope",
+               "question": "Which observed method detail matters for this task?"}
+              for i, pid in enumerate(papers[:2])]
+    tools = ToolRegistry(core, collection_id=collection)
+    opened = tools.begin_bound_research("Evaluation", collection_id=collection, critical_checks=checks)
+    assert opened["usage"]["policy"]["mode"] == "strict"
+    assert set(opened["preparation"]["focus_paper_ids"]) == set(papers[:2])

@@ -8,6 +8,7 @@ import shutil
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
+from xml.etree import ElementTree as ET
 
 from pypdf import PdfReader
 
@@ -72,6 +73,65 @@ def _arxiv_matches(expected, observed):
     return expected[0] == observed[0] and (expected[1] is None or expected[1] == observed[1])
 
 
+def _xml_name(node):
+    return node.tag.split("}")[-1] if isinstance(node.tag, str) else ""
+
+
+def _xml_text(node):
+    return " ".join(" ".join(node.itertext()).split()) if node is not None else ""
+
+
+def _jats_document(raw):
+    """Parse article XML without external DTD/entity resolution or HTML fallback."""
+    if b"<!ENTITY" in raw.replace(b"\x00", b"").upper():
+        raise ResearchError("INVALID_FILE", "XML entity declarations are not accepted")
+    try:
+        root = ET.fromstring(raw)
+    except (ET.ParseError, ValueError):
+        raise ResearchError("INVALID_FILE", "Full-text endpoint did not return valid JATS XML") from None
+    if _xml_name(root) != "article":
+        raise ResearchError("INVALID_FILE", "Full-text XML must be a JATS article")
+    if root.get("article-type", "").lower() in {"abstract", "supplementary-material"}:
+        raise ResearchError("INVALID_FILE", "JATS article is not main text")
+    body = next((e for e in root if _xml_name(e) == "body"), None)
+    if len(_xml_text(body)) < 100:
+        raise ResearchError("INVALID_FILE", "JATS XML has no substantive article body")
+    return root
+
+
+def _jats_content(raw):
+    root = _jats_document(raw)
+    front = next((e for e in root if _xml_name(e) == "front"), None)
+    meta = next((e for e in front if _xml_name(e) == "article-meta"), None) if front is not None else None
+    if meta is None:
+        raise ResearchError("INVALID_FILE", "JATS XML lacks article identity metadata")
+    ids = {}
+    for node in meta:
+        if _xml_name(node) == "article-id":
+            ids.setdefault(node.get("pub-id-type", ""), set()).add(_xml_text(node))
+    title_group = next((e for e in meta if _xml_name(e) == "title-group"), None)
+    title = next((_xml_text(e) for e in title_group if _xml_name(e) == "article-title"), "") if title_group is not None else ""
+    pages, sections = [], []
+    def append(node, label):
+        text = _xml_text(node)
+        if text:
+            page = len(pages) + 1
+            pages.append((page, text))
+            sections.append({"page": page, "label": label})
+    append(front, "Front matter and abstract")
+    for node in root:
+        name = _xml_name(node)
+        if name == "body":
+            if not len(node):
+                append(node, "Article body")
+            for index, part in enumerate(node, 1):
+                label = next((_xml_text(e) for e in part if _xml_name(e) == "title"), None)
+                append(part, label or part.get("sec-type") or "Body part " + str(index))
+        elif name != "front":
+            append(node, {"back": "References and back matter", "floats-group": "Figures and tables"}.get(name, name))
+    return pages, ids, title, {"kind": "logical_sections", "physical_pages": False, "sections": sections}
+
+
 class MaterialsMixin:
     def _material(self, row, include_paths=True):
         item = dict(row)
@@ -84,7 +144,7 @@ class MaterialsMixin:
         item["exists"] = bool(original and original.is_file())
         if include_paths:
             item["local_path"] = str(original) if original else None
-            derived = self.root / "derived" / item["material_id"] / "pypdf-v1"
+            derived = self.root / "derived" / item["material_id"] / item["details"].get("parser", "pypdf-v1")
             item["text_path"] = str(derived / "text.txt") if (derived / "text.txt").is_file() else None
             item["pages_path"] = str(derived / "pages.jsonl") if (derived / "pages.jsonl").is_file() else None
             item["access"] = {"mode": "local_filesystem", "shared_filesystem_required": True}
@@ -196,6 +256,12 @@ class MaterialsMixin:
                 identity_region = re.split(r"\b(?:references|bibliography)\b", first_page, flags=re.I)[0]
                 header = identity_region[:3000]
                 arxiv_stamps = _arxiv_stamps(header)
+                # A DOI can have historical provider rows mislabeled accepted
+                # or unknown. An explicit stamp in the actual PDF can narrow
+                # edition candidates, but never distinguish multiple revisions.
+                observed_preprint = bool(arxiv_stamps or re.search(r"\b(?:bioRxiv|medRxiv)\s+preprint\b", header, re.I))
+                if observed_preprint:
+                    version_observations.update(observed_version_kind="preprint", version_kind_basis="first_page_preprint_stamp")
                 # Only the first-page identity region, before the bibliography, counts.
                 def extracted_doi(value):
                     # PDF extraction may concatenate the footer's "doi:" label.
@@ -211,6 +277,8 @@ class MaterialsMixin:
                         versions = list(db.execute("SELECT * FROM versions WHERE paper_id IN (" + ",".join("?" for _ in related) + ")", related))
                         version_matches = []
                         for version in versions:
+                            if observed_preprint and version["kind"] != "preprint":
+                                continue
                             meta = loads(version["metadata"])
                             known_doi = normalized_doi(meta.get("doi"))
                             arxiv_id = _arxiv_identity(meta.get("identifiers", {}).get("arxiv") or normalized_doi(meta.get("doi")))
@@ -228,10 +296,10 @@ class MaterialsMixin:
                 title_match = len(words & observed) / max(1, len(words))
                 expected = normalized_doi(paper.get("doi"))
                 repository_ids = observed_identifiers(paper.get("identifiers"), landing_url=paper.get("landing_url"), fulltext_urls=paper.get("fulltext_urls"))
-                expected_posted = paper.get("extra", {}).get("posted_date")
+                expected_posted = paper.get("extra", {}).get("posted_date") or paper.get("extra", {}).get("archive_posted_date")
                 if expected_posted and any(repository_ids.get(key) for key in ("biorxiv_revision", "medrxiv_revision")):
                     observed_posted = _posted_date(identity_region)
-                    version_observations = {"expected_posted_date": expected_posted, "observed_posted_date": observed_posted}
+                    version_observations.update(expected_posted_date=expected_posted, observed_posted_date=observed_posted)
                     if not confirmed and observed_posted != expected_posted:
                         issues.append("Preprint posted-date stamp does not match the requested repository revision")
                 exact_doi = bool(expected and expected in dois)
@@ -261,6 +329,40 @@ class MaterialsMixin:
                         issues.append("Main-text role needs confirmation")
                     if parse_status == "empty":
                         issues.append("Image-only PDF needs identity confirmation")
+        elif row["format"] == "xml" and row["role"] == "main_text":
+            try:
+                pages, ids, observed_title, pagination = _jats_content(path.read_bytes())
+            except ResearchError as error:
+                with self.store.connect() as db:
+                    db.execute("UPDATE materials SET status='rejected',parse_status='failed',details=? WHERE id=?", (dumps({"error": error.message}), material_id))
+                raise
+            parse_status = "ready"
+            paper = loads(self._require_paper(row["paper_id"])["metadata"])
+            if row["version_id"]:
+                with self.store.connect() as db:
+                    paper = loads(db.execute("SELECT metadata FROM versions WHERE id=?", (row["version_id"],)).fetchone()[0])
+            expected_doi = normalized_doi(paper.get("doi"))
+            observed_dois = {normalized_doi(value) for value in ids.get("doi", set())}
+            expected_pmc = str(paper.get("identifiers", {}).get("pmcid") or "").upper()
+            if expected_pmc.isdigit():
+                expected_pmc = "PMC" + expected_pmc
+            observed_pmc = {value.upper() for key in ("pmcid", "pmcid-ver") for value in ids.get(key, set())}
+            exact_doi = bool(expected_doi and observed_dois == {expected_doi})
+            exact_pmc = bool(expected_pmc and expected_pmc in observed_pmc)
+            words = set(re.findall(r"[a-z0-9]+", paper["title"].lower()))
+            title_words = set(re.findall(r"[a-z0-9]+", observed_title.lower()))
+            title_match = len(words & title_words) / max(1, len(words))
+            version_observations = {"pagination": pagination, "observed_article_ids": {key: sorted(values) for key, values in ids.items()}}
+            if not confirmed:
+                if not (exact_doi or exact_pmc) or title_match < .75:
+                    issues.append("JATS article identity needs confirmation")
+                if expected_doi and observed_dois and not exact_doi:
+                    issues.append("JATS article DOI conflicts with expected identity")
+                if expected_pmc and not exact_pmc:
+                    issues.append("JATS repository identity or revision does not match requested version")
+                repository_ids = observed_identifiers(paper.get("identifiers"), landing_url=paper.get("landing_url"), fulltext_urls=paper.get("fulltext_urls"))
+                if any(repository_ids.get(key) for key in ("arxiv", "biorxiv_revision", "medrxiv_revision")):
+                    issues.append("JATS preprint revision requires explicit identity confirmation")
         elif row["format"] in ("txt", "md", "py", "r", "csv", "json", "yaml", "yml", "xml", "html", "tex"):
             try:
                 pages = [(1, path.read_text(encoding="utf-8"))]
@@ -286,10 +388,11 @@ class MaterialsMixin:
             temp = object_path.with_suffix("." + uid("tmp"))
             shutil.copyfile(path, temp)
             temp.replace(object_path)
+        parser = "jats-v1" if row["format"] == "xml" and row["role"] == "main_text" else "pypdf-v1"
         details = {"identity_confirmed": True, "identity_confirmation_method": "user" if confirmed else "automatic",
-                   "parsed_pages": len(pages), "parser": "pypdf-v1", "confirmed_at": now()}
+                   "parsed_pages": len(pages), "parser": parser, "confirmed_at": now()}
         details.update(version_observations)
-        derived = self.root / "derived" / material_id / "pypdf-v1"
+        derived = self.root / "derived" / material_id / parser
         if pages:
             atomic_write(derived / "pages.jsonl", "\n".join(dumps({"page": p, "text": text}) for p, text in pages) + "\n")
             atomic_write(derived / "text.txt", "\n\n".join(text for _, text in pages))
@@ -323,7 +426,8 @@ class MaterialsMixin:
         item = self._material(row)
         if view not in ("text", "original") or not 1 <= max_chars <= 200000 or char_offset < 0:
             raise ResearchError("INVALID_ARGUMENT", "Invalid view or max_chars")
-        offset_scope = {"basis": "selected_pages_concatenated_in_physical_page_order",
+        logical_sections = item["details"].get("pagination", {}).get("kind") == "logical_sections"
+        offset_scope = {"basis": "selected_logical_sections_concatenated_in_document_order" if logical_sections else "selected_pages_concatenated_in_physical_page_order",
                         "pages": list(pages) if pages is not None else None,
                         "on_pages_change": "reset char_offset to 0",
                         "next_page": "navigation only; replay continuation unchanged to continue reading"}
@@ -334,7 +438,7 @@ class MaterialsMixin:
             content = list(db.execute("SELECT page,text FROM chunks WHERE material_id=? ORDER BY page", (material_id,)))
         if pages is not None:
             if not pages or any(not isinstance(p, int) or isinstance(p, bool) or p < 1 for p in pages):
-                raise ResearchError("INVALID_ARGUMENT", "Pages must be positive physical page numbers")
+                raise ResearchError("INVALID_ARGUMENT", "Pages must be positive logical section numbers" if logical_sections else "Pages must be positive physical page numbers")
             found = {p["page"] for p in content}
             if set(pages) - found:
                 raise ResearchError("INVALID_ARGUMENT", "Requested pages have no extracted text", details={"available_pages": sorted(found)})

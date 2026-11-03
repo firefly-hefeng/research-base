@@ -1,6 +1,6 @@
 # 文献来源适配器
 
-当前提供九个可独立选择、分页和报告错误的开放来源。ACL Anthology 需显式指定官方集合与原生查询，默认通用检索仍选择其余八个来源。多来源能补充索引与学科覆盖，但结果存在重叠；来源数量不等于完整覆盖率。检索结果保留实际来源及标识符，交由文献库去重。
+当前提供十个可独立选择、分页和报告错误的开放来源。ACL Anthology 与 bioRxiv 需显式原生查询，默认通用检索仍选择其余八个来源。多来源能补充索引与学科覆盖，但结果存在重叠；来源数量不等于完整覆盖率。检索结果保留实际来源及标识符，交由文献库去重。
 
 | 规范名称 | 覆盖与用途 | 分页和注意事项 |
 | --- | --- | --- |
@@ -13,6 +13,7 @@
 | `doaj` | 多语言开放获取期刊论文，补充地区性期刊 | 页码；按官方 v4 定义每页最多 50；保留期刊国家、语言和原始全文入口 |
 | `datacite` | 仓储中的预印本、文本出版物、报告和学位论文 | 相关性排序及页码；前 10000 条上限显式报告；仅 publication 类型 |
 | `acl_anthology` | 明示 ACL/EMNLP/EACL/Findings 等官方会议集合的题名与摘要 | XML 快照 SHA256 绑定续接；需原生 JSON 查询；月份/年份范围不冒充精确发布日期 |
+| `biorxiv` | 官方 bioRxiv 分类/发布日期元数据，补充尚未进入综合索引的预印本 | 显式 JSON 分类和本地题名/摘要匹配；按月份降序、类别、官方 offset 续接；每页固定最多 30 个版本记录 |
 
 PubMed 和 Europe PMC 有大量重叠，OpenAlex、Crossref、Semantic Scholar、DOAJ 和 DataCite 也并非彼此独立的文献集合。中文专门数据库和部分专业会议的覆盖仍需后续来源补充。HAL 已核对官方接口，但当前网络环境连接失败，因此暂不列入可用来源。
 
@@ -29,6 +30,14 @@ request_count 统计实际 HTTP 尝试数，包括 PubMed 的两步请求和瞬�
 ACL 的原生查询例如 `{"collections":["2025.acl","2025.findings","2026.acl","2026.emnlp","2026.findings"],"any":["retrieval augmented","retrieval-augmented","RAG"],"all":[]}`，经 source_queries.acl_anthology 传入，并显式选择该源。`any` 是任一词组、`all` 是全部词组；采用词边界匹配。Findings 的官方文件是 year.findings，acl/emnlp 属于其中的卷，不能猜成 year.findings-acl 文件。
 
 每个集合首次请求都获取当前官方 XML，后续页绑定同一 SHA256；跨进程重取后内容变化会返回 SOURCE_SNAPSHOT_CHANGED，要求另建检索，不假装无缝穷尽。失败、缺失、错误集合和不完整 XML 不当作空结果。单文件最多 25MB，缓存有界。适配器 request_count 可观察真实网络尝试；持久 job 的 requests 历史字段按至少一个预算单位计每次来源分页，因此缓存 ACL 页仍消耗预算单位，不能把它直接当成 HTTP 数。
+
+bioRxiv 的原生查询例如 `{"categories":["bioinformatics","genomics","cell_biology"],"any":["perturbation","perturbations","Perturb-seq","virtual cell"],"all":[]}`，经 `source_queries.biorxiv` 传入，并显式选择来源和日期上下界。目前允许这三个已实查类别，扩展类别需先核对官方响应，避免未知类别被 API 显示为“无论文”。官方 API 只提供日期/类别元数据分页，不提供这些关键词的服务器端搜索；适配器对每页实际返回的题名和摘要做词边界匹配。无本地命中的页也必须继续读取，不能误报完成。调用方要求较小 page_size 时仍保留整页最多 30 条匹配，避免丢掉服务方固定批次中的记录。[官方接口说明](https://api.biorxiv.org/)
+
+长窗口按完整声明范围拆为月，优先扫描最近月份，然后逐类别和 offset 继续；完成必须遍历所有声明月份/类别。报告保留每页原始版本记录数和匹配数，预算暂停不表示旧月份已检查。游标绑定查询、日期和 page_size；分片总数中途变化会报错，但官方索引没有不可变快照，仍须保留索引变动与类别覆盖限制。DOI 的 `vN`、posted date、官方 `published` DOI 和 JATS 入口分别保留，修订发布日期不当作正式发表日期。
+
+`research_base.discovery_plans.frontier_query_plans(profile, date_from=..., date_to=...)` 提供可直接传给 `discover_papers` 的建议参数。RAG 在题名和摘要同时查评价、诊断、证据和冗余等概念；单细胞把单细胞、virtual cell、cellular responses、Perturb-seq 等术语与预测/模型/评价结合，并分开提供综合索引、arXiv 与 bioRxiv 分类扫描计划。建议本身不执行检索、不刷新新鲜度，也不保证来源可用；每个计划执行后仍须筛选。查询由已知漏检修订，回归结果不能当作盲召回率。
+
+普通 `prepare_research` 与对应工具/MCP 导航通过 `discovery_suggestions` 返回适合任务的计划。只有任务明确涉及 RAG 评价/诊断，或单细胞扰动时才匹配；不会把任意 `machine_learning` 研究改成 RAG，也不会把单细胞图谱自动改成扰动预测。无合适模板或混合主题时返回空建议，不发起网络请求、不建任务、不改集合配置或原有新鲜度。[真实已知漏检回归](../examples/core-upgrade/discovery-regression.json)分别记录来源、窗口、分页、成本、未完成与身份冲突。
 
 OpenAlex 当前无密钥时仅允许游标第一页，继续远程游标会返回 401。新任务因此使用官方支持的 basic paging；保存的页码状态固定单页大小，不能换大小续读。到 10000 条后返回 SOURCE_RESULT_LIMIT，不能报告已穷尽结果。旧远程游标仍需 OPENALEX_API_KEY，或另建无密钥检索任务；不会静默跳回第一页。见[官方分页说明](https://help.openalex.org/api/paging/)与[认证说明](https://help.openalex.org/api/authentication/)。
 
@@ -65,6 +74,7 @@ PubMed 超过 10000 条的结果在到达上限时返回 SOURCE_RESULT_LIMIT，�
 - [DOAJ 官方 API 定义](https://doaj.org/api/v4/swagger.json)。
 - [DataCite 查询和过滤](https://support.datacite.org/docs/api-queries) 与 [分页规则](https://support.datacite.org/docs/pagination)。
 - [ACL Anthology 数据与开发](https://aclanthology.org/info/development/)及其[官方 XML 数据目录](https://github.com/acl-org/acl-anthology/tree/master/data/xml)。
+- [bioRxiv 官方 API](https://api.biorxiv.org/)。
 
 tests/test_sources.py 与 tests/test_acl_source.py 使用 HTTP 模拟样本检查来源归一、日期参数、分页、版本关联、快照变化、真实请求计数、限流和错误脱敏。实时服务结果与网络环境另作显式冒烟检查，不把实时排序和特定论文数量写成稳定测试断言。
 

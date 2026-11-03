@@ -60,6 +60,32 @@ def test_repository_revision_checks_the_pdf_posted_date_not_just_shared_doi(base
     assert ready["details"]["observed_posted_date"] == "2026-10-31"
 
 
+def test_observed_preprint_stamp_excludes_misclassified_accepted_and_unknown_versions(base, tmp_path):
+    title, doi = "Stable Experimental Benchmark for Research Systems", "10.64898/2026.01.01.123456"
+    paper = base.add_paper({"source": "offline", "source_id": "preprint", "title": title, "doi": doi, "version_kind": "preprint"})
+    base.add_paper({"source": "legacy-resolver", "source_id": "accepted", "title": title, "doi": doi, "version_kind": "accepted"})
+    base.add_paper({"source": "legacy-resolver", "source_id": "unknown", "title": title, "doi": doi, "version_kind": "unknown"})
+    source = tmp_path / "observed.pdf"
+    pdf(source, [title + " " + doi + " bioRxiv preprint this version posted January 2, 2026."])
+    material = base.import_material(paper["paper_id"], path=source)
+    assert material["status"] == "available"
+    assert material["version_id"] == paper["preferred_version_id"]
+
+
+def test_preprint_stamp_never_selects_one_of_multiple_exact_revisions(base, tmp_path):
+    title, doi = "Stable Experimental Benchmark for Research Systems", "10.64898/2026.01.01.123456"
+    records = []
+    for revision, posted in [(1, "2026-01-02"), (2, "2026-01-05")]:
+        records.append(base.add_paper({"source": "biorxiv", "source_id": doi + "v" + str(revision), "title": title, "doi": doi,
+                                      "version_kind": "preprint", "landing_url": "https://www.biorxiv.org/content/" + doi + "v" + str(revision),
+                                      "extra": {"posted_date": posted}}))
+    source = tmp_path / "observed.pdf"
+    pdf(source, [title + " " + doi + " bioRxiv preprint this version posted January 2, 2026."])
+    material = base.import_material(records[0]["paper_id"], path=source)
+    assert material["status"] == "staged" and material["version_id"] is None
+    assert any("posted-date" in issue for issue in material["details"]["identity_issues"])
+
+
 def test_original_and_text_paths_are_absolute_and_directly_readable(base, tmp_path):
     record = add(base)
     source = tmp_path / "article.pdf"

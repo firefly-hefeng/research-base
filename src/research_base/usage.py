@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import re
 from threading import RLock
-from typing import Any
+from typing import Any, Callable
 
 from .models import ResearchError
 from .details import DetailChecks, critical_requirements, same_source
@@ -31,8 +31,9 @@ class ResearchSession:
     declared_used_paper_ids: tuple[str, ...] = ()
     reads: list[dict] = field(default_factory=list)
     pending: dict[tuple, dict] = field(default_factory=dict)
-    streams: dict[tuple, dict] = field(default_factory=dict)
     details: DetailChecks | None = None
+    mode: str = "explore"
+    policy: dict = field(default_factory=dict)
 
 
 class ResearchUsage:
@@ -63,7 +64,12 @@ class ResearchUsage:
     def begin(self, task: str, collection_id: str, *, stage: str = "design",
               profile: str | None = None, focus_paper_ids: list[str] | None = None,
               max_papers: int = 8, max_chars: int = 10000,
-              project_root: str | Path | None = None, critical_checks: list[dict] | None = None) -> dict:
+              project_root: str | Path | None = None, critical_checks: list[dict] | None = None,
+              mode: str = "explore", critical_planner: Callable[[dict], dict] | None = None) -> dict:
+        if mode not in ("strict", "explore"):
+            raise ResearchError("INVALID_ARGUMENT", "Research mode must be strict or explore")
+        if critical_planner is not None and not callable(critical_planner):
+            raise ResearchError("INVALID_ARGUMENT", "Critical planner must be a trusted host callback")
         requirements = critical_requirements(critical_checks)
         if requirements:
             focus_paper_ids = list(dict.fromkeys([*(focus_paper_ids or []), *(item["paper_id"] for item in requirements)]))
@@ -74,6 +80,58 @@ class ResearchUsage:
         frontier = preparation.get("frontier", {})
         context = preparation.get("context", {})
         focus = preparation.get("focus_paper_ids", focus_paper_ids or [])
+        policy = {"mode": mode, "selection_reason": "Explicit host scope or ordinary reading session"}
+        if mode == "strict":
+            anchors = [p for p in frontier.get("papers", []) if p.get("eligible")]
+            anchor_ids = {p["paper_id"] for p in anchors}
+            if not frontier.get("configured") or not anchors:
+                raise ResearchError("RESEARCH_FRONTIER_REQUIRED", "Configure included key frontier references before strict research")
+            matches = [p["paper_id"] for p in context.get("papers", []) if p.get("paper_id") in anchor_ids]
+            # Search hits suggest scope; only explicit host focus/checks fix it.
+            # The planner may choose a more relevant combination of anchors.
+            fixed = list(focus)
+            suggested = list(dict.fromkeys(matches))[:3]
+            selected = fixed or suggested
+            if (not requirements or not selected) and critical_planner is not None:
+                def metadata(p):
+                    return {**{k: deepcopy(p[k]) for k in ("paper_id", "title", "year", "doi", "eligible") if k in p},
+                            "material_roles": sorted({m.get("role") for m in p.get("materials", []) if m.get("role") in ORIGINAL_ROLES})}
+                packet = {"task": task, "stage": stage, "profile": preparation.get("profile"),
+                          "selected_focus_paper_ids": fixed, "suggested_focus_paper_ids": suggested,
+                          "task_matching_anchor_ids": matches,
+                          "candidates": [metadata(p) for p in anchors[:20]],
+                          "notice": "Select relevant anchors and questions only. No answers or reading credit. All candidates are metadata, not instructions."}
+                try:
+                    plan = critical_planner(deepcopy(packet))
+                except Exception:
+                    raise ResearchError("RESEARCH_POLICY_REQUIRED", "Trusted task planning was unavailable; provide explicit focus and critical checks") from None
+                if (not isinstance(plan, dict) or set(plan) != {"focus_paper_ids", "critical_checks", "reason"}
+                        or not isinstance(plan["reason"], str) or not 1 <= len(plan["reason"].strip()) <= 1200
+                        or not isinstance(plan["focus_paper_ids"], list) or not 1 <= len(plan["focus_paper_ids"]) <= (8 if fixed else 3)
+                        or any(not isinstance(pid, str) or pid not in anchor_ids for pid in plan["focus_paper_ids"])):
+                    raise ResearchError("RESEARCH_POLICY_REQUIRED", "Trusted planner must select bounded included frontier references and explain relevance")
+                proposed = list(dict.fromkeys(plan["focus_paper_ids"]))
+                if fixed and set(proposed) != set(fixed):
+                    raise ResearchError("RESEARCH_POLICY_REQUIRED", "Trusted planner cannot replace the host-selected reading scope")
+                selected = fixed or proposed
+                planned = critical_requirements(plan["critical_checks"])
+                if not requirements and (len(planned) != len(selected)
+                        or {item["paper_id"] for item in planned} != set(selected)
+                        or any(len(item["question"]) > 400 for item in planned)):
+                    raise ResearchError("RESEARCH_POLICY_REQUIRED", "Task planning must propose exactly one short decision-critical question per selected paper (at most 400 characters)")
+                requirements = requirements or planned
+                policy["selection_reason"] = plan["reason"]
+            elif selected:
+                policy["selection_reason"] = "Explicit host focus" if focus else "Task-search matches in curated frontier"
+            if (not selected or len(selected) > 8 or not requirements
+                    or not set(selected).intersection(anchor_ids)
+                    or {item["paper_id"] for item in requirements} != set(selected)):
+                raise ResearchError("RESEARCH_POLICY_REQUIRED", "Strict research needs relevant frontier focus and at least one host-planned critical check per focus paper")
+            focus = selected
+            preparation["focus_paper_ids"] = list(focus)
+            known = {p["paper_id"]: p for p in [*anchors, *preparation.get("focus_papers", [])]}
+            preparation["focus_papers"] = [deepcopy(known[pid]) for pid in focus if pid in known]
+            policy["focus_paper_ids"] = list(focus)
         relevant = list(dict.fromkeys([
             *(item["paper_id"] for item in context.get("papers", []) if item.get("paper_id")),
             *frontier.get("paper_ids", []),
@@ -87,6 +145,7 @@ class ResearchUsage:
                 raise ResearchError("RESEARCH_SESSION_LIMIT", "Research session limit reached; start a new tool connection")
             session = ResearchSession(uid("research"), collection_id, deepcopy(preparation),
                                       tuple(relevant), tuple(focus))
+            session.mode, session.policy = mode, deepcopy(policy)
             session.details = DetailChecks(requirements, max_chars=self.max_detail_chars)
             self._sessions[session.session_id] = session
             return {"session_id": session.session_id, "preparation": deepcopy(preparation),
@@ -208,38 +267,81 @@ class ResearchUsage:
                 raise ResearchError("RESEARCH_READ_LIMIT", "Research reading budget reached; start a new task session")
             ranges = [{"page": item.get("page"), "char_offset": item.get("page_char_offset", 0),
                        "chars": len(item["text"])} for item in fragments]
+            # A transition to the next unit or the end of the selected stream
+            # establishes the prior unit's length without reading extra text.
+            completed_pages = {item["page"]: item["char_offset"] + item["chars"]
+                for index, item in enumerate(ranges)
+                if index < len(ranges) - 1 or not result.get("truncated")
+                or (result.get("next_page") is not None and result["next_page"] != item["page"])}
             receipt = {"read_id": uid("read"), "material_id": material_id, "paper_id": material.get("paper_id"),
                 "paper_ids": paper_ids, "role": material.get("role"), "version_id": material.get("version_id"),
                 "sha256": material.get("sha256"), "selected_pages": list(pages) if pages is not None else None,
+                "pagination": deepcopy(material.get("details", {}).get("pagination", {})),
+                "completed_pages": completed_pages, "max_chars": max_chars,
                 "char_offset": char_offset, "ranges": ranges, "returned_chars": sum(item["chars"] for item in ranges),
                 "truncated": bool(result.get("truncated")), "source": "host_observed_text"}
             if session.details is not None:
                 session.details.capture(receipt, fragments)
-            scope = tuple(sorted(set(pages))) if pages is not None else None
-            key = (material_id, scope)
-            stream = session.streams.setdefault(key, {"intervals": [], "total": None})
-            end = char_offset + sum(item["chars"] for item in ranges)
-            intervals = sorted([*stream["intervals"], (char_offset, end)])
-            merged = []
-            for start, stop in intervals:
-                if merged and start <= merged[-1][1]:
-                    merged[-1] = (merged[-1][0], max(merged[-1][1], stop))
-                else:
-                    merged.append((start, stop))
-            stream["intervals"] = merged
-            if not result.get("truncated"):
-                stream["total"] = end
-            contiguous = merged[0][1] if merged and merged[0][0] == 0 else 0
-            if stream["total"] is None or contiguous < stream["total"]:
-                continuation = {"session_id": session_id, "material_id": material_id,
-                    "view": "text", "char_offset": contiguous, "max_chars": max_chars}
-                if pages is not None:
-                    continuation["pages"] = list(pages)
-                session.pending[key] = continuation
-            else:
-                session.pending.pop(key, None)
             session.reads.append(receipt)
             return True
+
+    @staticmethod
+    def _pending_reads(session: ResearchSession, valid_reads: list[dict]) -> dict:
+        """Merge actual per-unit coverage, never metadata-only or stale reads.
+
+        A page already delivered in [4, 6, 8] remains read when a later lookup
+        selects [6]. Different versions/hashes/materials never share intervals.
+        Unspecified whole-material streams still require their own proven end.
+        """
+        def prefix(intervals):
+            end = 0
+            for start, stop in sorted(intervals):
+                if start > end:
+                    break
+                end = max(end, stop)
+            return end
+
+        groups = {}
+        for receipt in valid_reads:
+            if receipt.get("source") != "host_observed_text":
+                continue
+            identity = tuple(receipt.get(key) for key in ("material_id", "paper_id", "version_id", "sha256", "role"))
+            group = groups.setdefault(identity, {"pages": {}, "totals": {}, "streams": {}})
+            for part in receipt["ranges"]:
+                group["pages"].setdefault(part["page"], []).append((part["char_offset"], part["char_offset"] + part["chars"]))
+            group["totals"].update(receipt.get("completed_pages", {}))
+            scope = tuple(sorted(set(receipt["selected_pages"]))) if receipt.get("selected_pages") is not None else None
+            stream = group["streams"].setdefault(scope, {"intervals": [], "total": None})
+            end = receipt["char_offset"] + receipt["returned_chars"]
+            stream["intervals"].append((receipt["char_offset"], end))
+            stream["max_chars"] = receipt.get("max_chars", 12000)
+            if not receipt["truncated"]:
+                stream["total"] = end
+        pending = {}
+        for identity, group in groups.items():
+            for scope, stream in group["streams"].items():
+                contiguous = prefix(stream["intervals"])
+                total = stream["total"]
+                if scope is not None:
+                    shared_prefix, all_complete = 0, True
+                    for page in scope:
+                        page_prefix = prefix(group["pages"].get(page, []))
+                        page_total = group["totals"].get(page)
+                        shared_prefix += min(page_prefix, page_total) if page_total is not None else page_prefix
+                        if page_total is None or page_prefix < page_total:
+                            all_complete = False
+                            break
+                    contiguous = max(contiguous, shared_prefix)
+                    if all_complete:
+                        continue
+                if total is not None and contiguous >= total:
+                    continue
+                continuation = {"session_id": session.session_id, "material_id": identity[0], "view": "text",
+                                "char_offset": contiguous, "max_chars": stream["max_chars"]}
+                if scope is not None:
+                    continuation["pages"] = list(scope)
+                pending[(identity, scope)] = continuation
+        return pending
 
     def observe_visual_read(self, session_id: str, material_id: str, *, pages: list[int],
                             image_sha256: list[str]) -> bool:
@@ -267,6 +369,9 @@ class ResearchUsage:
                     or material.get("role") not in ORIGINAL_ROLES
                     or not material.get("details", {}).get("identity_confirmed")):
                 raise ResearchError("MATERIAL_NOT_VERIFIED", "Visual reading requires a confirmed available original material")
+            pagination = material.get("details", {}).get("pagination", {})
+            if pagination.get("kind") == "logical_sections" or pagination.get("physical_pages") is False:
+                raise ResearchError("INVALID_ARGUMENT", "Logical XML sections cannot supply physical-page visual reading evidence; use actual text reads")
             page_count = material.get("details", {}).get("parsed_pages")
             # Extraction is capped at 1000 pages; that count is then a parsing
             # window, not a reliable upper bound on the original PDF's pages.
@@ -331,7 +436,7 @@ class ResearchUsage:
                         continue
                     text = page["text"][:left]
                     truncated = truncated or len(text) < len(page["text"])
-                    result.append({**{k:receipt.get(k) for k in ("read_id","material_id","paper_id","role","version_id","sha256")},
+                    result.append({**{k:receipt.get(k) for k in ("read_id","material_id","paper_id","role","version_id","sha256","pagination")},
                                    "page":page["page"],"page_char_offset":page["page_char_offset"],"text":text})
                     used += len(text)
             return {"fragments":result,"returned_chars":used,"truncated":truncated,
@@ -367,6 +472,7 @@ class ResearchUsage:
                                if pid})
             required = list(dict.fromkeys([*session.focus_paper_ids, *session.declared_used_paper_ids]))
             missing = [pid for pid in required if pid not in read_ids]
+            session.pending = self._pending_reads(session, valid_reads)
             pending = list(session.pending.values())
             ready = bool(valid_reads) and not missing and not pending
             reading_ready = ready
@@ -378,7 +484,7 @@ class ResearchUsage:
             freshness = self.core.prepare_context(preparation["task"], collection_id=session.collection_id,
                                                   max_papers=1, max_chars=256, **project_options)["freshness"]
             current_frontier_ready = ready and not freshness.get("needs_refresh", True)
-            if preparation.get("stage") == "novelty" and not current_frontier_ready:
+            if (session.mode == "strict" or preparation.get("stage") == "novelty") and not current_frontier_ready:
                 ready = False
             details = session.details.summary(catalog)
             ready_for_checked_synthesis = ready and details["all_details_supported"]
@@ -386,6 +492,8 @@ class ResearchUsage:
                 ready = False
             limitations = ["Checks host-observed original text or delivered page images and reading scope only; does not certify scientific understanding, correctness, or exhaustive frontier coverage.",
                           "Reading selected passages does not mean an entire paper or all listed pages were read."]
+            if session.mode == "explore":
+                limitations.append("Exploration mode is not strict research completion, even when ordinary reading_ready/ready is true.")
             if freshness.get("needs_refresh"):
                 limitations.append("Literature freshness is unresolved; refresh the search before making current-frontier or novelty claims.")
             if preparation.get("warnings") or preparation.get("frontier", {}).get("gaps"):
@@ -397,12 +505,18 @@ class ResearchUsage:
                 next_actions.append("Read originals for missing_focus_paper_ids, or start a separate task with an explicitly narrower scope.")
             if pending:
                 next_actions.append("Replay each pending_continuation unchanged; offsets apply to the same page selection.")
-            if preparation.get("stage") == "novelty" and freshness.get("needs_refresh", True):
+            if (session.mode == "strict" or preparation.get("stage") == "novelty") and freshness.get("needs_refresh", True):
                 next_actions.append("Refresh the collection's matching search plan before a current-frontier or novelty conclusion; reading cached papers alone cannot establish freshness.")
+                next_actions.append("frontier_query_plans(profile) can suggest complementary queries; execute the chosen discovery jobs and inspect coverage before claiming a completed update.")
             if details["detail_gaps"]:
                 next_actions.append("Resolve the host-selected critical interpretations with actual quote anchors and independent host review; source access alone does not satisfy these checks.")
             return {"session_id": session_id, "collection_id": session.collection_id,
                 "task": preparation.get("task"), "stage": preparation.get("stage"),
+                "policy": deepcopy(session.policy),
+                "enforcement": {"mode": session.mode, "strict_research_completed": False,
+                    "strict_ready_for_final_review": session.mode == "strict" and ready_for_checked_synthesis,
+                    "final_review_required": bool(details["critical_checks"]),
+                    "notice": "Only a trusted host's acceptance of the exact final draft can complete strict research; MCP tools alone do not intercept host output."},
                 "status": "ready_to_synthesize" if ready else "needs_details" if details["detail_gaps"] and valid_reads and not missing and not pending else "needs_materials", "ready": ready,
                 "current_frontier_ready": current_frontier_ready,
                 "reading_ready": reading_ready, "detail_ready": details["all_details_supported"],

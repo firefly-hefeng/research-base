@@ -1,0 +1,354 @@
+{
+  "checked_at": "2026-11-03T01:23:56.493609+00:00",
+  "evaluation_design": "Regression after observing known misses, not a blinded recall benchmark or field-recall estimate.",
+  "registered_adapters": 10,
+  "default_generic_adapters": 8,
+  "new_adapter": "biorxiv",
+  "new_adapter_categories": [
+    "bioinformatics",
+    "genomics",
+    "cell_biology"
+  ],
+  "known_miss_regression": [
+    {
+      "case": "rag",
+      "title": "The Bottleneck Is Retrieval, Not Reading: Diagnosing Evidence-Based Generation with RAG for Long Context Question Answering",
+      "identifier": "2610.26951",
+      "baseline_job_id": "job_43124ea807f54b75a28a",
+      "baseline_status": "identity_review_required",
+      "baseline_exact_identity_hit_ids": [],
+      "baseline_same_title_unverified_ids": [
+        "paper_3727bba196b14466977d"
+      ],
+      "new_query_results": [
+        {
+          "job_id": "job_7190ae1d27a34a089fe8",
+          "sources": [
+            "arxiv",
+            "acl_anthology"
+          ],
+          "status": "found_exact",
+          "exact_identity_hit_ids": [
+            "paper_4ce0597511d144938cfe"
+          ],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        }
+      ],
+      "recovered_by_ordinary_new_query": true
+    },
+    {
+      "case": "bio",
+      "title": "PIE: Generalizing perturbation effects across unseen perturbations, contexts and datasets",
+      "identifier": "10.64898/2026.10.02.756297",
+      "baseline_job_id": "job_1617eeaae3be415f90b7",
+      "baseline_status": "not_returned",
+      "baseline_exact_identity_hit_ids": [],
+      "baseline_same_title_unverified_ids": [],
+      "new_query_results": [
+        {
+          "job_id": "job_58527ab448724462900d",
+          "sources": [
+            "europe_pmc",
+            "pubmed"
+          ],
+          "status": "not_returned",
+          "exact_identity_hit_ids": [],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        },
+        {
+          "job_id": "job_288aeea4880f47429d70",
+          "sources": [
+            "arxiv"
+          ],
+          "status": "not_returned",
+          "exact_identity_hit_ids": [],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        },
+        {
+          "job_id": "job_585581bde00443baa58c",
+          "sources": [
+            "biorxiv"
+          ],
+          "status": "found_exact",
+          "exact_identity_hit_ids": [
+            "paper_0d5580a341c94a19b408"
+          ],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        }
+      ],
+      "recovered_by_ordinary_new_query": true
+    },
+    {
+      "case": "bio",
+      "title": "Predicting cellular responses to perturbation across diverse contexts with State",
+      "identifier": "10.1016/j.cell.2026.07.052",
+      "baseline_job_id": "job_1617eeaae3be415f90b7",
+      "baseline_status": "not_returned",
+      "baseline_exact_identity_hit_ids": [],
+      "baseline_same_title_unverified_ids": [],
+      "new_query_results": [
+        {
+          "job_id": "job_58527ab448724462900d",
+          "sources": [
+            "europe_pmc",
+            "pubmed"
+          ],
+          "status": "found_exact",
+          "exact_identity_hit_ids": [
+            "paper_5653162502944926b2e0"
+          ],
+          "verified_relation_hit_ids": [
+            "paper_64cb590a02644355992e"
+          ],
+          "same_title_unverified_ids": []
+        },
+        {
+          "job_id": "job_288aeea4880f47429d70",
+          "sources": [
+            "arxiv"
+          ],
+          "status": "not_returned",
+          "exact_identity_hit_ids": [],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        },
+        {
+          "job_id": "job_585581bde00443baa58c",
+          "sources": [
+            "biorxiv"
+          ],
+          "status": "not_returned",
+          "exact_identity_hit_ids": [],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        }
+      ],
+      "recovered_by_ordinary_new_query": true
+    },
+    {
+      "case": "bio",
+      "title": "Benchmarking virtual cell models for in-the-wild perturbation response",
+      "identifier": "2604.27646",
+      "baseline_job_id": "job_1617eeaae3be415f90b7",
+      "baseline_status": "not_returned",
+      "baseline_exact_identity_hit_ids": [],
+      "baseline_same_title_unverified_ids": [],
+      "new_query_results": [
+        {
+          "job_id": "job_58527ab448724462900d",
+          "sources": [
+            "europe_pmc",
+            "pubmed"
+          ],
+          "status": "not_returned",
+          "exact_identity_hit_ids": [],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        },
+        {
+          "job_id": "job_288aeea4880f47429d70",
+          "sources": [
+            "arxiv"
+          ],
+          "status": "found_exact",
+          "exact_identity_hit_ids": [
+            "paper_6268dfb9d7594e2597f6"
+          ],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        },
+        {
+          "job_id": "job_585581bde00443baa58c",
+          "sources": [
+            "biorxiv"
+          ],
+          "status": "not_returned",
+          "exact_identity_hit_ids": [],
+          "verified_relation_hit_ids": [],
+          "same_title_unverified_ids": []
+        }
+      ],
+      "recovered_by_ordinary_new_query": true
+    }
+  ],
+  "runs": [
+    {
+      "case": "rag",
+      "job_id": "job_7190ae1d27a34a089fe8",
+      "plan": {
+        "date_from": "2025-01-01",
+        "date_to": "2026-11-03",
+        "budget": {
+          "max_requests": 12
+        },
+        "query": "RAG evaluation, evidence diagnostics, calibration and retrieval robustness",
+        "sources": [
+          "arxiv",
+          "acl_anthology"
+        ],
+        "source_queries": {
+          "arxiv": "(all:\"retrieval augmented generation\" OR all:\"retrieval-augmented generation\" OR ti:RAG OR abs:RAG) AND (ti:evaluation OR abs:evaluation OR ti:evaluating OR abs:evaluating OR ti:benchmark OR abs:benchmark OR ti:benchmarking OR abs:benchmarking OR ti:factuality OR abs:factuality OR ti:faithfulness OR abs:faithfulness OR ti:calibration OR abs:calibration OR ti:calibrated OR abs:calibrated OR ti:reranking OR abs:reranking OR ti:rerankers OR abs:rerankers OR ti:diagnosing OR abs:diagnosing OR ti:diagnostic OR abs:diagnostic OR ti:evidence OR abs:evidence OR ti:redundancy OR abs:redundancy OR ti:robustness OR abs:robustness)",
+          "acl_anthology": "{\"collections\":[\"2025.acl\",\"2025.emnlp\",\"2025.findings\",\"2026.acl\",\"2026.emnlp\",\"2026.findings\",\"2026.eacl\"],\"any\":[\"retrieval augmented\",\"retrieval-augmented\",\"RAG\"],\"all\":[]}"
+        }
+      },
+      "state": "paused",
+      "scope_complete": false,
+      "observed_http_attempts": 23,
+      "pagination_budget_units": 36,
+      "unique_stored_hit_ids": 1748,
+      "ingestion_warning_codes": {},
+      "sources": {
+        "acl_anthology": {
+          "complete": false,
+          "pages": 18,
+          "records": 849,
+          "total": null,
+          "error": null
+        },
+        "arxiv": {
+          "complete": false,
+          "pages": 18,
+          "records": 900,
+          "total": 4740,
+          "error": null
+        }
+      }
+    },
+    {
+      "case": "bio",
+      "job_id": "job_58527ab448724462900d",
+      "plan": {
+        "date_from": "2025-01-01",
+        "date_to": "2026-11-03",
+        "budget": {
+          "max_requests": 12
+        },
+        "query": "Single-cell and virtual-cell perturbation prediction, evaluation and generalization",
+        "sources": [
+          "europe_pmc",
+          "pubmed"
+        ],
+        "source_queries": {
+          "pubmed": "(\"single-cell\"[Title/Abstract] OR \"single cell\"[Title/Abstract] OR \"virtual cell\"[Title/Abstract] OR \"cellular responses\"[Title/Abstract] OR \"Perturb-seq\"[Title/Abstract]) AND (perturb*[Title/Abstract] OR CRISPR[Title/Abstract]) AND (predict*[Title/Abstract] OR benchmark*[Title/Abstract] OR model*[Title/Abstract] OR evaluat*[Title/Abstract] OR generaliz*[Title/Abstract] OR generalis*[Title/Abstract])",
+          "europe_pmc": "(TITLE_ABS:\"single-cell\" OR TITLE_ABS:\"single cell\" OR TITLE_ABS:\"virtual cell\" OR TITLE_ABS:\"cellular responses\" OR TITLE_ABS:\"Perturb-seq\") AND (TITLE_ABS:perturb* OR TITLE_ABS:CRISPR) AND (TITLE_ABS:predict* OR TITLE_ABS:benchmark* OR TITLE_ABS:model* OR TITLE_ABS:evaluat* OR TITLE_ABS:generaliz* OR TITLE_ABS:generalis*)"
+        }
+      },
+      "state": "succeeded",
+      "scope_complete": true,
+      "observed_http_attempts": 116,
+      "pagination_budget_units": 116,
+      "unique_stored_hit_ids": 2343,
+      "ingestion_warning_codes": {
+        "IDENTITY_CONFLICT": 1
+      },
+      "sources": {
+        "europe_pmc": {
+          "complete": true,
+          "pages": 46,
+          "records": 2230,
+          "total": 2230,
+          "error": null
+        },
+        "pubmed": {
+          "complete": true,
+          "pages": 35,
+          "records": 1742,
+          "total": 1742,
+          "error": null
+        }
+      }
+    },
+    {
+      "case": "bio",
+      "job_id": "job_288aeea4880f47429d70",
+      "plan": {
+        "date_from": "2025-01-01",
+        "date_to": "2026-11-03",
+        "budget": {
+          "max_requests": 12
+        },
+        "query": "Single-cell and virtual-cell perturbation preprints",
+        "sources": [
+          "arxiv"
+        ],
+        "source_queries": {
+          "arxiv": "(all:\"single-cell\" OR all:\"single cell\" OR all:\"virtual cell\" OR all:\"cellular responses\" OR all:\"Perturb-seq\") AND (all:perturbation OR all:perturbations OR all:CRISPR) AND (all:prediction OR all:predicting OR all:predictive OR all:benchmark OR all:benchmarking OR all:model OR all:models OR all:generalization OR all:generalizing OR all:evaluation)"
+        }
+      },
+      "state": "succeeded",
+      "scope_complete": true,
+      "observed_http_attempts": 5,
+      "pagination_budget_units": 5,
+      "unique_stored_hit_ids": 203,
+      "ingestion_warning_codes": {},
+      "sources": {
+        "arxiv": {
+          "complete": true,
+          "pages": 5,
+          "records": 203,
+          "total": 203,
+          "error": null
+        }
+      }
+    },
+    {
+      "case": "bio",
+      "job_id": "job_585581bde00443baa58c",
+      "plan": {
+        "date_from": "2025-01-01",
+        "date_to": "2026-11-03",
+        "budget": {
+          "max_requests": 12
+        },
+        "query": "Official bioRxiv perturbation metadata in declared categories",
+        "sources": [
+          "biorxiv"
+        ],
+        "source_queries": {
+          "biorxiv": "{\"categories\":[\"bioinformatics\",\"genomics\",\"cell_biology\"],\"any\":[\"perturbation\",\"perturbations\",\"Perturb-seq\",\"virtual cell\"],\"all\":[]}"
+        }
+      },
+      "state": "paused",
+      "scope_complete": false,
+      "observed_http_attempts": 24,
+      "pagination_budget_units": 41,
+      "unique_stored_hit_ids": 96,
+      "ingestion_warning_codes": {},
+      "sources": {
+        "biorxiv": {
+          "complete": false,
+          "pages": 41,
+          "records": 102,
+          "total": null,
+          "error": null
+        }
+      },
+      "http_count_notice": "Only attempts after host-interruption recovery were observed in the valid output. Earlier database progress has 17 pagination units; historical HTTP attempts are not reconstructed.",
+      "raw_version_metadata_records_scanned": 1173
+    }
+  ],
+  "ebg_identity_boundary": {
+    "archive": "https://arxiv.org/abs/2610.26951",
+    "proceedings": "https://aclanthology.org/2026.findings-emnlp.2222/",
+    "status": "same_title_authors_but_no_explicit_provider_relation_verified",
+    "action": "Separate stable identifiers retained; no title-based merge or publication relation added.",
+    "primary_checks": [
+      "Official arXiv metadata had no published DOI/journal reference.",
+      "Official ACL page and authors' linked repository README did not expose an explicit arXiv-publication relation in the inspected metadata."
+    ]
+  },
+  "limitations": [
+    "Source pagination completion is distinct from all candidates screened, all records ingested, all versions verified or all fulltexts acquired.",
+    "Exact identity means an observed bibliographic identifier, not confirmation of a requested manuscript revision or byte-identical versions.",
+    "Broader query results remain candidates; nothing here newly includes or scientifically endorses all returned records.",
+    "Source returned records, version records and unique stored IDs are different units and are not independent scientific-study counts.",
+    "bioRxiv is a category/date metadata scan with local literal matching, not server-side semantic or keyword search; unfinished months remain unfinished.",
+    "The expanded RAG arXiv query remains unfinished; the earlier completed scope is not relabeled as completion of the revised plan.",
+    "No collection discovery configuration or freshness claim was changed by this regression script.",
+    "No private originals, full abstracts, author code, local paths, browser content or model API calls are exported here."
+  ]
+}

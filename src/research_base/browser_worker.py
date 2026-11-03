@@ -115,7 +115,56 @@ class BackgroundBrowserWorker:
             raise ResearchError("BROWSER_RESPONSE_INVALID", "Browser returned invalid structured data") from None
 
     def pdf_links(self):
-        return self._evaluate("(() => JSON.stringify({url:location.href,title:document.title,links:Array.from(document.querySelectorAll('a')).filter(a=>/PDF/i.test(a.textContent)||/\\.pdf(?:[?#]|$)|showPdf|\\/pdf|pdfft/i.test(a.href)).slice(0,200).map(a=>({text:a.textContent.trim().slice(0,300),url:a.href}))}))()")
+        return self._evaluate("""(() => {
+const metas=Array.from(document.querySelectorAll('meta'));
+const doi=metas.find(m=>m.name?.toLowerCase()==='citation_doi')?.content||null;
+const links=Array.from(document.querySelectorAll('a')).filter(a=>/PDF/i.test(a.textContent)||/\\.pdf(?:[?#]|$)|showPdf|\\/pdf|pdfft/i.test(a.href)).slice(0,200).map(a=>({text:a.textContent.trim().slice(0,300),url:a.href,source:'anchor'}));
+for(const m of metas.filter(m=>m.name?.toLowerCase()==='citation_pdf_url')){
+  try{const u=new URL(m.content,location.href);if(/^https?:$/.test(u.protocol)&&!links.some(l=>l.url===u.href))links.push({text:'citation_pdf_url',url:u.href,source:'metadata'});}catch{}
+}
+return JSON.stringify({url:location.href,title:document.title,doi,links});})()""")
+
+    def select_pdf_link(self, expected_doi=None):
+        """Select an observed download route, keeping previews out of transfers.
+
+        This is navigation only. The bytes still require paper/version validation
+        after download; a matching URL or page DOI never grants reading credit.
+        """
+        def normalized(value):
+            return re.sub(r"^https?://(?:dx\.)?doi\.org/", "", str(value or "").strip(), flags=re.I).lower()
+
+        expected = normalized(expected_doi)
+        if expected_doi is not None and not re.fullmatch(r"10\.\d{4,9}/\S+", expected):
+            # Keep validation separate from selecting a similarly named link.
+            raise ResearchError("INVALID_ARGUMENT", "Use a DOI or omit the expected identity")
+        observed = self.pdf_links()
+        page_doi = normalized(observed.get("doi"))
+        if expected and page_doi and page_doi != expected:
+            raise ResearchError("BROWSER_IDENTITY_MISMATCH", "The current page identifies a different article")
+        tail = expected.split("/", 1)[-1] if expected else ""
+        candidates = []
+        for link in observed.get("links", []):
+            url = link.get("url", "")
+            try:
+                self._url(url)
+            except ResearchError:
+                # Pages often include javascript/help links alongside their
+                # actual downloads. An unusable entry must not hide the latter.
+                continue
+            path = urlsplit(url).path.lower()
+            direct = path.endswith(".pdf") or bool(re.search(r"/(?:pdf|showpdf|pdfft)(?:/|$)", path, re.I))
+            if not direct:
+                continue
+            if expected and page_doi != expected and expected not in url.lower() and tail not in path:
+                continue
+            # A versioned download anchor is preferable to an unversioned
+            # metadata URL, provided both were actually observed on this page.
+            rank = (bool(re.search(r"v\d+\.full\.pdf$", path)), "download" in link.get("text", "").lower(), path.endswith(".pdf"))
+            candidates.append((rank, link))
+        if not candidates:
+            raise ResearchError("BROWSER_PDF_LINK_REQUIRED", "No observed main-article PDF download route is available", retryable=True)
+        link = max(candidates, key=lambda item: item[0])[1]
+        return {**link, "selection_basis": "observed_page_download_route", "requires_identity_validation": True}
 
     def capture_page(self):
         self._bound()

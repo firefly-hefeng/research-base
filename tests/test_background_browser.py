@@ -48,6 +48,30 @@ class Bridge:
         return {}
 
 
+def test_main_pdf_selection_skips_html_preview_and_requires_identity_consistency(tmp_path):
+    bridge = Bridge()
+    worker = BackgroundBrowserWorker(bridge)
+    worker.reuse_task_tab(42)
+    worker.pdf_links = lambda: {
+        "doi": "10.1101/2025.01.01.123456", "links": [
+            {"text": "PDF help", "url": "javascript:void(0)"},
+            {"text": "PDF help", "url": "mailto:help@example.org"},
+            {"text": "Preview PDF", "url": "https://example.org/2025.01.01.123456v2.full.pdf+html"},
+            {"text": "Download PDF", "url": "https://example.org/2025.01.01.123456v2.full.pdf"},
+            {"text": "citation_pdf_url", "url": "https://example.org/early/2025/2025.01.01.123456.full.pdf"}]}
+    selected = worker.select_pdf_link("https://doi.org/10.1101/2025.01.01.123456")
+    assert selected["url"].endswith("v2.full.pdf")
+    assert selected["requires_identity_validation"] is True
+    with pytest.raises(ResearchError) as mismatch:
+        worker.select_pdf_link("10.1101/2025.01.02.999999")
+    assert mismatch.value.code == "BROWSER_IDENTITY_MISMATCH"
+    worker.pdf_links = lambda: {"links": [{"text": "Preview PDF", "url": "https://example.org/paper.pdf+html"}]}
+    with pytest.raises(ResearchError) as preview:
+        worker.select_pdf_link()
+    assert preview.value.code == "BROWSER_PDF_LINK_REQUIRED"
+    assert not any(action == "evaluate" for action, _ in bridge.calls)
+
+
 def test_background_input_never_activates_desktop_and_restores_focus_emulation():
     bridge = Bridge()
     worker = BackgroundBrowserWorker(bridge, background_input=True)

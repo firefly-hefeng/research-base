@@ -101,19 +101,94 @@ def test_starting_at_nonzero_offset_does_not_claim_the_selected_range_was_read(r
     assert usage.check(sid)["ready"]
 
 
-def test_changing_pages_does_not_clear_an_unfinished_selection(research):
+def test_actual_complete_page_read_clears_earlier_selection_of_same_source(research):
     core, collection, papers, materials = research
     usage = ResearchUsage(core)
     sid = usage.begin("retrieval", collection)["session_id"]
     usage.read(sid, materials[0], pages=[1], max_chars=10)
     usage.read(sid, materials[0])
     checked = usage.check(sid)
-    assert not checked["ready"]
-    assert checked["pending_continuations"][0]["pages"] == [1]
-    usage.read(**checked["pending_continuations"][0])
-    while usage.check(sid)["pending_continuations"]:
-        usage.read(**usage.check(sid)["pending_continuations"][0])
+    assert checked["ready"]
+    assert not checked["pending_continuations"]
+
+
+def test_reselecting_already_delivered_page_does_not_create_false_prefix_gap(research, tmp_path):
+    from test_materials import pdf
+    core, collection, papers, _ = research
+    path = tmp_path / "three-pages.pdf"
+    pdf(path, ["First method page " * 8, "Second metric page " * 20, "Last limitation page " * 8])
+    material = core.import_material(papers[0], path=path, confirmed=True)["material_id"]
+    usage = ResearchUsage(core)
+    sid = usage.begin("retrieval", collection)["session_id"]
+    first = usage.read(sid, material, pages=[1, 2, 3], max_chars=180)
+    while first["continuation"]:
+        first = usage.read(**first["continuation"])
     assert usage.check(sid)["ready"]
+    usage.read(sid, material, pages=[2], char_offset=100, max_chars=10000)
+    checked = usage.check(sid)
+    assert checked["ready"] and not checked["pending_continuations"]
+
+
+def test_cross_selection_coverage_does_not_skip_a_genuinely_unread_page_gap(research, tmp_path):
+    from test_materials import pdf
+    core, collection, papers, _ = research
+    path = tmp_path / "gap-pages.pdf"
+    pdf(path, ["Method page " * 8, "Metric page " * 30])
+    material = core.import_material(papers[0], path=path, confirmed=True)["material_id"]
+    first_page_chars = len(core.read_material(material, pages=[1])["pages"][0]["text"])
+    usage = ResearchUsage(core)
+    sid = usage.begin("retrieval", collection)["session_id"]
+    usage.read(sid, material, pages=[1, 2], max_chars=first_page_chars + 10)
+    usage.read(sid, material, pages=[2], char_offset=100, max_chars=10000)
+    checked = usage.check(sid)
+    assert not checked["ready"]
+    assert any(item["pages"] == [2] and item["char_offset"] == 10 for item in checked["pending_continuations"])
+    while checked["pending_continuations"]:
+        usage.read(**checked["pending_continuations"][0])
+        checked = usage.check(sid)
+    assert checked["ready"]
+
+
+def test_changed_version_cannot_inherit_completed_page_coverage(research):
+    core, collection, papers, materials = research
+    usage = ResearchUsage(core)
+    sid = usage.begin("retrieval", collection)["session_id"]
+    usage.read(sid, materials[0], pages=[1])
+    assert usage.check(sid)["ready"]
+    with core.store.connect() as db:
+        db.execute("INSERT INTO versions(id,paper_id,kind,metadata) VALUES(?,?,?,?)", ("version-new-reading-test", papers[0], "accepted", "{}"))
+        db.execute("UPDATE materials SET version_id=? WHERE id=?", ("version-new-reading-test", materials[0]))
+    usage.read(sid, materials[0], pages=[1], char_offset=100)
+    checked = usage.check(sid)
+    assert not checked["ready"]
+    assert checked["pending_continuations"][0]["char_offset"] == 0
+    usage.read(**checked["pending_continuations"][0])
+    assert usage.check(sid)["ready"]
+
+
+def test_adjacent_context_omits_unpermitted_neighbors_without_reading_them(research, tmp_path, monkeypatch):
+    from test_materials import pdf
+    from research_base.tools import ToolRegistry
+    core, collection, papers, _ = research
+    path = tmp_path / "restricted-neighbors.pdf"
+    pdf(path, ["Unpermitted prior page", "Permitted definition page", "Unpermitted next page"])
+    material = core.import_material(papers[0], path=path, confirmed=True)["material_id"]
+    original = core.read_material
+    accessed = []
+    def restricted_read(material_id, **kwargs):
+        assert kwargs.get("pages") == [2]
+        accessed.append(kwargs.get("view", "text"))
+        result = original(material_id, **kwargs)
+        result["material"]["permitted_pages"] = [2]
+        return result
+    monkeypatch.setattr(core, "read_material", restricted_read)
+    registry = ToolRegistry(core, collection_id=collection)
+    sid = registry.research.begin("retrieval", collection)["session_id"]
+    result = registry.call("read_research_context", {"session_id": sid, "material_id": material, "page": 2})["data"]
+    assert result["context_selection"]["selected_pages"] == [2]
+    assert result["context_selection"]["omitted_neighbors"] == [1, 3]
+    assert accessed == ["original", "text"]
+    assert [part["page"] for part in result["pages"]] == [2]
 
 
 def test_candidates_staged_and_empty_materials_cannot_satisfy_usage(research, tmp_path):

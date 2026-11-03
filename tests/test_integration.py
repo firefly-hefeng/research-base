@@ -228,5 +228,19 @@ def test_v2_rules_upgrade_preserves_researcher_rules(tmp_path, with_state):
     raw = entry.read_bytes()
     assert raw.startswith(prefix) and raw.endswith(suffix)
     assert b"submit_research_detail" in raw and b"ready_for_checked_synthesis" in raw
+    assert doctor_project(tmp_path)["installed_template_version"] == module.TEMPLATE_VERSION
+    assert attach(tmp_path)["status"] == "unchanged"
+
+
+def test_v3_rules_upgrade_to_default_strict_preserves_user_content(tmp_path):
+    prefix = b"# Existing lab instruction\n"
+    suffix = b"\n# Researcher's additional rule\n"
+    entry = tmp_path / "AGENTS.md"
+    entry.write_bytes(prefix + module.LEGACY_TEMPLATE_V3.encode() + suffix)
     assert doctor_project(tmp_path)["installed_template_version"] == 3
+    assert attach(tmp_path)["status"] == "updated"
+    upgraded = entry.read_bytes()
+    assert upgraded.startswith(prefix) and upgraded.endswith(suffix)
+    assert b"strict" in upgraded and b"explore" in upgraded
+    assert doctor_project(tmp_path)["installed_template_version"] == 4
     assert attach(tmp_path)["status"] == "unchanged"

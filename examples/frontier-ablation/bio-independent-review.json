@@ -1,0 +1,344 @@
+{
+  "schema_version": 1,
+  "case": "bio",
+  "run": "paired-v4",
+  "protocol_sha256": "3d9a360687d31642023c85704989c5df44d700a92e550524c09b1f6746d291e6",
+  "reviewed_at": "2026-11-03T01:50:41.824285+00:00",
+  "reviewer": "Codex independent single-cell source reviewer; no new external-model calls",
+  "method": {
+    "new_random_opaque_ids": true,
+    "arm_mapping_viewed_before_scoring": false,
+    "deepseek_scores_viewed": false,
+    "blinding_limit": "方案正文与是否交付可能透露使用方式，不称双盲。",
+    "scoring": "每项0–2：0缺失/不可用/实质错误；1有用但泛化或缺必要操作细节；2具体、有效且边界恰当。",
+    "no_name_or_citation_bonus": true,
+    "valid_alternative_designs_not_penalized_as_factual_errors": true,
+    "blocked_samples": "交付失败记六项0分，不将内部未发布稿作为交付稿，也不因此记材料错误。"
+  },
+  "source_scope": [
+    {
+      "paper": "PIE",
+      "physical_pages": [
+        4,
+        6,
+        8
+      ]
+    },
+    {
+      "paper": "DE classification benchmark",
+      "physical_pages": [
+        10,
+        11
+      ]
+    },
+    {
+      "paper": "SafeDelta",
+      "physical_pages": [
+        6
+      ]
+    },
+    {
+      "material": "pinned SafeDelta adapter.py",
+      "scope": "entire previously authorized file, 7084 returned characters"
+    }
+  ],
+  "source_receipt_audit": {
+    "authorized_text_characters_actually_read": 28012,
+    "v3_v4_source_fragments_same_sha_version_and_text": true,
+    "frozen_v4_engine_unchanged_at_review": true,
+    "whole_paper_or_executed_code_claimed": false
+  },
+  "criteria_order": [
+    "information_budget",
+    "de_metrics",
+    "control_independence",
+    "adapter_semantics",
+    "risk",
+    "actionable_limits"
+  ],
+  "results": [
+    {
+      "sample": "bio-1c1f077330",
+      "delivered": true,
+      "draft_sha256": "90730470edb157e1312ea8006609f11b0ae156c1852bb76b5d9670a793f41287",
+      "scores": [
+        {
+          "criterion_id": "information_budget",
+          "score": 2,
+          "reason": "区分未见扰动、情境与数据集，并要求适配样本数及split声明、评估样本隔离。"
+        },
+        {
+          "criterion_id": "de_metrics",
+          "score": 1,
+          "reason": "DE阈值、正类与聚合尚待固定；未覆盖全量/curated类别先验差异（DE10–11）。"
+        },
+        {
+          "criterion_id": "control_independence",
+          "score": 1,
+          "reason": "有同批次对照及供体split检查，缺决策/评分控制的独立构造。"
+        },
+        {
+          "criterion_id": "adapter_semantics",
+          "score": 1,
+          "reason": "提出适配臂的整体验收条件，尚无逐次校准门控、fallback或fold规则。"
+        },
+        {
+          "criterion_id": "risk",
+          "score": 1,
+          "reason": "有跨任务稳定性与敏感性分析，缺有害释放率及平均/个体风险的明确区分。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 1,
+          "reason": "有配置和输出留存要求，但部分关键评价定义仍未操作化。"
+        }
+      ],
+      "total": 7,
+      "material_errors": [],
+      "missing_details_or_design_ambiguities": [],
+      "valid_alternatives": [
+        "少样本策略和自定的跨任务接受标准可作为替代设计。"
+      ],
+      "honest_limits": [
+        "未读声明准确且不扣作材料错误。"
+      ]
+    },
+    {
+      "sample": "bio-454060dd64",
+      "delivered": true,
+      "draft_sha256": "2f98a6cb70c043045dbaa2a00b06f188645ba4ae3e02de72088992b50f445838",
+      "scores": [
+        {
+          "criterion_id": "information_budget",
+          "score": 2,
+          "reason": "准确区分PIE训练证据、四类留出及State few-shot，并要求校准响应数k（PIE4/6/8，DE10）。"
+        },
+        {
+          "criterion_id": "de_metrics",
+          "score": 1,
+          "reason": "给出(p,g)、DE阈值和全量/重采样，AUPRC正类及跨条件聚合尚未明确。"
+        },
+        {
+          "criterion_id": "control_independence",
+          "score": 2,
+          "reason": "区分半B共享与独立评分，提出第三份控制/独立重复，并按供体或板隔离。"
+        },
+        {
+          "criterion_id": "adapter_semantics",
+          "score": 1,
+          "reason": "LOO PCC、约定及退回基线正确；finite防护和predict(fold)选择未明确（adapter）。"
+        },
+        {
+          "criterion_id": "risk",
+          "score": 2,
+          "reason": "分报有益扣留、有害错放及最差损失，未把均值收益当逐次保证（SafeDelta6）。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 2,
+          "reason": "实验臂、oracle角色、bootstrap和实际split审计边界具体；未声称已执行。"
+        }
+      ],
+      "total": 10,
+      "material_errors": [],
+      "missing_details_or_design_ambiguities": [],
+      "valid_alternatives": [
+        "额外独立控制、bootstrap放行和评价专用oracle均为允许的自提设计。"
+      ],
+      "honest_limits": [
+        "附录及完整执行记录未读的限定得到保留。"
+      ]
+    },
+    {
+      "sample": "bio-71ac83e98c",
+      "delivered": false,
+      "draft_sha256": null,
+      "scores": [
+        {
+          "criterion_id": "information_budget",
+          "score": 0,
+          "reason": "未交付研究方案。"
+        },
+        {
+          "criterion_id": "de_metrics",
+          "score": 0,
+          "reason": "未交付研究方案。"
+        },
+        {
+          "criterion_id": "control_independence",
+          "score": 0,
+          "reason": "未交付研究方案。"
+        },
+        {
+          "criterion_id": "adapter_semantics",
+          "score": 0,
+          "reason": "未交付研究方案。"
+        },
+        {
+          "criterion_id": "risk",
+          "score": 0,
+          "reason": "未交付研究方案。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 0,
+          "reason": "未交付研究方案。"
+        }
+      ],
+      "total": 0,
+      "material_errors": [],
+      "missing_details_or_design_ambiguities": [],
+      "valid_alternatives": [],
+      "honest_limits": [
+        "交付失败不等于科学断言错误；未评价内部未发布草稿。"
+      ]
+    },
+    {
+      "sample": "bio-73425f84db",
+      "delivered": true,
+      "draft_sha256": "3a9446ca6cc9b8aee1febe7d029c123d002fe44b8db8e354abe2a34fa87d677d",
+      "scores": [
+        {
+          "criterion_id": "information_budget",
+          "score": 1,
+          "reason": "已区分few-shot与留出任务，但“同一扰动在所有情境不跨边界”的全局规则会混淆情境单独与联合留出（PIE4/6）。"
+        },
+        {
+          "criterion_id": "de_metrics",
+          "score": 2,
+          "reason": "三类、FDR阈值、类别先验及全量/降采样清楚；所提二类DE正类需与三类结果分表（DE10–11）。"
+        },
+        {
+          "criterion_id": "control_independence",
+          "score": 1,
+          "reason": "识别A/B共享估计问题，但互斥细胞本身不证明生物独立，缺独立评分单位。"
+        },
+        {
+          "criterion_id": "adapter_semantics",
+          "score": 1,
+          "reason": "声明calibration-only、fold及约定，未完整指定finite正值门控与fallback（adapter）。"
+        },
+        {
+          "criterion_id": "risk",
+          "score": 2,
+          "reason": "区分平均增益与释放后的负收益比例，阈值迁移风险有原文依据（SafeDelta6）。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 1,
+          "reason": "有审计待查项，但留出规则与源码异常分支仍需消歧，不能立即照稿执行。"
+        }
+      ],
+      "total": 8,
+      "material_errors": [],
+      "missing_details_or_design_ambiguities": [
+        "若全局禁止同扰动跨情境，实际估计目标会改变；这是需澄清的设计歧义，未判定作者事实错误。"
+      ],
+      "valid_alternatives": [
+        "二维联合留出是有效补充；须与固定扰动的情境单独泛化分别标记。"
+      ],
+      "honest_limits": [
+        "诚实保留附录及代码不确定性，不因未完成复现扣作事实错误。"
+      ]
+    },
+    {
+      "sample": "bio-8d9617d299",
+      "delivered": true,
+      "draft_sha256": "43a803074bd92bfa37a2e1b3d3dadb096a8ab9e5d56b35a98b53eed6dc373e7b",
+      "scores": [
+        {
+          "criterion_id": "information_budget",
+          "score": 1,
+          "reason": "有训练证据与State few-shot边界，但适配校准响应预算及联合留出臂尚不完整。"
+        },
+        {
+          "criterion_id": "de_metrics",
+          "score": 1,
+          "reason": "明确三类和全量/平衡设置，正类仍为“DE或Up”而未固定，比较口径不够可执行。"
+        },
+        {
+          "criterion_id": "control_independence",
+          "score": 1,
+          "reason": "讨论额外控制参考，但把半B共享与校准索引评分混述，未证明生物采样独立。"
+        },
+        {
+          "criterion_id": "adapter_semantics",
+          "score": 1,
+          "reason": "代码模式和正证据方向有依据，缺finite保护、共享release/fold输出与fallback定义（adapter）。"
+        },
+        {
+          "criterion_id": "risk",
+          "score": 2,
+          "reason": "同时检查均值、最差试次和负增益释放率，没有给出逐次无害保证。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 1,
+          "reason": "列出了真实待查项，但指标选择及控制/校准索引的归属仍需澄清。"
+        }
+      ],
+      "total": 7,
+      "material_errors": [],
+      "missing_details_or_design_ambiguities": [
+        "SafeDelta6共享的是控制参考；不能据此推断代码复用了最终测试响应或测试索引。"
+      ],
+      "valid_alternatives": [
+        "A/B角色互换、额外控制复现及不同失败判据可以作为新设计。"
+      ],
+      "honest_limits": [
+        "预印本数值与实验室未执行结果明确区分。"
+      ]
+    },
+    {
+      "sample": "bio-f8d367e07b",
+      "delivered": true,
+      "draft_sha256": "733ba4435b00c9ea4597cb271bde5e8af1c9edc31ad80903e82376b05f3ca421",
+      "scores": [
+        {
+          "criterion_id": "information_budget",
+          "score": 1,
+          "reason": "三个迁移轴清楚，少样本支持仅来自训练侧与目标情境few-shot的对应关系尚不明确。"
+        },
+        {
+          "criterion_id": "de_metrics",
+          "score": 1,
+          "reason": "要求预登记正类/阈值/单元但未实际固定；缺全量与curated先验审计。"
+        },
+        {
+          "criterion_id": "control_independence",
+          "score": 1,
+          "reason": "核对批次、深度和细胞构成，缺门控与评分所用独立控制设计。"
+        },
+        {
+          "criterion_id": "adapter_semantics",
+          "score": 1,
+          "reason": "有留出扰动重复增益的验收思路，尚未区分校准/验证与最终测试，也未给fallback。"
+        },
+        {
+          "criterion_id": "risk",
+          "score": 1,
+          "reason": "报告不稳定和漂移风险，未具体区分平均收益、有害释放率及逐次保证。"
+        },
+        {
+          "criterion_id": "actionable_limits",
+          "score": 1,
+          "reason": "有版本与预登记纪律，但关键指标和放行定义仍待实读后落实。"
+        }
+      ],
+      "total": 6,
+      "material_errors": [],
+      "missing_details_or_design_ambiguities": [],
+      "valid_alternatives": [
+        "少样本支持的权限臂可以另列；不要求作者方案是唯一正确方案。"
+      ],
+      "honest_limits": [
+        "明确未读、不转述论文内数字或规则；此限制不当作材料错误。"
+      ]
+    }
+  ],
+  "interpretation": [
+    "本报告只评价匿名稿中实际写出的内容；未见确定的作者事实反转，不等于整稿已获科学正确认证。",
+    "给低分的缺失定义或设计歧义不自动算材料错误；有效替代设计和诚实未读声明分开保留。",
+    "交付率、语义质量、保守误拦与成本应分别报告；少量已知用例不支持泛化收益、训练性能或节时结论。"
+  ]
+}

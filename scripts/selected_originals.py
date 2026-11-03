@@ -24,18 +24,19 @@ class SelectedOriginals:
     def _paper(self, paper):
         keys = ("paper_id", "title", "authors", "year", "doi", "identifiers", "preferred_version_id",
                 "memberships", "related_paper_ids", "fulltext_available", "text_searchable", "publication_history",
-                "publication_history_truncated")
+                "publication_history_truncated", "membership", "eligible")
         result = {key: deepcopy(paper[key]) for key in keys if key in paper}
         result["materials"] = [self._material(item) for item in paper.get("materials", []) if item.get("material_id") in self.pages]
         result["versions"] = [{key: item.get(key) for key in ("version_id", "paper_id", "kind")}
                               for item in paper.get("versions", [])]
         return result
 
-    @staticmethod
-    def _material(item):
+    def _material(self, item):
         keys = ("material_id", "paper_id", "version_id", "role", "format", "status", "parse_status",
                 "exists", "details", "sha256", "source_url")
-        return {key: deepcopy(item[key]) for key in keys if key in item}
+        return {**{key: deepcopy(item[key]) for key in keys if key in item},
+                "permitted_pages": sorted(self.pages.get(item.get("material_id"), set())),
+                "reading_scope": "Only these explicit page/section selections are available in this bounded validation."}
 
     def _context(self, context):
         result = deepcopy(context)

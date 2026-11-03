@@ -427,12 +427,14 @@ def agent_run(ctx: typer.Context, task: str,
               stage: Annotated[str, typer.Option("--stage", help="Research stage: explore/design/implement/interpret/novelty.")] = "design",
               profile: Annotated[str | None, typer.Option("--profile")] = None,
               focus: Annotated[list[str] | None, typer.Option("--focus", help="Task-specific originals that must be inspected.")] = None,
+              research_mode: Annotated[str, typer.Option("--research-mode", help="strict (default): current frontier, task originals and independent detail/final review; explore: explicitly limited reading workflow.")] = "strict",
               max_steps: Annotated[int, typer.Option("--max-steps", min=1, max=32)] = 8):
     def action():
         from .agent import ResearchAgent
         with ResearchAgent(_base(ctx)) as agent:
             return agent.run(task, collection_id=collection, project_root=project, allow_writes=allow_writes,
-                max_steps=max_steps, research_stage=stage, profile=profile, focus_paper_ids=focus)
+                max_steps=max_steps, research_stage=stage, profile=profile, focus_paper_ids=focus,
+                research_mode=research_mode)
     _call(action)
 
 

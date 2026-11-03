@@ -263,7 +263,7 @@ def test_registry_extensions_and_validation():
             return SourcePage(items=[Candidate(source="custom", source_id="1", title=query)])
 
     source = registry(lambda request: pytest.fail("custom adapter has no network"))
-    assert len(source.list_sources()) == 9
+    assert len(source.list_sources()) == 10
     assert next(item for item in source.list_sources() if item["name"] == "acl_anthology")["default_enabled"] is False
     source.register("custom", Custom())
     assert source.search_page("custom", "A query").items[0].title == "A query"

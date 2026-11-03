@@ -6,6 +6,7 @@ stores only a curated set of entry IDs and a profile, never generated paper card
 from __future__ import annotations
 
 from copy import deepcopy
+from datetime import date
 from pathlib import Path
 
 from .models import ResearchError
@@ -199,9 +200,17 @@ class ResearchSpaceMixin:
                                        max_papers=max_papers, max_chars=max_chars)
         frontier = self._frontier_space(collection, context["freshness"])
         focus_papers = [self._research_paper(self.get_paper(pid), "included") for pid in focus]
+        from .discovery_plans import task_discovery_suggestions
+        search_scope = context["freshness"].get("search_scope") or {}
+        today = date.today()
+        suggestions = task_discovery_suggestions(task,
+            date_from=search_scope.get("date_from") or f"{today.year - 1}-01-01",
+            date_to=search_scope.get("date_to") or today.isoformat())
+        suggestions["date_basis"] = "Declared search bounds when present; otherwise previous calendar year through today. Review bounds explicitly before running."
         return {"task": task, "stage": stage, "profile": profile, "collection_id": collection_id,
                 **({"project_root": project_root} if project_root is not None else {}),
-                "collection_revision": collection["revision"], "generated_at": now(), "frontier": frontier,
+                "collection_revision": collection["revision"], "generated_at": now(),
+                "discovery_suggestions": suggestions, "frontier": frontier,
                 "context": context, "focus_paper_ids": focus, "focus_papers": focus_papers,
                 "reading_questions": list(_STAGE_QUESTIONS[stage]) + list(_PROFILE_QUESTIONS[profile]),
                 "warnings": list(frontier["warnings"]),

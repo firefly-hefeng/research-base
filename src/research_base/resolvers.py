@@ -37,17 +37,37 @@ def _public_https(value):
 
 def _request(client, url, *, params=None):
     """Bound HTML/JSON metadata; do not echo response bodies in diagnostics."""
-    if not _public_https(url):
-        raise ValueError("Invalid public metadata URL")
-    with client.stream("GET", url, params=params, timeout=15, follow_redirects=True) as response:
-        if "application/pdf" in response.headers.get("content-type", "").lower():
-            return response.status_code, str(response.url), dict(response.headers), b""
-        body = bytearray()
-        for chunk in response.iter_bytes(65536):
-            body.extend(chunk)
-            if len(body) > METADATA_LIMIT:
-                raise ValueError("Metadata response exceeds limit")
-        return response.status_code, str(response.url), dict(response.headers), bytes(body)
+    current, visited, previous = url, set(), None
+    for hop in range(6):
+        # Validate before every request: checking only the final URL is too late
+        # after a public endpoint redirects into a private/loopback address.
+        if not _public_https(current) or current in visited:
+            raise ValueError("Invalid public metadata redirect")
+        visited.add(current)
+        request = client.build_request("GET", current, params=params if hop == 0 else None, timeout=15)
+        if previous is not None and urlsplit(previous).netloc != urlsplit(current).netloc:
+            request.headers.pop("authorization", None)
+            request.headers.pop("proxy-authorization", None)
+        response = client.send(request, stream=True, follow_redirects=False,
+                               auth=httpx.USE_CLIENT_DEFAULT if hop == 0 else None)
+        try:
+            if response.status_code in (301, 302, 303, 307, 308):
+                location = response.headers.get("location")
+                if not location or hop == 5:
+                    raise ValueError("Public metadata redirect is missing or exceeds the limit")
+                previous, current = current, urljoin(current, location)
+                continue
+            if "application/pdf" in response.headers.get("content-type", "").lower():
+                return response.status_code, str(response.url), dict(response.headers), b""
+            body = bytearray()
+            for chunk in response.iter_bytes(65536):
+                body.extend(chunk)
+                if len(body) > METADATA_LIMIT:
+                    raise ValueError("Metadata response exceeds limit")
+            return response.status_code, str(response.url), dict(response.headers), bytes(body)
+        finally:
+            response.close()
+    raise ValueError("Public metadata redirect limit exceeded")
 
 
 def _json_request(client, url, *, params=None):
@@ -168,20 +188,26 @@ def _pmc_locations(client, paper, identifiers):
         if expected_doi and actual_doi != expected_doi:
             diagnostics.append({"resolver": "pmc_cloud", "outcome": "doi_mismatch"})
             continue
-        pdf_url = record.get("pdf_url")
-        if isinstance(pdf_url, str) and pdf_url.startswith("s3://pmc-oa-opendata/"):
-            pdf_url = PMC_BUCKET + "/" + pdf_url.split("/", 3)[3]
-        if not _public_https(pdf_url):
-            continue
         manuscript = str(record.get("is_manuscript", "")).lower()
         kind = "accepted" if manuscript in ("yes", "true", "1") else "published" if manuscript in ("no", "false", "0") else "unknown"
         if actual_doi and PREPRINT_DOI.fullmatch(actual_doi):
             kind = "preprint"
-        locations.append({"url": pdf_url, "version_kind": kind, "doi": actual_doi,
-                          "identifiers": {"pmcid": version_name}, "title": record.get("title"), "resolver": "pmc_cloud",
-                          "repository_version": version_name, "license": record.get("license_code")})
+        # Author manuscripts often have official JATS XML but no PDF. Preserve
+        # that original format; never infer a nonexistent web PDF route.
+        for field, file_format in (("pdf_url", "pdf"), ("xml_url", "xml")):
+            url = record.get(field)
+            if isinstance(url, str) and url.startswith("s3://pmc-oa-opendata/"):
+                url = PMC_BUCKET + "/" + url.split("/", 3)[3]
+            if not _public_https(url):
+                continue
+            item = {"url": url, "version_kind": kind, "doi": actual_doi,
+                    "identifiers": {"pmcid": version_name}, "title": record.get("title"), "resolver": "pmc_cloud",
+                    "repository_version": version_name, "license": record.get("license_code")}
+            if file_format == "xml":
+                item["format"] = "xml"
+            locations.append(item)
     if not locations:
-        diagnostics.append({"resolver": "pmc_cloud", "outcome": "no_available_pdf"})
+        diagnostics.append({"resolver": "pmc_cloud", "outcome": "no_available_fulltext"})
     return locations, diagnostics
 
 

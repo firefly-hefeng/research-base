@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "run": "paired-v4",
+  "review_type": "Independent Codex source-based assessment after random opaque sample blinding",
+  "not_human_or_scientific_certification": true,
+  "research_outputs_rewritten": false,
+  "arm_unblinding": "Root joined the locked scores to mappings after each reviewer finished; raw case reports remain unchanged",
+  "cases": [
+    {
+      "case": "rag",
+      "source_report": "rag-independent-review.json",
+      "source_report_sha256": "84be161d6744e70f4269ef9dcfb425eac0df6ea09284503e8b088606bdb0c17c",
+      "samples": [
+        {
+          "sample": "rag-9eeb7c0e",
+          "arm": "prior_only",
+          "repeat": 1,
+          "score": 10,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "time_metric": 1,
+            "answer_evidence": 1,
+            "filter_errors": 2,
+            "redundancy": 2,
+            "component_diagnosis": 2,
+            "actionable_limits": 2
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "rag-8c73236e",
+          "arm": "prior_only",
+          "repeat": 2,
+          "score": 7,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "time_metric": 1,
+            "answer_evidence": 1,
+            "filter_errors": 1,
+            "redundancy": 1,
+            "component_diagnosis": 1,
+            "actionable_limits": 2
+          },
+          "material_errors": 0,
+          "design_errors": 1
+        },
+        {
+          "sample": "rag-d103b179",
+          "arm": "frontier_reading",
+          "repeat": 1,
+          "score": 9,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "time_metric": 2,
+            "answer_evidence": 2,
+            "filter_errors": 0,
+            "redundancy": 2,
+            "component_diagnosis": 1,
+            "actionable_limits": 2
+          },
+          "material_errors": 1,
+          "design_errors": 0
+        },
+        {
+          "sample": "rag-7c288b23",
+          "arm": "frontier_reading",
+          "repeat": 2,
+          "score": 11,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "time_metric": 2,
+            "answer_evidence": 1,
+            "filter_errors": 2,
+            "redundancy": 2,
+            "component_diagnosis": 2,
+            "actionable_limits": 2
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "rag-ec397d49",
+          "arm": "frontier_strict",
+          "repeat": 1,
+          "score": 11,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "time_metric": 2,
+            "answer_evidence": 1,
+            "filter_errors": 2,
+            "redundancy": 2,
+            "component_diagnosis": 2,
+            "actionable_limits": 2
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "rag-ca4d6fad",
+          "arm": "frontier_strict",
+          "repeat": 2,
+          "score": 10,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "time_metric": 2,
+            "answer_evidence": 1,
+            "filter_errors": 2,
+            "redundancy": 2,
+            "component_diagnosis": 1,
+            "actionable_limits": 2
+          },
+          "material_errors": 0,
+          "design_errors": 1
+        }
+      ]
+    },
+    {
+      "case": "bio",
+      "source_report": "bio-independent-review.json",
+      "source_report_sha256": "d474ed6336a56c0fd88a318d8b6d7e4df7fda6540345e17dc1c1f97074227cbc",
+      "samples": [
+        {
+          "sample": "bio-f8d367e07b",
+          "arm": "prior_only",
+          "repeat": 1,
+          "score": 6,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "information_budget": 1,
+            "de_metrics": 1,
+            "control_independence": 1,
+            "adapter_semantics": 1,
+            "risk": 1,
+            "actionable_limits": 1
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "bio-1c1f077330",
+          "arm": "prior_only",
+          "repeat": 2,
+          "score": 7,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "information_budget": 2,
+            "de_metrics": 1,
+            "control_independence": 1,
+            "adapter_semantics": 1,
+            "risk": 1,
+            "actionable_limits": 1
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "bio-8d9617d299",
+          "arm": "frontier_reading",
+          "repeat": 1,
+          "score": 7,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "information_budget": 1,
+            "de_metrics": 1,
+            "control_independence": 1,
+            "adapter_semantics": 1,
+            "risk": 2,
+            "actionable_limits": 1
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "bio-73425f84db",
+          "arm": "frontier_reading",
+          "repeat": 2,
+          "score": 8,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "information_budget": 1,
+            "de_metrics": 2,
+            "control_independence": 1,
+            "adapter_semantics": 1,
+            "risk": 2,
+            "actionable_limits": 1
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "bio-454060dd64",
+          "arm": "frontier_strict",
+          "repeat": 1,
+          "score": 10,
+          "delivered": true,
+          "status": "completed",
+          "criterion_scores": {
+            "information_budget": 2,
+            "de_metrics": 1,
+            "control_independence": 2,
+            "adapter_semantics": 1,
+            "risk": 2,
+            "actionable_limits": 2
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        },
+        {
+          "sample": "bio-71ac83e98c",
+          "arm": "frontier_strict",
+          "repeat": 2,
+          "score": 0,
+          "delivered": false,
+          "status": "needs_verification",
+          "criterion_scores": {
+            "information_budget": 0,
+            "de_metrics": 0,
+            "control_independence": 0,
+            "adapter_semantics": 0,
+            "risk": 0,
+            "actionable_limits": 0
+          },
+          "material_errors": 0,
+          "design_errors": 0
+        }
+      ]
+    }
+  ]
+}

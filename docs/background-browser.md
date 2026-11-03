@@ -12,10 +12,12 @@ from research_base.browser_worker import BackgroundBrowserWorker, WebBridgeTrans
 bridge = WebBridgeTransport("lab-literature-task")
 worker = BackgroundBrowserWorker(bridge, background_input=True)
 worker.open(official_landing_url, group_title="文献获取")
-links = worker.pdf_links()  # 仅导航，不算已取得全文
+links = worker.pdf_links()  # 包含实际链接与 citation_pdf_url，仍只是导航
 
-# 由宿主从当前实际页面的链接中选择目标；不能把引用文献或补充材料当正文。
-download = worker.download_pdf(chosen_observed_pdf_url, browser_task["handoff"]["download_dir"])
+# 按页面 DOI 与预期 DOI 选择正文入口，跳过 .pdf+html 预览。
+# 选择成功不等于身份校验成功；下载后仍由库核验。
+chosen = worker.select_pdf_link(expected_doi=paper_doi)
+download = worker.download_pdf(chosen["url"], browser_task["handoff"]["download_dir"])
 base.submit_browser_result(
     task_id=browser_task["task_id"],
     lease_token=browser_task["lease"]["token"],

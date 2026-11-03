@@ -33,7 +33,8 @@ def test_tool_loop_roundtrips_original_message_and_hides_reasoning():
     core = Core()
     agent = ResearchAgent(core, api_key="fake-test-key", client=httpx.Client(transport=httpx.MockTransport(handler)))
     result = agent.run("Find the relevant collection")
-    assert result["status"] == "completed"
+    assert result["status"] == "unbound_completed"
+    assert result["research_policy"] == {"mode": "unbound", "strict_research_completed": False}
     assert result["answer"] == "Collection c1 is available."
     assert core.calls == ["list_collections"]
     assert requests[1]["messages"][2]["reasoning_content"] == "internal reasoning"
@@ -70,7 +71,7 @@ def test_invalid_json_arguments_return_tool_error_and_continue():
         assert "INVALID_ARGUMENT" in json.loads(request.content)["messages"][-1]["content"]
         return httpx.Response(200, json=completion({"role": "assistant", "content": "Corrected."}))
     result = ResearchAgent(Core(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Read")
-    assert result["status"] == "completed"
+    assert result["status"] == "unbound_completed"
     assert result["tool_calls"][0]["status"] == "error"
 
 
@@ -82,7 +83,7 @@ def test_agent_stops_at_step_budget():
             {"id": "x", "type": "function", "function": {"name": "list_collections", "arguments": "{}"}}]}))
     core = Core()
     result = ResearchAgent(core, api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Read", max_steps=2)
-    assert result["status"] == "completed_with_limits"
+    assert result["status"] == "unbound_completed"
     assert result["limit_reason"] == "step_limit"
     assert len(core.calls) == 2
 
@@ -262,7 +263,7 @@ def test_project_run_loads_actual_rules_prepares_context_once_and_scopes_tools(t
             return httpx.Response(200, json=completion({"role": "assistant", "content": None, "tool_calls": [
                 {"id": "materials", "type": "function", "function": {"name": "list_materials", "arguments": "{}"}}]}))
         return httpx.Response(200, json=completion({"role": "assistant", "content": "The collection is stale; verify newer work before finalizing."}))
-    result = ResearchAgent(core, api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Design an experiment", project_root=root)
+    result = ResearchAgent(core, api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Design an experiment", project_root=root, research_mode="explore")
     assert core.prepared[0][1]["collection_id"] == "c_project"
     assert core.prepared[0][1]["project_root"] == str(root.resolve())
     assert sum(1 for item in core.prepared if item[1].get("max_chars") == 10000) == 1
@@ -276,9 +277,12 @@ def test_project_run_loads_actual_rules_prepares_context_once_and_scopes_tools(t
 def test_project_run_respects_configured_rule_entry(tmp_path):
     root = project_files(tmp_path, entry="rules/research.md", rules="CUSTOM ENTRY RULE")
     def handler(request):
-        assert "CUSTOM ENTRY RULE" in json.loads(request.content)["messages"][0]["content"]
+        payload = json.loads(request.content)
+        assert "CUSTOM ENTRY RULE" in payload["messages"][0]["content"]
+        assert str(root.resolve()) not in payload["messages"][1]["content"]
+        assert "project_root" not in payload["messages"][1]["content"]
         return httpx.Response(200, json=completion({"role": "assistant", "content": "Ready."}))
-    result = ResearchAgent(ProjectCore(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Analyze", project_root=root)
+    result = ResearchAgent(ProjectCore(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Analyze", project_root=root, research_mode="explore")
     assert result["project_integration"]["entry_file"] == str((root / "rules/research.md").resolve())
 
 
@@ -300,7 +304,7 @@ def test_missing_project_rules_are_reported_without_claiming_load(tmp_path):
     def handler(request):
         assert "rule entry status: missing" in json.loads(request.content)["messages"][0]["content"]
         return httpx.Response(200, json=completion({"role": "assistant", "content": "Using available library context only."}))
-    result = ResearchAgent(ProjectCore(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Analyze", project_root=root)
+    result = ResearchAgent(ProjectCore(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Analyze", project_root=root, research_mode="explore")
     assert result["project_integration"]["rules_loaded"] is False
     assert result["project_integration"]["rules_status"] == "missing"
     assert result["project_integration"]["context_prepared"] is True
@@ -319,7 +323,7 @@ def test_project_navigation_is_bounded_and_preserves_freshness(tmp_path):
         assert '"needs_refresh": true' in content
         assert '"truncated": true' in content
         return httpx.Response(200, json=completion({"role": "assistant", "content": "Limited navigation."}))
-    ResearchAgent(LargeNavigation(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Analyze", project_root=root)
+    ResearchAgent(LargeNavigation(), api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Analyze", project_root=root, research_mode="explore")
 
 
 def test_context_limit_synthesizes_once_without_more_tools():
@@ -338,7 +342,7 @@ def test_context_limit_synthesizes_once_without_more_tools():
         assert "Do not claim exhaustive literature coverage" in payload["messages"][-1]["content"]
         return httpx.Response(200, json=completion({"role": "assistant", "content": "A limited plan; full texts remain to be read."}))
     result = ResearchAgent(core, api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Plan research", max_tool_calls=7)
-    assert result["status"] == "completed_with_limits"
+    assert result["status"] == "unbound_completed"
     assert result["limit_reason"] == "context_limit"
     assert len(core.calls) == 7
     assert len(requests) == 2
@@ -361,6 +365,6 @@ def test_final_synthesis_preserves_read_original_text_and_tool_budget():
         assert "ACTUAL_METHOD: use held-out evaluation." in payload["messages"][-2]["content"]
         return httpx.Response(200, json=completion({"role": "assistant", "content": "Use held-out evaluation [m1], with remaining coverage limitations."}))
     result = ResearchAgent(core, api_key="fake", client=httpx.Client(transport=httpx.MockTransport(handler))).run("Design experiment", max_steps=1, max_tool_calls=1)
-    assert result["status"] == "completed_with_limits"
+    assert result["status"] == "unbound_completed"
     assert core.calls == ["read_material"]
     assert len(result["tool_calls"]) == 1

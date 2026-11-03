@@ -578,6 +578,9 @@ class SourceRegistry:
         from .acl import AclAnthology
         anthology = AclAnthology(self.transport)
         self.register(anthology.info["name"], anthology)
+        from .biorxiv import BioRxiv
+        archive = BioRxiv(self.transport)
+        self.register(archive.info["name"], archive)
 
     def register(self, name: str, adapter: SourceAdapter) -> None:
         if not name or not callable(getattr(adapter, "search", None)):

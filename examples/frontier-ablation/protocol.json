@@ -1,0 +1,62 @@
+{
+  "protocol_version": 2,
+  "purpose": "Paired qualitative research-design comparison, not a scientific performance or time-saving benchmark",
+  "repetitions_per_case": 2,
+  "arms": ["prior_only", "frontier_reading", "frontier_strict"],
+  "primary_comparison": "prior_only versus frontier_strict evaluates the combined workflow; frontier_reading helps distinguish original access from additional review",
+  "conditions": {
+    "same_provider_model": true,
+    "same_task_and_common_system_prompt": true,
+    "fresh_conversation_per_sample": true,
+    "implementation_and_selected_originals_and_project_rules_frozen": true,
+    "development_reuse": "These two known cases were used in earlier development runs; this is a post-development regression, not unseen-task generalization or an unbiased research-benefit estimate",
+    "previous_plans_or_correct_answers_supplied_to_scientific_agent": false,
+    "answer_limit_chinese_characters": 1600,
+    "strict_step_limit": 24,
+    "strict_tool_limit": 64,
+    "equal_total_compute": false,
+    "cost_and_completion_reported_separately": true,
+    "independent_review_calls": "Separate conversation using the configured model family, with bounded original context; Codex then checks the source-based scoring without rewriting research outputs",
+    "blind_review": "Opaque sample identifiers; arm labels and run metadata omitted from judge packets; output prose can still reveal source use",
+    "no_best_of_selection": true,
+    "blocked_strict_samples": "Retained as failures to deliver; never replaced with an independently corrected success. A budget-limited draft with a trusted exact-final-draft acceptance is delivered and its limit is reported separately",
+    "no_training_or_benchmark_experiments": true
+  },
+  "scoring": {
+    "per_criterion": {"0": "Absent, unusable or materially incorrect", "1": "Useful but generic or missing necessary operational detail", "2": "Concrete, appropriately bounded and supported by the supplied original context"},
+    "total_range": [0, 12],
+    "material_errors": "Reported separately, including unsupported precise claims and confusion about definitions, data access, sampling or risk",
+    "absence_of_paper_names": "Does not by itself reduce the score",
+    "citation_count_and_tool_call_count": "Not quality scores"
+  },
+  "cases": [
+    {
+      "case": "rag",
+      "profile": "machine_learning",
+      "task": "为实验室设计一个可执行的RAG检索与重排评价方案，研究时间冲突、证据充分性及高相似冗余语料。需要区分检索、重排与生成的贡献，选择有意义的指标、数据划分、简单基线、对照与失败判据。若采用近期工作的具体指标，准确说明其定义、统计单位和适用条件；无法核对的细节明确待查，不要猜测。分别说明答案与证据如何评价、过滤误删与漏留如何审计，以及下一步需要执行什么。仅给研究方案，不报告尚未运行的结果。限1600汉字。",
+      "original_scope": "Existing explicitly authorized FRESCO physical pages 3/4/5, EBG 3/4 and RARE 6/7; no other originals",
+      "criteria": [
+        {"id": "time_metric", "question": "Are temporal goals, metric denominators and ranking conditions correctly distinguished?"},
+        {"id": "answer_evidence", "question": "Are answer and evidence outputs, sufficiency and joint aggregation correctly specified?"},
+        {"id": "filter_errors", "question": "Are filtering labels, decisions and the consequences of FP/FN consistent?"},
+        {"id": "redundancy", "question": "Does evaluation handle equivalent redundant evidence without arbitrary unique-string gold?"},
+        {"id": "component_diagnosis", "question": "Are retrieval and reader contributions tested with controlled interventions and leakage-aware splits?"},
+        {"id": "actionable_limits", "question": "Are executable next steps, uncertainty and unverified implementation boundaries clear?"}
+      ]
+    },
+    {
+      "case": "bio",
+      "profile": "single_cell",
+      "task": "为实验室设计单细胞扰动预测的可信泛化评价方案，比较未见扰动、未见情境与跨数据集迁移。需要公平比较基础模型、简单基线和适配策略，说明可用信息、划分、控制样本、DE评价及适配放行和风险判断。若采用近期工作或作者代码的具体设置，准确区分其定义、实现和仍需实际验证的假设；未核对的细节明确待查，不要猜测。给出可执行实验臂、指标与失败判据，避免把计划写成已观察到的结果。限1600汉字。",
+      "original_scope": "Existing explicitly authorized PIE physical pages 4/6/8, DE classification 10/11, SafeDelta 6 and the previously authorized pinned adapter.py",
+      "criteria": [
+        {"id": "information_budget", "question": "Are zero-shot, calibration responses, few-shot adaptation and held-out task definitions separated?"},
+        {"id": "de_metrics", "question": "Are DE classes, full versus curated evaluation, priors and statistical units handled correctly?"},
+        {"id": "control_independence", "question": "Are control construction and biological independence distinguished from merely separate arrays or cells?"},
+        {"id": "adapter_semantics", "question": "If adaptation gates are discussed, are decision, fold prediction and fallback semantics accurate and bounded?"},
+        {"id": "risk", "question": "Are mean benefit, harmful releases and individual-trial guarantees correctly distinguished?"},
+        {"id": "actionable_limits", "question": "Are actual split/code audits, uncertainty and executable next experiments distinguished from declarations?"}
+      ]
+    }
+  ]
+}

@@ -192,7 +192,8 @@ def run_model(library, final, synthesis_reviewer):
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
         result = ResearchAgent(base, api_key="test", client=client).run("Design a filtering audit", collection_id=cid,
-            critical_checks=checks, detail_reviewer=detail_reviewer, synthesis_reviewer=synthesis_reviewer)
+            critical_checks=checks, detail_reviewer=detail_reviewer, synthesis_reviewer=synthesis_reviewer,
+            research_mode="explore", automatic_review=False)
     assert len(observed_details) == 1
     return result
 
@@ -232,7 +233,7 @@ def test_actual_model_supported_final_reports_hash_of_the_published_draft(librar
         return verdict()
 
     result = run_model(library, CORRECT, independent_final)
-    assert result["status"] == "completed_with_limits"  # offline fixture made no current-frontier claim
+    assert result["status"] == "exploration_completed"  # offline fixture made no strict-completion claim
     assert final_packets[-1]["answer"] == result["answer"]
     assert result["synthesis_review"]["draft_sha256"] == hashlib.sha256(result["answer"].encode()).hexdigest()
     assert result["synthesis_review"]["detail_revisions"] == {"positive-class": 1}

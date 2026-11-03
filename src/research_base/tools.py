@@ -69,15 +69,15 @@ READ_TOOLS = [
          "trials":array(object_schema({"answer_correct":{"type":"boolean"},"evidence_correct":{"type":"boolean"}},["answer_correct","evidence_correct"]),1000)}),
     _definition("get_frontier", "Open a collection's curated key frontier reference space, original paths, versions, freshness and gaps. Curated selection is not a certification of exhaustive coverage.",
         {"collection_id": ID}, ["collection_id"]),
-    _definition("prepare_research", "Prepare task/stage-specific navigation, curated anchors and discipline reading questions. Metadata only; no reading credit and no implicit network search.",
+    _definition("prepare_research", "Prepare task/stage-specific navigation, curated anchors, discipline reading questions and task-matched discovery_suggestions when a query template fits. Suggestions do not execute searches or alter active freshness. Metadata only; no reading credit and no implicit network search.",
         RESEARCH_ARGUMENTS, ["task", "collection_id"]),
     _definition("begin_research", "Start a task-scoped research session before research decisions. Returns navigation and a session_id for original reading and the pre-synthesis check. Select focus_paper_ids only when those originals are necessary for this task.",
         {**RESEARCH_ARGUMENTS, "critical_checks": array(CRITICAL_CHECK, 8)}, ["task", "collection_id"]),
-    _definition("read_research_material", "Read original text for a research session. Only returned nonempty original text counts as observed access; paths alone do not. Replay continuation arguments unchanged, including session_id, until the selected range is complete. Does not certify comprehension.",
+    _definition("read_research_material", "Read original text for a research session. Interpret numbered units using material.details.pagination: logical_sections with physical_pages=false are XML sections, never PDF physical pages or visual evidence. Only returned nonempty original text counts as observed access; paths alone do not. Replay continuation arguments unchanged, including session_id, until the selected range is complete. Does not certify comprehension.",
         {"session_id": ID, "material_id": ID, "view": string(enum=["text", "original"]),
          "pages": array(integer(1, 100000), 100), "max_chars": integer(1, 20000),
          "char_offset": integer(0, 100000000)}, ["session_id", "material_id"]),
-    _definition("read_research_context", "Read a physical page with up to two neighboring pages on either side to resolve definitions crossing page boundaries. Uses the normal observed-read budget and continuation. Complete selected pages do not prove conceptual completeness.",
+    _definition("read_research_context", "Read a numbered unit with up to two neighboring units on either side to resolve split definitions. material.details.pagination determines PDF physical pages versus XML logical_sections (physical_pages=false); XML sections are not physical-page/visual evidence. Uses the normal observed-read budget and continuation. Complete selected units do not prove conceptual completeness.",
         {"session_id": ID, "material_id": ID, "page": integer(1, 100000),
          "adjacent_pages": integer(0, 2), "max_chars": integer(1, 20000)}, ["session_id", "material_id", "page"]),
     _definition("submit_research_detail", "Submit an interpretation for a host-required critical question. Prefer passage_id anchors from the actual read response; the host resolves their original text without retyping. Alternatively supply read_id plus an exact quote. Metric answers should state numerator, denominator, positive class, unit, conditions and aggregation. Creates pending independent review, never self-approval. Use unresolved when context is insufficient.",
@@ -101,7 +101,7 @@ READ_TOOLS = [
     _definition("get_paper", "Get a paper, its versions, identifiers and original-material entries.", {"paper_id": ID}, ["paper_id"]),
     _definition("list_materials", "List original PDFs, supplements, code/data links, extracted text and absolute local paths. Same-host agents may open these paths directly.",
         {"paper_id": ID, "collection_id": ID, "include_paths": {"type": "boolean"}}),
-    _definition("read_material", "Read selected PDF physical pages (1-based), or get an original-material path. To continue truncated text, replay the returned continuation arguments unchanged. char_offset is scoped to the original pages selection; reset it to 0 when changing pages. next_page is navigation only, not evidence of reading that page. Does not execute code.",
+    _definition("read_material", "Read selected numbered units (1-based), or get an original-material path. Interpret material.details.pagination: PDF uses physical pages; logical_sections with physical_pages=false are XML sections, not physical-page or visual evidence. To continue truncated text, replay continuation unchanged. char_offset is scoped to the original unit selection; reset it to 0 when changing units. next_page is navigation only, not evidence of reading that unit. Does not execute code.",
         {"material_id": ID, "view": string(enum=["text", "original"]), "pages": array(integer(1, 100000), 100),
          "max_chars": integer(1, 100000), "char_offset": integer(0, 100000000)}, ["material_id"]),
     _definition("prepare_context", "Find task-relevant papers and material locations, freshness and gaps. Does not start an implicit network search.",
@@ -257,6 +257,21 @@ class ToolRegistry:
         """Trusted host API; intentionally absent from model/MCP tool specs."""
         return self.research.review_detail(session_id, check_id, **review)
 
+    def begin_bound_research(self, task: str, *, collection_id: str | None = None, **policy) -> dict:
+        """Trusted host entry: bind an immutable strict task before model access.
+
+        The model/MCP begin_research tool remains an ordinary reading session;
+        it cannot choose this host policy or remove its critical requirements.
+        """
+        if self.required_session_id is not None:
+            raise ResearchError("RESEARCH_SESSION_BOUND", "This host already owns an active research task")
+        selected = collection_id or self.collection_id
+        if not selected:
+            raise ResearchError("INVALID_ARGUMENT", "A bound research collection is required")
+        opened = self.research.begin(task, selected, mode=policy.pop("mode", "strict"), **policy)
+        self.required_session_id = opened["session_id"]
+        return opened
+
     def require_checked_synthesis(self, session_id: str, answer: str, reviewer,
                                   *, require_current_frontier: bool = False) -> dict:
         """Review the actual final draft, not only its earlier interpretations.
@@ -299,6 +314,7 @@ class ToolRegistry:
         if review["verdict"] != "supported":
             raise ResearchError("RESEARCH_SYNTHESIS_REVIEW_REQUIRED", "The final draft requires correction or additional context",
                                 details={"review": deepcopy(review)})
+        check["enforcement"]["strict_research_completed"] = check["policy"]["mode"] == "strict"
         return {"research_usage": check, "synthesis_review": {**deepcopy(review),
             "draft_sha256": hashlib.sha256(answer.encode()).hexdigest(),
             "detail_revisions": {p["check_id"]: p["revision"] for p in current},
@@ -310,12 +326,24 @@ class ToolRegistry:
         # itself provides no reading credit and retains no original text.
         material = self.research.read(session_id, material_id, view="original", pages=[page])["material"]
         count = material.get("details", {}).get("parsed_pages")
+        pagination = material.get("details", {}).get("pagination", {})
+        logical = pagination.get("kind") == "logical_sections" or pagination.get("physical_pages") is False
         if not isinstance(count, int) or count <= 0 or page > count:
-            raise ResearchError("INVALID_ARGUMENT", "Choose an extracted physical page; use list_materials for the available range")
-        pages = list(range(max(1, page - adjacent_pages), min(count, page + adjacent_pages) + 1))
+            raise ResearchError("INVALID_ARGUMENT", "Choose an extracted logical section; use list_materials for the available range" if logical else "Choose an extracted physical page; use list_materials for the available range")
+        neighboring = list(range(max(1, page - adjacent_pages), min(count, page + adjacent_pages) + 1))
+        permitted = material.get("permitted_pages")
+        if permitted is not None:
+            if (not isinstance(permitted, list) or any(not isinstance(unit, int) or isinstance(unit, bool) for unit in permitted)
+                    or page not in permitted):
+                raise ResearchError("MATERIAL_OUTSIDE_RESEARCH_SCOPE", "The center unit must be explicitly permitted by the host")
+            pages = [unit for unit in neighboring if unit in permitted]
+        else:
+            pages = neighboring
         result = self.research.read(session_id, material_id, pages=pages, max_chars=max_chars)
         result["context_selection"] = {"center_page": page, "selected_pages": pages,
-            "notice": "Follow continuation unchanged; adjacent pages provide context but do not certify a complete definition."}
+            "omitted_neighbors": [unit for unit in neighboring if unit not in pages],
+            "pagination": {"kind": "logical_sections" if logical else "physical_pages", "physical_pages": not logical},
+            "notice": "Follow continuation unchanged; neighboring XML sections are not physical-page/visual evidence and do not certify a complete definition." if logical else "Follow continuation unchanged; adjacent pages provide context but do not certify a complete definition."}
         return result
 
     def call(self, name: str, arguments: dict | None = None) -> dict:

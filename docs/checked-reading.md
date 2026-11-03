@@ -39,7 +39,7 @@ accepted = tools.require_checked_synthesis(
 
 最终复核包包含实际 draft、已核验关键点和本会话实际返回的有界原文上下文，避免只凭模型选出的短引文复核其他原文细节。默认上下文上限为 60,000 字符，截断明确标注，不暗读相邻未返回页。通过后回执绑定该文本的 SHA256；审核期间材料或提交版本变化，旧结果作废。缺少复核者、回调异常、矛盾或上下文不足均不发布成已核验结论。宿主应当发布受检的同一字符串；修改内容后必须重检。
 
-内置 `ResearchAgent.run` 接受 critical_checks、detail_reviewer、synthesis_reviewer。配置关键点后，缺少任一必要复核就返回 needs_verification 或原件缺口，不展示未通过的科学草稿。回调由可信宿主提供，不是模型可调用的工具；组件不默认选择外部供应商或取得新增材料外发授权。
+内置 `ResearchAgent.run` 绑定集合或项目时默认 strict，接受 critical_checks、critical_planner、detail_reviewer、synthesis_reviewer。未显式提供时，使用该 agent 已配置模型的独立请求规划问题与复核，最多十六次，额外调用与 token 用量单独记录在 auxiliary_model_calls；规划只看任务与元数据，复核只看本会话允许读取且实际已返回的必要原件片段及待审稿，不上传项目源码或私有路径。同模型独立调用不是科学真值保障。宿主可用 automatic_review=False 禁用默认额外调用，改由可信回调完成；缺少必要复核、异常或无效 JSON 均不发布未通过的科学草稿。所有回调均不是模型可调用的自审工具。显式 research_mode="explore" 仅产生探索结果，不视作严格研究完成。
 
 ## 状态与边界
 
@@ -54,6 +54,6 @@ accepted = tools.require_checked_synthesis(
 
 ## 局部规则升级
 
-AGENTS.md v3 要求处理跨页定义、指标语义、基线角色、代码/配置与执行证据，并区分普通原文读取与独立细节复核。重复 attach 可升级未改动的 v1/v2 受管区块，保留 BOM、换行、Vesti 和研究者添加的内容。被人工改动的受管规则保持冲突，不覆盖。
+AGENTS.md v4 保留跨页定义、指标语义、基线角色、代码/配置与执行证据要求，并明确绑定研究默认 strict、显式 explore、任务相关必读入口及最终稿接收边界。重复 attach 可升级未改动的 v1/v2/v3 受管区块，保留 BOM、换行、Vesti 和研究者添加的内容。被人工改动的受管规则保持冲突，不覆盖。
 
 规则负责要求 agent 使用接口；外部宿主还必须实际配置任务关键点与独立复核，并把严格检查接到方案提交位置。仅安装 AGENTS.md 不会自动使任意 agent 的输出受到程序拦截。

@@ -48,8 +48,8 @@ def test_host_rejects_unread_final_then_allows_actual_original_read(tmp_path):
         assert "METHOD: separate calibration" in payload["messages"][-1]["content"]
         return reply("Keep calibration and test separate, based on the original methods.")
     with base, httpx.Client(transport=httpx.MockTransport(handler)) as client:
-        result = ResearchAgent(base, api_key="test", client=client).run("Evaluation design", collection_id=collection)
-    assert result["status"] == "completed_with_limits"  # no search completion was fabricated
+        result = ResearchAgent(base, api_key="test", client=client).run("Evaluation design", collection_id=collection, research_mode="explore")
+    assert result["status"] == "exploration_completed"  # no strict completion or search was fabricated
     assert result["research_usage"]["ready"]
     assert result["research_usage"]["read_paper_ids"] == [paper]
     assert "Unsupported scientific claim" not in result["answer"]
@@ -59,7 +59,7 @@ def test_host_rejects_unread_final_then_allows_actual_original_read(tmp_path):
 def test_host_never_publishes_repeated_unread_research_claim(tmp_path):
     base, collection, paper, material = setup_library(tmp_path)
     with base, httpx.Client(transport=httpx.MockTransport(lambda request: reply("I read everything and proved novelty."))) as client:
-        result = ResearchAgent(base, api_key="test", client=client).run("Evaluation design", collection_id=collection)
+        result = ResearchAgent(base, api_key="test", client=client).run("Evaluation design", collection_id=collection, research_mode="explore")
     assert result["status"] == "needs_materials"
     assert not result["research_usage"]["ready"]
     assert "proved novelty" not in json.dumps(result)
@@ -90,8 +90,8 @@ def test_limit_synthesis_preserves_new_read_tool_text_after_5000_chars(tmp_path)
         return reply("Use independent controls; the selected methods page was returned.")
     with base, httpx.Client(transport=httpx.MockTransport(handler)) as client:
         result = ResearchAgent(base, api_key="test", client=client).run("Evaluation design", collection_id=collection,
-            max_steps=1, max_tool_calls=1)
-    assert result["status"] == "completed_with_limits"
+            max_steps=1, max_tool_calls=1, research_mode="explore")
+    assert result["status"] == "exploration_completed"
     assert result["limit_reason"] == "step_limit"
     assert result["research_usage"]["ready"]
 

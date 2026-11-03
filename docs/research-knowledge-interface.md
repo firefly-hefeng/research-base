@@ -117,15 +117,19 @@ tools.research.observe_visual_read(
 
 ## 内置 agent 的自动检查
 
-内置 `ResearchAgent.run` 在绑定 collection_id 或 project_root 时，先由宿主启动会话，再把任务导航和 session_id 交给模型。可设置 `research_stage="design"`、`profile` 与 `focus_paper_ids`。绑定项目时仍真正读取所配置的 AGENTS.md 入口。普通 `read_material` 调用也会经过当前会话的读取观察，不要求模型只能使用一个读取工具。
+内置 `ResearchAgent.run` 在绑定 collection_id 或 project_root 时默认采用 `research_mode="strict"`，先由宿主启动不可被模型替换的会话，再把清理私有路径后的任务导航和 session_id 交给模型。可设置 `research_stage="design"`、`profile` 与 `focus_paper_ids`；未指定 focus 时优先选任务检索命中的少量关键前沿入口，无直接命中时由可信规划决定相关性，不能要求模型随便读一篇就完成。绑定项目时仍真正读取所配置的 AGENTS.md 入口。普通 `read_material` 调用也会经过当前会话的读取观察，不要求模型只能使用一个读取工具。
 
-模型准备输出时，宿主再次执行 `check_research`。尚缺材料时，最多在原有预算内给模型两次补读机会；仍未满足时返回 `needs_materials` 和缺口说明，不把未经检查的科学草稿当成已完成方案。`completed` 和 `completed_with_limits` 只在使用检查满足时返回。调用结果中的 `research_usage` 和 `research_session_id` 供工作流检查。
+strict 对所有阶段要求有效的匹配检索更新、必读原件、每篇 focus 的关键问题以及实际最终稿的独立审核。自动检索 focus 仅作建议，规划可在有限入口内重选最多三篇；显式宿主 scope 不可替换。默认每篇恰好一个单一决策细节问题，避免复合穷举或预设不存在的阈值/方法；宿主显式 critical_checks 仍可至多八个。默认规划和两类审核由已配置模型的隔离调用完成，外部宿主可替换可信回调，或 `automatic_review=False` 禁止默认额外调用。额外调用及 token 用量见 `auxiliary_model_calls`，上限十六次。`research_mode="explore"` 明确退回普通探索，结果为 `exploration_completed`；底层直接 `begin`/MCP 会话仍兼容普通读取，不自动获得 strict 资格。检查结果中的 `enforcement.strict_ready_for_final_review` 只表示可以审稿，`strict_research_completed` 仅在可信最终稿接收回执中为真，不能将中途普通 `ready` 当作研究完成。
 
-模型不能通过重建会话或使用另一个会话 ID 清掉宿主指定的必读要求；可以选择读取段落、补充材料和扩展本次任务的论文范围。未绑定任何文献集合的管理任务不自动启动研究检查。
+模型准备输出时，宿主再次执行 `check_research`。尚缺材料或核验时，最多在原有预算内给模型两次补读/修订机会；仍未满足时返回 `needs_materials`、`needs_refresh` 或 `needs_verification`，不展示未经检查的科学草稿。默认 strict 的 `completed` 必须具有独立最终稿回执；显式 explore 的成功结果为 `exploration_completed`。调用结果中的 `research_usage`、`research_session_id` 和 `synthesis_review` 供工作流检查。
+
+模型不能通过重建会话或使用另一个会话 ID 清掉宿主指定的必读要求；可以选择读取段落、补充材料和扩展本次任务的论文范围。未绑定任何文献集合的管理任务不自动启动研究检查，正常查询结果为 `unbound_completed`，并明确 `research_policy.mode="unbound"`、`strict_research_completed=false`，不混同严格研究完成。
+
+同一已验证原件的实际页/节区间可跨选择合并：先完整读取 `[4,6,8]` 后只复查第 6 页尾部，不会重新制造该页开头的假缺口。真正没有返回的中间区间仍需续读；不同原件、版本或哈希不共享阅读信用。`read_research_context` 遇到宿主提供的 `permitted_pages` 时只读许可内的邻页/节，`omitted_neighbors` 明示未返回的邻单元；这不代表缺少的上下文已经解决，也不会扩大材料外发范围。
 
 ## 规则与程序检查的边界
 
-局部 AGENTS.md v3 要求实际调用这些接口，核对与决策相关的论文细节，并在提交前检查。未改动的 v1/v2 受管区块可通过重复 `attach` 安全升级；其他规则和 Vesti 区块保留。新增任务关键点、独立复核及最终稿检查见[关键细节核验](checked-reading.md)，后台原件获取见[浏览器适配器](background-browser.md)。
+局部 AGENTS.md v4 要求实际调用这些接口，默认建立任务相关前沿必读与关键问题，并在提交前严格检查。未改动的 v1/v2/v3 受管区块可通过重复 `attach` 安全升级；其他规则和 Vesti 区块保留。任务关键点、独立复核及最终稿检查见[关键细节核验](checked-reading.md)，后台原件获取见[浏览器适配器](background-browser.md)。
 
 程序检查能证明某些原文内容已由接口返回、指定材料是否仍未读，以及哪些正文、更新和获取缺口尚存在。它不能证明 agent 理解正确、选择了充分的材料、识别了所有研究前沿或完成了复现实验。通过检查后仍应在结论中引用实际使用的论文，并说明适用条件。
 

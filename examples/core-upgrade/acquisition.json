@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-11-03T01:23:39.040218+00:00",
+  "scope": "Full unchanged included sets; explicit publication/preprint equivalence only. Download submission never counts before material validation.",
+  "baseline": {
+    "rag": {
+      "included_papers": 24,
+      "available_main_text_papers": 20,
+      "pdf_available_papers": 20
+    },
+    "bio": {
+      "included_papers": 109,
+      "available_main_text_papers": 54,
+      "pdf_available_papers": 54
+    }
+  },
+  "validation": {
+    "browser_returned_materials_validated": 22,
+    "browser_returned_materials_available": 21,
+    "browser_returned_materials_still_staged": 1,
+    "official_pmc_xml_added": 4,
+    "network_during_parsing": false,
+    "model_transmission_during_acquisition": false,
+    "user_identity_confirmation_used": false,
+    "related_offline_tests_passed": 88
+  },
+  "definitions": {
+    "available_main_text": "Identity-checked local main-text original exists; does not establish complete extraction or scientific comprehension.",
+    "edition_policy_satisfied": "An available main-text material is assigned to a published, accepted or preprint edition; this is weaker than exact revision satisfaction.",
+    "strict_requested_version": "Only explicit requested_version_id targets actually present in active acquisition jobs; zero targets means not tested, not 100% success.",
+    "latest_catalogued_repository_version": "Highest numbered exact revision actually present in this catalog for that repository work. This does not establish the current latest version at every provider.",
+    "text_extract_available": "At least some nonempty extracted original text is available, not a guarantee of lossless whole-document extraction.",
+    "xml_navigation": "Original JATS XML with numbered logical sections; never PDF physical pages."
+  },
+  "cases": [
+    {
+      "case": "rag",
+      "counts": {
+        "included_papers": 24,
+        "explicit_work_groups": 24,
+        "available_main_text_papers": 20,
+        "available_main_text_work_groups": 20,
+        "text_extract_available_papers": 20,
+        "pdf_available_papers": 20,
+        "xml_available_papers": 0,
+        "edition_policy_satisfied_papers": 19,
+        "readable_but_no_assigned_edition_papers": 1,
+        "missing_main_text_papers": 4,
+        "strict_requested_version_targets": 0,
+        "strict_requested_version_targets_satisfied": 0,
+        "papers_with_catalogued_exact_repository_revision": 6,
+        "papers_with_all_latest_catalogued_repository_versions_available": 1,
+        "pending_browser_validation_tasks": 0
+      },
+      "missing_main_text": [
+        {
+          "paper_id": "paper_4285243a1053420bacd4",
+          "title": "Evidence-First Retrieval Augmented Generation with Claim Repair for Security Operations Center Workflows",
+          "doi": "10.1109/ichora69329.2026.11537178",
+          "task_states": {
+            "needs_user": 1
+          }
+        },
+        {
+          "paper_id": "paper_97ed9695cf374d168918",
+          "title": "SC-SAE-RAG: Bounded Section-Chain Evidence Recovery for Scientific Literature Question Answering",
+          "doi": "10.1109/access.2026.3744475",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_a6c856f65a604feb9827",
+          "title": "MAEDA: An LLM-Powered Multi-Agent Evaluation Framework for EDA Tool Documentation QA",
+          "doi": "10.23919/date69613.2026.11539506",
+          "task_states": {
+            "needs_user": 1
+          }
+        },
+        {
+          "paper_id": "paper_e64ba4654d8542bf8bae",
+          "title": "CP-RAG: Mitigating Distracting Content in Retrieval-Augmented Generation for Industrial Knowledge Question Answering",
+          "doi": "10.1109/jiot.2026.3652422",
+          "task_states": {
+            "needs_user": 1
+          }
+        }
+      ],
+      "readable_but_edition_unresolved": [
+        {
+          "paper_id": "paper_9e5597c3ba2040c08d73",
+          "title": "Retriever or reasoner? Decomposing retrieval-augmented generation performance in external audit supervision",
+          "doi": "10.53479/43986"
+        }
+      ],
+      "material_identity_review_required": []
+    },
+    {
+      "case": "bio",
+      "counts": {
+        "included_papers": 109,
+        "explicit_work_groups": 108,
+        "available_main_text_papers": 79,
+        "available_main_text_work_groups": 78,
+        "text_extract_available_papers": 79,
+        "pdf_available_papers": 75,
+        "xml_available_papers": 4,
+        "edition_policy_satisfied_papers": 73,
+        "readable_but_no_assigned_edition_papers": 6,
+        "missing_main_text_papers": 30,
+        "strict_requested_version_targets": 0,
+        "strict_requested_version_targets_satisfied": 0,
+        "papers_with_catalogued_exact_repository_revision": 8,
+        "papers_with_all_latest_catalogued_repository_versions_available": 5,
+        "pending_browser_validation_tasks": 0
+      },
+      "missing_main_text": [
+        {
+          "paper_id": "paper_420f3408dd554abbadfb",
+          "title": "scGPT: toward building a foundation model for single-cell multi-omics using generative AI",
+          "doi": "10.1038/s41592-024-02201-0",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_46e1895ae6964e1c8190",
+          "title": "DoFormer: Causal Transformer for Gene Perturbation",
+          "doi": "10.64898/2026.05.02.722054",
+          "task_states": {
+            "needs_user": 1
+          }
+        },
+        {
+          "paper_id": "paper_524e7c8cc9d244e599a1",
+          "title": "Predicting transcriptional responses to novel chemical perturbations using deep generative model for drug discovery",
+          "doi": "10.1038/s41467-024-53457-1",
+          "task_states": {
+            "needs_user": 1
+          }
+        },
+        {
+          "paper_id": "paper_531f52acf990427799e8",
+          "title": "SCREEN: predicting single-cell gene expression perturbation responses via optimal transport",
+          "doi": "10.1007/s11704-024-31014-9",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_5523731991d94331b76b",
+          "title": "Toward subtask-decomposition-based learning and benchmarking for predicting genetic perturbation outcomes and beyond",
+          "doi": "10.1038/s43588-024-00698-1",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_5db4522e23224708a96f",
+          "title": "Benchmarking algorithms for generalizable single-cell perturbation response prediction.",
+          "doi": "10.1038/s41592-025-02980-0",
+          "task_states": {
+            "needs_user": 1
+          }
+        },
+        {
+          "paper_id": "paper_6e2584694f944fdb8ed9",
+          "title": "Conditional out-of-distribution generation for unpaired data using transfer VAE",
+          "doi": "10.1093/bioinformatics/btaa800",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_6fc8282932ba4d9e82d2",
+          "title": "Unbalanced Perturbation Dynamics For Cell Fate Design",
+          "doi": "10.64898/2026.06.30.735555",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_944d408cc59d40018845",
+          "title": "scPreGAN, a deep generative model for predicting the response of single-cell expression to perturbation",
+          "doi": "10.1093/bioinformatics/btac357",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_acad448646af41f18432",
+          "title": "Predicting how perturbations reshape cellular trajectories with PerturbGen",
+          "doi": "10.64898/2026.03.04.709254",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_b58f1cc7607840f78559",
+          "title": "Virtual Cell Challenge 2026: Benchmarking zero-shot generalization across cellular contexts",
+          "doi": "10.1016/j.cell.2026.08.004",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_b7c4fc1577664e669d36",
+          "title": "PertEval-scFM: Benchmarking Single-Cell Foundation Models for Perturbation Effect Prediction",
+          "doi": "10.1101/2024.10.02.616248",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_b81f2d4d6f2243dbace2",
+          "title": "A mechanism-annotated benchmark reveals limited fidelity to drug-response signatures in single-cell perturbation models",
+          "doi": "10.64898/2026.08.19.745729",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_bb9a67b70619488eb8fc",
+          "title": "MVCBench: A Multimodal Benchmark for Drug-induced Virtual Cell Phenotypes",
+          "doi": "10.64898/2026.04.22.720110",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_bc5dfcb929cf4f3eb84d",
+          "title": "SLIM: A small linear model with STRING embeddings for single-cell genetic perturbation prediction",
+          "doi": "10.64898/2026.08.07.743481",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_bc6beea5cf5a42229467",
+          "title": "Unified multimodal learning enables generalized cellular response prediction to diverse perturbations",
+          "doi": "10.1101/2025.11.13.688367",
+          "task_states": {
+            "retry_wait": 1
+          }
+        },
+        {
+          "paper_id": "paper_c34f067d283349d6b5e1",
+          "title": "Large-scale foundation model on single-cell transcriptomics",
+          "doi": "10.1038/s41592-024-02305-7",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_c3613a0289a74bb18f23",
+          "title": "How Much Can AI Virtual Cells Gain from Unified Perturbational Modeling?",
+          "doi": "10.64898/2026.10.25.761625",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_c7a3280f14a64601bd27",
+          "title": "Scaling Dense Representations for Single Cell with Transcriptome-Scale Context",
+          "doi": "10.1101/2024.11.28.625303",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_cab0753a25ce48e6a16e",
+          "title": "COMPASS: Component-Wise Inference of Shared and Gene-Specific Perturbation Response",
+          "doi": "10.64898/2026.08.03.742643",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_d0c635dd16574eebbebe",
+          "title": "Phenotypic reversion and target prioritization for cellular inflammation via representation learning with foundation models",
+          "doi": "10.64898/2026.03.04.709607",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_d942a65358514fa280e6",
+          "title": "X-Atlas/Orion: Genome-wide Perturb-seq Datasets via a Scalable Fix-Cryopreserve Platform for Training Dose-Dependent Biological Foundation Models",
+          "doi": "10.1101/2025.06.11.659105",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_da95dd9a3e6844dc9f40",
+          "title": "DELPHAI predicts heterogeneous perturbation responses with learned single-cell fitness",
+          "doi": "10.64898/2026.07.01.735965",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_dbb63e5fad4b40bfb4f7",
+          "title": "ScAPE: A lightweight multitask learning baseline method to predict transcriptomic responses to perturbations",
+          "doi": "10.1101/2025.09.08.674873",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_dbc39c84d91347d089bd",
+          "title": "Foundation Models Improve Perturbation Response Prediction",
+          "doi": "10.64898/2026.02.18.706454",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_dc1edad4cb404d5d9a01",
+          "title": "Deep Learning-Based Genetic Perturbation Models Do Outperform Uninformative Baselines on Well-Calibrated Metrics",
+          "doi": "10.1101/2025.10.20.683304",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_dfcba417c4b241c79142",
+          "title": "X-Cell: Scaling Causal Perturbation Prediction Across Diverse Cellular Contexts via Diffusion Language Models",
+          "doi": "10.64898/2026.03.18.712807",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_e72b5a00007c49af8884",
+          "title": "CellTarNet: Robust Single-Cell Perturbation Prediction using Transformer Generative Model",
+          "doi": "10.1145/3807503.3819992",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_f8407e20f47342a39c62",
+          "title": "scGen predicts single-cell perturbation responses",
+          "doi": "10.1038/s41592-019-0494-8",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        },
+        {
+          "paper_id": "paper_fd5017a82b08420ab953",
+          "title": "CSTATE: Predicting cellular responses to perturbations",
+          "doi": "10.1145/3807503.3819991",
+          "task_states": {
+            "waiting_browser": 1
+          }
+        }
+      ],
+      "readable_but_edition_unresolved": [
+        {
+          "paper_id": "paper_2d8fbbb47c4c4a73aaf8",
+          "title": "Optimal distance metrics for single-cell RNA-seq populations",
+          "doi": "10.1101/2023.12.26.572833"
+        },
+        {
+          "paper_id": "paper_4ebe13bcf1524ef9a97b",
+          "title": "A biological-response compound representation allows chemical perturbation prediction across cell lines",
+          "doi": "10.64898/2026.09.28.755146"
+        },
+        {
+          "paper_id": "paper_548b36960d714d1086c4",
+          "title": "TwinCell: Large Causal Cell Model for Reliable and Interpretable Therapeutic Target Prioritisation",
+          "doi": "10.64898/2026.01.29.702072"
+        },
+        {
+          "paper_id": "paper_6c1ab7a4f4a44d11b718",
+          "title": "CellOS: Learning a World Model of Cellular State through Joint Embedding Prediction",
+          "doi": "10.64898/2026.06.18.733163"
+        },
+        {
+          "paper_id": "paper_8ce04bf0dea14f4fb905",
+          "title": "Discrete Diffusion for Single-Cell Gene Expression Modeling",
+          "doi": "10.64898/2026.02.19.705033"
+        },
+        {
+          "paper_id": "paper_c61998a0b3444436909e",
+          "title": "A knowledge-driven framework for predicting single-cell responses for unprofiled drugs",
+          "doi": "10.1038/s42256-026-01286-w"
+        }
+      ],
+      "material_identity_review_required": [
+        {
+          "paper_id": "paper_46e1895ae6964e1c8190",
+          "title": "DoFormer: Causal Transformer for Gene Perturbation",
+          "doi": "10.64898/2026.05.02.722054",
+          "issues": [
+            "Paper identity needs confirmation",
+            "First-page DOI conflicts with expected identity"
+          ]
+        },
+        {
+          "paper_id": "paper_524e7c8cc9d244e599a1",
+          "title": "Predicting transcriptional responses to novel chemical perturbations using deep generative model for drug discovery",
+          "doi": "10.1038/s41467-024-53457-1",
+          "issues": [
+            "First-page DOI conflicts with expected identity"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No collection member was excluded to raise coverage; material and exact-version gaps remain visible.",
+    "Twenty-two browser submissions were parsed after download; nineteen submissions in the final host batch do not imply nineteen version-complete successes.",
+    "pypdf emitted two form-XObject extraction-limit warnings during this validation run; nonempty parsed text and completed selected-range reading do not guarantee every PDF object was extracted.",
+    "A returned original path, staged download or metadata record is not observed reading credit.",
+    "Availability improvements were measured; research quality, experimental performance and elapsed researcher time were not established by these acquisition checks.",
+    "Private originals, extracted full texts, local paths, credentials and lease tokens are omitted from this public report."
+  ]
+}

@@ -357,7 +357,10 @@ class JobsMixin:
                     db.execute("UPDATE tasks SET state='downloading',updated_at=? WHERE id=?", (now(), tid))
                 directory = self.root / ".staging" / "http" / tid
                 directory.mkdir(parents=True, exist_ok=True)
-                file = directory / "article.pdf"
+                with self.store.connect() as db:
+                    version_meta = loads(db.execute("SELECT metadata FROM versions WHERE id=?", (vid,)).fetchone()[0])
+                file_format = version_meta.get("fulltext_formats", {}).get(url, "pdf")
+                file = directory / ("article.xml" if file_format == "xml" else "article.pdf")
                 try:
                     self._download_file(url, file)
                     with self.store.connect() as db:
@@ -427,6 +430,11 @@ class JobsMixin:
                 exact_doi = doi and normalized_doi(doi) == normalized_doi(expected.get("doi"))
                 exact_arxiv = ids.get("arxiv") and ids.get("arxiv") == expected.get("identifiers", {}).get("arxiv")
                 if kind == requested["kind"] and (exact_doi or exact_arxiv):
+                    if location.get("format") == "xml":
+                        with self.store.connect() as db:
+                            meta = loads(db.execute("SELECT metadata FROM versions WHERE id=?", (requested["version_id"],)).fetchone()[0])
+                            meta.setdefault("fulltext_formats", {})[location["url"]] = "xml"
+                            db.execute("UPDATE versions SET metadata=? WHERE id=?", (dumps(meta), requested["version_id"]))
                     options.append((location["url"], requested["version_id"]))
                     continue
             source_id = hashlib.sha256(dumps([paper["paper_id"], location["url"], kind, doi, ids]).encode()).hexdigest()
@@ -437,6 +445,9 @@ class JobsMixin:
                     meta = {k: paper.get(k) for k in ("title", "authors", "year", "abstract", "landing_url")}
                     meta.update(source="fulltext_resolver", source_id=source_id, identifiers=ids, doi=doi or (resolution_paper.get("doi") if kind == "published" else None),
                                 version_kind=kind, fulltext_urls=[location["url"]], links=[])
+                    if location.get("format") == "xml":
+                        meta["fulltext_formats"] = {location["url"]: "xml"}
+                    meta["acquisition_provenance"] = {key: location[key] for key in ("resolver", "repository_version", "license") if location.get(key) is not None}
                     db.execute("INSERT INTO versions VALUES(?,?,?,?)", (vid, paper["paper_id"], kind, dumps(meta)))
                     db.execute("INSERT INTO source_records VALUES('fulltext_resolver',?,?,?,?,?)", (source_id, paper["paper_id"], vid, dumps(meta), now()))
             options.append((location["url"], vid))
@@ -471,9 +482,13 @@ class JobsMixin:
                             if size > self.max_file_bytes:
                                 raise ResearchError("INVALID_FILE", "Download exceeds size limit")
                             handle.write(chunk)
-                with path.open("rb") as handle:
-                    if handle.read(5) != b"%PDF-":
-                        raise ResearchError("INVALID_FILE", "Full-text endpoint did not return a PDF")
+                if path.suffix.lower() == ".xml":
+                    from .materials import _jats_document
+                    _jats_document(path.read_bytes())
+                else:
+                    with path.open("rb") as handle:
+                        if handle.read(5) != b"%PDF-":
+                            raise ResearchError("INVALID_FILE", "Full-text endpoint did not return a PDF")
                 return
             except (httpx.HTTPError, ValueError, OSError):
                 if attempt == 2:
